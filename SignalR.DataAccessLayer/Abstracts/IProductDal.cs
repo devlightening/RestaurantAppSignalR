@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SignalR.DataAccessLayer.Abstracts
 {
-    public interface IProdcutDal : IGenericDal<Product>
+    public interface IProductDal : IGenericDal<Product>
     {
     }
 }
