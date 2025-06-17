@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Abstracts
 {
-    public interface IContactService : IGenericService
+    public interface IContactService : IGenericService<Contact>
     {
     }
 }

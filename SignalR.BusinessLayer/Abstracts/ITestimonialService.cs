@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SignalR.DataAccessLayer.Abstracts
+namespace SignalR.BusinessLayer.Abstracts
 {
-    public interface ISocialMediaDal : IGenericDal<SocialMedia>
+    public interface ITestimonialService : IGenericService<Testimonial> 
     {
     }
 }
