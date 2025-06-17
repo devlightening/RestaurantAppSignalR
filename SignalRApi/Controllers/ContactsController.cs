@@ -31,7 +31,7 @@ namespace SignalRApi.Controllers
         public IActionResult CreateContact(CreateContactDto createContactDto)
         {
             
-            _contactService.TAdd(new Contact
+            _contactService.TAdd(new Contact()
             {
                 Location = createContactDto.Location,
                 Mail = createContactDto.Mail,
@@ -53,7 +53,7 @@ namespace SignalRApi.Controllers
         public IActionResult UpdateContact(UpdateContactDto updateContactDto)
         {
             
-            _contactService.TUpdate(new Contact
+            _contactService.TUpdate(new Contact()
             {
                 ContactId = updateContactDto.ContactId,
                 Location = updateContactDto.Location,

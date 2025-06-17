@@ -32,7 +32,7 @@ namespace SignalRApi.Controllers
         public IActionResult CreateAbout(CreateAboutDto createAboutDto)
         {
           
-            _aboutService.TAdd(new About
+            _aboutService.TAdd(new About()
             {
                 Title = createAboutDto.Title,
                 Description = createAboutDto.Description,
@@ -52,7 +52,7 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateAbout(UpdateAboutDto updateAboutDto)
         {
-            _aboutService.TUpdate(new About
+            _aboutService.TUpdate(new About()
             {
                 AboutId = updateAboutDto.AboutId,
                 Title = updateAboutDto.Title,

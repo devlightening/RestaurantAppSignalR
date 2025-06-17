@@ -29,7 +29,7 @@ namespace SignalRApi.Controllers
         [HttpPost]
         public IActionResult CreateProduct(CreateProductDto createProductDto)
         {      
-            _productService.TAdd(new Product
+            _productService.TAdd(new Product()
             {
                 ProductName = createProductDto.ProductName,
                 Price = createProductDto.Price,
@@ -51,7 +51,7 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateProduct(UpdateProductDto updateProductDto)
         {          
-            _productService.TUpdate(new Product
+            _productService.TUpdate(new Product()
             {
                 ProductId = updateProductDto.ProductId,
                 ProductName = updateProductDto.ProductName,

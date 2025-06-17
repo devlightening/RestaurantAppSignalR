@@ -31,7 +31,7 @@ namespace SignalRApi.Controllers
         public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
         {
            
-            _categoryService.TAdd(new Category
+            _categoryService.TAdd(new Category()
             {
                 CategoryName = createCategoryDto.CategoryName,
                 CategoryStatus = createCategoryDto.CategoryStatus
@@ -51,7 +51,7 @@ namespace SignalRApi.Controllers
         public IActionResult UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
             
-            _categoryService.TUpdate(new Category
+            _categoryService.TUpdate(new Category()
             {
                 CategoryId = updateCategoryDto.CategoryId,
                 CategoryName = updateCategoryDto.CategoryName,

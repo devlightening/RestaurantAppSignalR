@@ -30,7 +30,7 @@ namespace SignalRApi.Controllers
         public IActionResult CreateFeature(CreateFeatureDto createFeatureDto)
         {
            
-            _featureService.TAdd(new Feature
+            _featureService.TAdd(new Feature()
             {
                 Title1 = createFeatureDto.Title1,
                 Description1 = createFeatureDto.Description1,
@@ -54,7 +54,7 @@ namespace SignalRApi.Controllers
         public IActionResult UpdateFeature(UpdateFeatureDto updateFeatureDto)
         {
             
-            _featureService.TUpdate(new Feature
+            _featureService.TUpdate(new Feature()
             {
                 FeatureId = updateFeatureDto.FeatureId,
                 Title1 = updateFeatureDto.Title1,

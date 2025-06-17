@@ -30,7 +30,7 @@ namespace SignalRApi.Controllers
         public IActionResult CreateBooking(CreateBookingDto createBookingDto)
         {
           
-            _bookingService.TAdd(new Booking
+            _bookingService.TAdd(new Booking()
             {
                 Name=createBookingDto.Name,
                 Mail = createBookingDto.Mail,
@@ -53,7 +53,7 @@ namespace SignalRApi.Controllers
         public IActionResult UpdateBooking(UpdateBookingDto updateBookingDto)
         {
 
-            _bookingService.TUpdate(new Booking
+            _bookingService.TUpdate(new Booking()
             {
                 Name = updateBookingDto.Name,
                 Mail = updateBookingDto.Mail,

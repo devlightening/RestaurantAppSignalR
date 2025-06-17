@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.TestimonialDto;
@@ -27,7 +28,7 @@ namespace SignalRApi.Controllers
         [HttpPost]
         public IActionResult CreateTestimonial(CreateTestimonialDto createTestimonialDto)
         {
-            _testimonialService.TAdd(new Testimonial
+            _testimonialService.TAdd(new Testimonial()
             {
                 Name = createTestimonialDto.Name,
                 Comment = createTestimonialDto.Comment,
@@ -49,7 +50,7 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateTestimonial(UpdateTestimonialDto updateTestimonialDto)
         {
-            _testimonialService.TUpdate(new Testimonial
+            _testimonialService.TUpdate(new Testimonial()
             {
                 TestimonialId = updateTestimonialDto.TestimonialId,
                 Name = updateTestimonialDto.Name,

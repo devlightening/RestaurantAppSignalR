@@ -31,7 +31,7 @@ namespace SignalRApi.Controllers
         public IActionResult CreateDiscount(CreateDiscountDto createDiscountDto)
         {
 
-            _discountService.TAdd(new Discount
+            _discountService.TAdd(new Discount()
             {
                 Title = createDiscountDto.Title,
                 Amount = createDiscountDto.Amount,
@@ -53,7 +53,7 @@ namespace SignalRApi.Controllers
         public IActionResult UpdateDiscount(UpdateDiscountDto updateDiscountDto)
         {
 
-            _discountService.TUpdate(new Discount
+            _discountService.TUpdate(new Discount()
             {
                 DiscountId = updateDiscountDto.DiscountId,
                 Title = updateDiscountDto.Title,

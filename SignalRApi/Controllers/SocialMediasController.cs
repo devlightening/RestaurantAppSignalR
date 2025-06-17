@@ -30,7 +30,7 @@ namespace SignalRApi.Controllers
         [HttpPost]
         public IActionResult CreateSocialMedia(CreateSocialMediaDto createSocialMediaDto)
         {
-            _socialMediaService.TAdd(new SocialMedia
+            _socialMediaService.TAdd(new SocialMedia()
             {
                 Icon = createSocialMediaDto.Icon,
                 Url = createSocialMediaDto.Url,
@@ -50,7 +50,7 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateSocialMedia(UpdateSocialMediaDto updateSocialMediaDto)
         {
-            _socialMediaService.TUpdate(new SocialMedia
+            _socialMediaService.TUpdate(new SocialMedia()
             {
                 SocialMediaId = updateSocialMediaDto.SocialMediaId,
                 Icon = updateSocialMediaDto.Icon,
