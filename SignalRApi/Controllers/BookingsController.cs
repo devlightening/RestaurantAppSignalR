@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.BookingDto;
@@ -11,30 +11,33 @@ namespace SignalRApi.Controllers
     public class BookingsController : ControllerBase
     {
         private readonly IBookingService _bookingService;
-        public BookingsController(IBookingService bookingService)
+        private readonly IMapper _mapper;
+
+        public BookingsController(IBookingService bookingService, IMapper mapper)
         {
             _bookingService = bookingService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult BookingList()
         {
-            var values = _bookingService.TGetListAll();
+            var values = _mapper.Map<List<ResultBookingDto>>(_bookingService.TGetListAll());
             return Ok(values);
         }
 
         [HttpPost]
         public IActionResult CreateBooking(CreateBookingDto createBookingDto)
         {
-            Booking booking = new Booking()
+          
+            _bookingService.TAdd(new Booking
             {
-                Name = createBookingDto.Name,
+                Name=createBookingDto.Name,
                 Mail = createBookingDto.Mail,
                 Phone = createBookingDto.Phone,
                 Date = createBookingDto.Date,
                 PersonCount = createBookingDto.PersonCount
-            };
-            _bookingService.TAdd(booking);
+            });
             return Ok("Rezervasyon Başarıyla Eklendi");
         }
 
@@ -45,19 +48,19 @@ namespace SignalRApi.Controllers
             _bookingService.TDelete(value);
             return Ok("Rezervasyon Başarıyla Silindi");
         }
+
         [HttpPut]
         public IActionResult UpdateBooking(UpdateBookingDto updateBookingDto)
         {
-            Booking booking = new Booking()
+
+            _bookingService.TUpdate(new Booking
             {
-                BookingId = updateBookingDto.BookingId,
                 Name = updateBookingDto.Name,
                 Mail = updateBookingDto.Mail,
                 Phone = updateBookingDto.Phone,
                 Date = updateBookingDto.Date,
                 PersonCount = updateBookingDto.PersonCount
-            };
-            _bookingService.TUpdate(booking);
+            });
             return Ok("Rezervasyon Başarıyla Güncellendi");
         }
 

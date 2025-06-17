@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.ProductDto;
 using SignalR.EntityLayer.Entities;
+
 
 namespace SignalRApi.Controllers
 {
@@ -11,29 +12,31 @@ namespace SignalRApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        public ProductsController(IProductService productService)
+        private readonly IMapper _mapper;
+        public ProductsController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult ProductList()
         {
-            var values = _productService.TGetListAll();
+            var values =_mapper.Map<List<ResultProductDto>>(_productService.TGetListAll());
             return Ok(values);
         }
 
         [HttpPost]
         public IActionResult CreateProduct(CreateProductDto createProductDto)
-        {
-            Product product = new Product()
+        {      
+            _productService.TAdd(new Product
             {
                 ProductName = createProductDto.ProductName,
                 Price = createProductDto.Price,
                 Description = createProductDto.Description,
-                ProductStatus = createProductDto.ProductStatus
-            };
-            _productService.TAdd(product);
+                ProductStatus = createProductDto.ProductStatus,
+                ImageUrl = createProductDto.ImageUrl
+            });
             return Ok("Ürün Başarıyla Eklendi");
         }
 
@@ -46,9 +49,17 @@ namespace SignalRApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult PutProduct(Product product)
-        {
-            _productService.TUpdate(product);
+        public IActionResult UpdateProduct(UpdateProductDto updateProductDto)
+        {          
+            _productService.TUpdate(new Product
+            {
+                ProductId = updateProductDto.ProductId,
+                ProductName = updateProductDto.ProductName,
+                Price = updateProductDto.Price,
+                Description = updateProductDto.Description,
+                ProductStatus = updateProductDto.ProductStatus,
+                ImageUrl = updateProductDto.ImageUrl
+            });
             return Ok("Ürün Başarıyla Güncellendi");
         }
 
@@ -58,6 +69,5 @@ namespace SignalRApi.Controllers
             var value = _productService.TGetById(id);
             return Ok(value);
         }
-
     }
 }

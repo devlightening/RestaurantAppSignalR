@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.AboutDto;
@@ -11,16 +12,18 @@ namespace SignalRApi.Controllers
     public class AboutsController : ControllerBase
     {
         private readonly IAboutService _aboutService;
+        private readonly IMapper _mapper;
 
-        public AboutsController(IAboutService aboutService)
+        public AboutsController(IAboutService aboutService, IMapper mapper)
         {
             _aboutService = aboutService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult AboutList()
         {
-            var values = _aboutService.TGetListAll();
+            var values =_mapper.Map<List<ResultAboutDto>>( _aboutService.TGetListAll());
             return Ok(values);
 
         }
@@ -28,13 +31,13 @@ namespace SignalRApi.Controllers
         [HttpPost]
         public IActionResult CreateAbout(CreateAboutDto createAboutDto)
         {
-            About about = new About()
+          
+            _aboutService.TAdd(new About
             {
                 Title = createAboutDto.Title,
                 Description = createAboutDto.Description,
                 ImageUrl = createAboutDto.ImageUrl
-            };
-            _aboutService.TAdd(about);
+            });
             return Ok("Hakkında Kısmı Başarıyla Eklendi");
         }
 
@@ -49,14 +52,14 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateAbout(UpdateAboutDto updateAboutDto)
         {
-            About  about  = new About()
+            _aboutService.TUpdate(new About
             {
                 AboutId = updateAboutDto.AboutId,
                 Title = updateAboutDto.Title,
                 Description = updateAboutDto.Description,
                 ImageUrl = updateAboutDto.ImageUrl
-            };
-            _aboutService.TUpdate(about);
+            });
+
             return Ok("Hakkında Kısmı Başarıyla Güncellendi");
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.ContactDto;
@@ -11,28 +12,32 @@ namespace SignalRApi.Controllers
     public class ContactsController : ControllerBase
     {
         private readonly IContactService _contactService;
-        public ContactsController(IContactService contactService)
+        private readonly IMapper _mapper;
+        public ContactsController(IContactService contactService, IMapper mapper)
         {
             _contactService = contactService;
+            _mapper = mapper;
         }
+
+
         [HttpGet]
         public IActionResult ContactList()
         {
-            var values = _contactService.TGetListAll();
+            var values =_mapper.Map<List<ResultContactDto>>(_contactService.TGetListAll());
             return Ok(values);
         }
 
         [HttpPost]
         public IActionResult CreateContact(CreateContactDto createContactDto)
         {
-            Contact contact = new Contact()
+            
+            _contactService.TAdd(new Contact
             {
                 Location = createContactDto.Location,
                 Mail = createContactDto.Mail,
                 Phone = createContactDto.Phone,
                 FooterDescription = createContactDto.FooterDescription
-            };
-            _contactService.TAdd(contact);
+            });
             return Ok("İletişim Başarıyla Eklendi");
         }
 
@@ -47,15 +52,15 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateContact(UpdateContactDto updateContactDto)
         {
-            Contact contact = new Contact()
+            
+            _contactService.TUpdate(new Contact
             {
                 ContactId = updateContactDto.ContactId,
                 Location = updateContactDto.Location,
                 Mail = updateContactDto.Mail,
                 Phone = updateContactDto.Phone,
-                FooterDescription = updateContactDto.FooterDescription
-            };
-            _contactService.TUpdate(contact);
+                FooterDescription = updateContactDto.FooterDescription,
+            });
             return Ok("İletişim Başarıyla Güncellendi");
         }
 

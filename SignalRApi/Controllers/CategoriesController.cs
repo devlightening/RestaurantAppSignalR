@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.CategoryDto;
@@ -11,27 +12,30 @@ namespace SignalRApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        public CategoriesController(ICategoryService categoryService)
+        private readonly IMapper _mapper;
+
+        public CategoriesController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult CategoryList()
         {
-            var values = _categoryService.TGetListAll();
+            var values = _mapper.Map<List<ResultCategoryDto>>(_categoryService.TGetListAll());
             return Ok(values);
         }
 
         [HttpPost]
         public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
         {
-            Category category = new Category()
+           
+            _categoryService.TAdd(new Category
             {
                 CategoryName = createCategoryDto.CategoryName,
                 CategoryStatus = createCategoryDto.CategoryStatus
-            };
-            _categoryService.TAdd(category);
+            });
             return Ok("Kategori Başarıyla Eklendi");
         }
 
@@ -46,13 +50,13 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
-            Category category = new Category()
+            
+            _categoryService.TUpdate(new Category
             {
                 CategoryId = updateCategoryDto.CategoryId,
                 CategoryName = updateCategoryDto.CategoryName,
                 CategoryStatus = updateCategoryDto.CategoryStatus
-            };
-            _categoryService.TUpdate(category);
+            });
             return Ok("Kategori Başarıyla Güncellendi");
         }
 

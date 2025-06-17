@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.SocialMediaDto;
@@ -11,28 +12,30 @@ namespace SignalRApi.Controllers
     public class SocialMediasController : ControllerBase
     {
         private readonly ISocialMediaService _socialMediaService;
-        public SocialMediasController(ISocialMediaService socialMediaService)
+        private readonly IMapper _mapper;
+        public SocialMediasController(ISocialMediaService socialMediaService, IMapper mapper)
         {
             _socialMediaService = socialMediaService;
+            _mapper = mapper;
         }
+
 
         [HttpGet]
         public IActionResult SocialMediaList()
         {
-            var values = _socialMediaService.TGetListAll();
+            var values =_mapper.Map<List<ResultSocialMediaDto>>(_socialMediaService.TGetListAll());
             return Ok(values);
         }
 
         [HttpPost]
         public IActionResult CreateSocialMedia(CreateSocialMediaDto createSocialMediaDto)
         {
-            SocialMedia socialMedia = new SocialMedia()
+            _socialMediaService.TAdd(new SocialMedia
             {
                 Icon = createSocialMediaDto.Icon,
                 Url = createSocialMediaDto.Url,
                 Title = createSocialMediaDto.Title
-            };
-            _socialMediaService.TAdd(socialMedia);
+            });
             return Ok("Sosyal Medya Başarıyla Eklendi");
         }
 
@@ -47,14 +50,13 @@ namespace SignalRApi.Controllers
         [HttpPut]
         public IActionResult UpdateSocialMedia(UpdateSocialMediaDto updateSocialMediaDto)
         {
-            SocialMedia socialMedia = new SocialMedia()
+            _socialMediaService.TUpdate(new SocialMedia
             {
                 SocialMediaId = updateSocialMediaDto.SocialMediaId,
                 Icon = updateSocialMediaDto.Icon,
                 Url = updateSocialMediaDto.Url,
                 Title = updateSocialMediaDto.Title
-            };
-            _socialMediaService.TUpdate(socialMedia);
+            });
             return Ok("Sosyal Medya Başarıyla Güncellendi");
         }
 
