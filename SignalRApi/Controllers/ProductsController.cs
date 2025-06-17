@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SignalR.BusinessLayer.Abstracts;
+using SignalR.DataAccessLayer.Concrete;
 using SignalR.DtoLayer.ProductDto;
 using SignalR.EntityLayer.Entities;
 
@@ -22,13 +24,13 @@ namespace SignalRApi.Controllers
         [HttpGet]
         public IActionResult ProductList()
         {
-            var values =_mapper.Map<List<ResultProductDto>>(_productService.TGetListAll());
+            var values = _mapper.Map<List<ResultProductDto>>(_productService.TGetListAll());
             return Ok(values);
         }
 
         [HttpPost]
         public IActionResult CreateProduct(CreateProductDto createProductDto)
-        {      
+        {
             _productService.TAdd(new Product()
             {
                 ProductName = createProductDto.ProductName,
@@ -50,7 +52,7 @@ namespace SignalRApi.Controllers
 
         [HttpPut]
         public IActionResult UpdateProduct(UpdateProductDto updateProductDto)
-        {          
+        {
             _productService.TUpdate(new Product()
             {
                 ProductId = updateProductDto.ProductId,
@@ -69,5 +71,21 @@ namespace SignalRApi.Controllers
             var value = _productService.TGetById(id);
             return Ok(value);
         }
-    }
+        [HttpGet("ProductsListWithCategory")]
+        public IActionResult ProductsListWithCategory()
+        {
+            var context = new SignalRContext();
+            var values = context.Products.Include(p => p.Category).Select(y => new ResultProductWithCategory
+            {
+                Description = y.Description,
+                ImageUrl = y.ImageUrl,
+                Price = y.Price,
+                ProductId = y.ProductId,
+                ProductName = y.ProductName,
+                ProductStatus = y.ProductStatus,
+                CategoryName = y.Category.CategoryName // Assuming Category has a property CategoryName
+            });
+            return Ok(values.ToList());
+        }
+    }  
 }
