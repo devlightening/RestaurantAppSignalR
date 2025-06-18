@@ -1,0 +1,38 @@
+﻿@model SignalRWebUI.Dtos.CategoryDtos.UpdateCategoryDto
+
+@{
+    ViewData["Title"] = "Kategori Güncelle";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <h4 class="page-title">Kategori İşlemleri</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <form asp-action="UpdateCategory" asp-controller="Category" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Kategori Güncelleme Sayfası</div>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" asp-for="CategoryId" />
+
+                            <div class="form-group">
+                                <label for="categoryname">Kategori Adı</label>
+                                <input type="text" class="form-control" asp-for="CategoryName" id="categoryname" placeholder="Kategori Adı Giriniz...">
+                                <span class="text-danger" asp-validation-for="CategoryName"></span>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-primary">Kategori Güncelle</button>
+                            <a href="/Category/Index" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
