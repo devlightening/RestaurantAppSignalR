@@ -1,0 +1,53 @@
+﻿@model UpdateAboutDto
+@{
+    ViewData["Title"] = "UpdateAbout";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-9">
+                <div class="card border-0 shadow-lg rounded-4 mt-4">
+                    <div class="card-header bg-gradient bg-info text-white rounded-top-4 py-3 px-4 d-flex align-items-center">
+                        <i class="fas fa-edit me-2 fs-5"></i>
+                        <h4 class="mb-0">Hakkımızda Yazısı Güncelle</h4>
+                    </div>
+
+                    <form method="post">
+                        <input type="hidden" asp-for="AboutId" />
+
+                        <div class="card-body px-4 py-4">
+                            <div class="mb-3">
+                                <label asp-for="Title" class="form-label fw-bold">📝 Başlık</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="Title" placeholder="Örn: Misyonumuz">
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ImageUrl" class="form-label fw-bold">🖼️ Görsel URL</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="ImageUrl" placeholder="https://...">
+                                <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label fw-bold">📄 Açıklama</label>
+                                <textarea class="form-control form-control-lg" asp-for="Description" rows="5" placeholder="Güncellenmiş açıklamayı girin..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-light d-flex justify-content-end px-4 py-3 rounded-bottom-4">
+                            <button type="submit" class="btn btn-info btn-lg fw-semibold text-white">
+                                <i class="fas fa-save me-1"></i> Güncellemeyi Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
