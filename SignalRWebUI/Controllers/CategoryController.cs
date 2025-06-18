@@ -17,7 +17,7 @@ namespace SignalRWebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage=await client.GetAsync("https://localhost:7000/api/Categories");
+            var responseMessage = await client.GetAsync("https://localhost:7000/api/Categories");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -26,5 +26,30 @@ namespace SignalRWebUI.Controllers
             }
             return View();
         }
+
+        [HttpGet]
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(CreateCategoryDto createCategoryDto)
+        {
+            createCategoryDto.CategoryStatus = true; // Default value for new categories
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createCategoryDto);
+            StringContent stringContent = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json");
+            var responseMessage = client.PostAsync("https://localhost:7000/api/Categories", stringContent);
+            if (responseMessage.Result.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
+        }
     }
+
 }
