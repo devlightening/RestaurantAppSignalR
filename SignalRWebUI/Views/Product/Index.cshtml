@@ -1,0 +1,77 @@
+﻿@model List<SignalRWebUI.Dtos.ProductDtos.ResultProductDto>
+
+@{
+    ViewData["Title"] = "Ürün Listesi";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="page-title">🛒 Ürün İşlemleri</h4>
+            <a href="/Product/CreateProduct" class="btn btn-primary">
+                <i class="fa fa-plus"></i> Yeni Ürün
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📋 Ürün Listesi</h5>
+            </div>
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <table class="table table-hover table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th>Ürün Adı</th>
+                                <th>Fiyat</th>
+                                <th>Kategori</th>
+                                <th>Durum</th>
+                                <th class="text-center" style="width: 20%;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ProductId</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@($"{item.Price:C2}")</td>
+                                    <td>@item.CategoryName</td>
+                                    <td>
+                                        @if (item.ProductStatus)
+                                        {
+                                            <span class="badge bg-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Pasif</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="/Product/UpdateProduct/@item.ProductId" class="btn btn-sm btn-outline-success">
+                                                <i class="fa fa-edit"></i> Güncelle
+                                            </a>
+                                            <form asp-action="DeleteProduct" asp-controller="Product" asp-route-id="@item.ProductId" method="post" class="d-inline" onsubmit="return confirm('Bu ürünü silmek istediğinizden emin misiniz?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fa fa-trash"></i> Sil
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning">Hiç ürün bulunamadı.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,52 +1,72 @@
-﻿@model List<SignalRWebUI.Dtos.CategoryDtos.ResultCategoryDto>
+﻿@model List<ResultCategoryDto>
+
 @{
-	ViewData["Title"] = "Index";
+	ViewData["Title"] = "Kategori Listesi";
 	Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
 <div class="content">
 	<div class="container-fluid">
-		<h4 class="page-title">Kategori İşlemleri</h4>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="card">
-					<div class="card-header">
-						<div class="card-title">Kategori Listesi</div>
-					</div>
-					<div class="card-body">
-						<div class="card-sub">
-							Kategori ile ilgili işlemleri aşagıdan gerçekleştirebilirsiniz.
-						</div>
-						<table class="table mt-3">
-							<thead>
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h4 class="page-title">📁 Kategori İşlemleri</h4>
+			<a href="/Category/CreateCategory" class="btn btn-primary">
+				<i class="fa fa-plus"></i> Yeni Kategori
+			</a>
+		</div>
+
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary text-white">
+				<h5 class="mb-0">📋 Kategori Listesi</h5>
+			</div>
+			<div class="card-body">
+				@if (Model != null && Model.Any())
+				{
+					<table class="table table-hover table-bordered table-striped">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col" style="width: 5%;">#</th>
+								<th scope="col">Kategori Adı</th>
+								<th scope="col">Durum</th>
+								<th scope="col" style="width: 20%;" class="text-center">İşlemler</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model)
+							{
 								<tr>
-									<th scope="col">#</th>
-									<th scope="col">Kategori adı</th>
-									<th scope="col">Durum</th>
-									<th scope="col">Sil</th>
-									<th scope="col">Güncelle</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach(var item in Model)
-								{
-									<tr>
-										<td>@item.CategoryId</td>
-										<td>@item.CategoryName</td>
-										<td>@item.CategoryStatus</td>
-										<td>
-											<form asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.CategoryId" method="post" onsubmit="return confirm('Bu kategoriyi silmek istiyor musunuz?');">
-												<button type="submit" class="btn btn-outline-danger">Sil</button>
+									<td>@item.CategoryId</td>
+									<td>@item.CategoryName</td>
+									<td>
+										@if (item.CategoryStatus)
+										{
+											<span class="badge bg-success">Aktif</span>
+										}
+										else
+										{
+											<span class="badge bg-danger">Pasif</span>
+										}
+									</td>
+									<td class="text-center">
+										<div class="btn-group" role="group">
+											<a href="/Category/UpdateCategory/@item.CategoryId" class="btn btn-sm btn-outline-success">
+												<i class="fa fa-edit"></i> Güncelle
+											</a>
+											<form asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.CategoryId" method="post" class="d-inline" onsubmit="return confirm('Bu kategoriyi silmek istediğinizden emin misiniz?');">
+												<button type="submit" class="btn btn-sm btn-outline-danger">
+													<i class="fa fa-trash"></i> Sil
+												</button>
 											</form>
-										</td>
-										<td><a href="/Category/UpdateCategory/@item.CategoryId" class="btn btn-outline-success">Güncelle</a></td>
-									</tr>
-								}
-							</tbody> 
-						</table>
-						<a href="/Category/CreateCategory/" class="btn btn-outline-primary">Yeni Kategori Girişi</a>
-					</div>
-				</div>
+										</div>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				}
+				else
+				{
+					<div class="alert alert-warning">Hiç kategori bulunamadı.</div>
+				}
 			</div>
 		</div>
 	</div>
