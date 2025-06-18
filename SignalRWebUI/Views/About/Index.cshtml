@@ -46,7 +46,11 @@
 												}
 											</td>
 											<td>
-												<a href="/About/DeleteAbout/@item.AboutId" class="btn btn-outline-danger">Sil</a>
+												<a href="/About/DeleteAbout/@item.AboutId"
+												   class="btn btn-outline-danger"
+												   onclick="return confirm('Bu hakkımızda yazısını silmek istediğinize emin misiniz?');">
+													Sil
+												</a>
 											</td>
 											<td>
 												<a href="/About/UpdateAbout/@item.AboutId" class="btn btn-outline-success">Güncelle</a>

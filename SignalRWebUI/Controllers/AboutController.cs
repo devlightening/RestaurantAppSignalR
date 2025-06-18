@@ -39,16 +39,13 @@ namespace SignalRWebUI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createAboutDto);
-            StringContent stringContent = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json");
-            var responseMessage = client.PostAsync("https://localhost:7000/api/Categories", stringContent);
-            if (responseMessage.Result.IsSuccessStatusCode)
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client.PostAsync("https://localhost:7000/api/Abouts", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View();
-            }
+            return View();
         }
 
         public async Task<IActionResult> DeleteAbout(int id)
