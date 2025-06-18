@@ -67,7 +67,7 @@ namespace SignalRApi.Controllers
             return Ok("Ürün Başarıyla Güncellendi");
         }
 
-        [HttpGet("GetProduct")]
+        [HttpGet("{id}")]
         public IActionResult GetProduct(int id)
         {
             var value = _productService.TGetById(id);

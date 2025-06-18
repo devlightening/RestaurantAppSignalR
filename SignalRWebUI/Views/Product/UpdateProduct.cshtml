@@ -1,0 +1,74 @@
+﻿@model UpdateProductDto
+
+@{
+    ViewData["Title"] = "UpdateProduct";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-9">
+                <div class="card border-0 shadow-lg rounded-4 mt-4">
+                    <div class="card-header bg-gradient bg-warning text-dark rounded-top-4 py-3 px-4 d-flex align-items-center">
+                        <i class="fas fa-edit me-2 fs-5"></i>
+                        <h4 class="mb-0">Ürün Güncelle</h4>
+                    </div>
+                    <form method="post">
+                        <div class="card-body px-4 py-4">
+
+                            @* Gizli alan: ProductId *@
+                            <input type="hidden" asp-for="ProductId" />
+
+                            <div class="mb-3">
+                                <label for="productname" class="form-label fw-bold">📝 Ürün Adı</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="ProductName" id="productname" placeholder="Örn: Karışık Pizza">
+                                <div class="form-text">Ürün menüde nasıl görünecekse o ismi girin.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="price" class="form-label fw-bold">💰 Fiyat</label>
+                                <input type="number" step="0.01" class="form-control form-control-lg" asp-for="Price" id="price" placeholder="Örn: 99.99">
+                                <div class="form-text">KDV dahil satış fiyatını giriniz.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="imageUrl" class="form-label fw-bold">🖼️ Görsel URL</label>
+                                <input type="text" class="form-control form-control-lg" asp-for="ImageUrl" id="imageUrl" placeholder="https://...">
+                                <div class="form-text">Ürüne ait bir görselin bağlantı adresini girin.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="categoryId" class="form-label fw-bold">📂 Kategori</label>
+                                @Html.DropDownListFor(x => x.CategoryId, (List<SelectListItem>)ViewBag.v, "-- Kategori Seçin --", new
+                                    {
+                                        @class = "form-select form-select-lg",
+                                        id = "categoryId"
+                                    })
+                                <div class="form-text">Bu ürün hangi kategoriye ait olacaksa seçin.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">🗒️ Açıklama</label>
+                                <textarea class="form-control form-control-lg" asp-for="Description" id="description" rows="4" placeholder="Ürün açıklaması..."></textarea>
+                                <div class="form-text">Ürünle ilgili kısa ve açıklayıcı bir metin girin.</div>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input class="form-check-input" type="checkbox" asp-for="ProductStatus" id="productStatus">
+                                <label class="form-check-label fw-bold" for="productStatus">✅ Aktif mi?</label>
+                                <div class="form-text">Bu kutucuk işaretliyse ürün aktif olarak listelenir.</div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-light d-flex justify-content-end px-4 py-3 rounded-bottom-4">
+                            <button type="submit" class="btn btn-warning btn-lg fw-semibold text-white">
+                                <i class="fas fa-save me-1"></i> Güncellemeyi Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
