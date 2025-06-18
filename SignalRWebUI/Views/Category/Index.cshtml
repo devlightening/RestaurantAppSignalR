@@ -34,11 +34,15 @@
 										<td>@item.CategoryId</td>
 										<td>@item.CategoryName</td>
 										<td>@item.CategoryStatus</td>
-										<td><a href="#" class="btn btn-outline-danger">Sil</a></td>
+										<td>
+											<form asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.CategoryId" method="post" onsubmit="return confirm('Bu kategoriyi silmek istiyor musunuz?');">
+												<button type="submit" class="btn btn-outline-danger">Sil</button>
+											</form>
+										</td>
 										<td><a href="#" class="btn btn-outline-success">Güncelle</a></td>
 									</tr>
 								}
-							</tbody>
+							</tbody> 
 						</table>
 						<a href="/Category/CreateCategory/" class="btn btn-outline-primary">Yeni Kategori Girişi</a>
 					</div>
