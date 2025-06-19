@@ -1,0 +1,84 @@
+﻿@model List<ResultBookingDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="content py-4">
+    <div class="container-fluid">
+        <!-- Sayfa Başlığı -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-primary fw-bold mb-0">
+                <i class="la la-calendar-check me-2"></i> Rezervasyon İşlemleri
+            </h4>
+            <a href="/Booking/CreateBooking/" class="btn btn-outline-primary">
+                <i class="la la-plus me-1"></i> Yeni Rezervasyon
+            </a>
+        </div>
+
+        <!-- Kart -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">Rezervasyon Listesi</h5>
+                    <small class="text-muted">Rezervasyonlarınızı buradan yönetebilirsiniz.</small>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Telefon</th>
+                                    <th>Mail</th>
+                                    <th>Kişi Sayısı</th>
+                                    <th>Tarih</th>
+                                    <th>Durum</th>
+                                    <th colspan="2">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    count++;
+                                    <tr>
+                                        <td>@count</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Phone</td>
+                                        <td>@item.Mail</td>
+                                        <td>@item.PersonCount</td>
+                                        <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                                        <td>
+                                            <span class="badge bg-success">Rezervasyon Alındı</span>
+                                        </td>
+                                        <td>
+                                            <a href="/Booking/UpdateBooking/@item.BookingId" class="btn btn-sm btn-outline-success">
+                                                <i class="la la-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/Booking/DeleteBooking/@item.BookingId" class="btn btn-sm btn-outline-danger" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                                <i class="la la-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        Henüz herhangi bir rezervasyon bulunmamaktadır.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
