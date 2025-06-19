@@ -1,0 +1,93 @@
+﻿@model List<ResultDiscountDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="content py-4">
+    <div class="container">
+        <h4 class="page-title text-primary fw-bold mb-4">Günün İndirimleri İşlemleri</h4>
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white border-bottom-0">
+                <h5 class="card-title text-secondary fw-semibold mb-0">Günün İndirimleri Listesi</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    Günün İndirimli Ürünleri aşağıda yer almaktadır. Tema bütünlüğü için <strong class="text-danger">2 adet</strong> indirimli ürün seçiniz.
+                </p>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Ürün</th>
+                                <th scope="col">İndirim Oranı</th>
+                                <th scope="col">Durum</th>
+                                <th scope="col">Sil</th>
+                                <th scope="col">Güncelle</th>
+                                <th scope="col">Aktif Yap</th>
+                                <th scope="col">Pasif Yap</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <th scope="row">@count</th>
+                                    <td>@item.Title</td>
+                                    <td>@item.Amount</td>
+                                    <td>
+                                        @*
+                                        @if (item.Status)
+                                        {
+                                            <span class="badge bg-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Pasif</span>
+                                        }
+                                        *@
+                                    </td>
+                                    <td>
+                                        <a href="/Discount/DeleteDiscount/@item.DiscountId"
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Bu ürünü silmek istiyor musunuz?');">
+                                            <i class="bi bi-trash"></i> Sil
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/Discount/UpdateDiscount/@item.DiscountId" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-pencil-square"></i> Güncelle
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/Discount/ChangeStatusToTrue/@item.DiscountId" class="btn btn-sm btn-outline-warning">
+                                            <i class="bi bi-check-circle"></i> Aktif Yap
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/Discount/ChangeStatusToFalse/@item.DiscountId" class="btn btn-sm btn-outline-dark">
+                                            <i class="bi bi-x-circle"></i> Pasif Yap
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a href="/Discount/CreateDiscount/" class="btn btn-primary btn-lg rounded-pill">
+                        <i class="bi bi-plus-circle"></i> Yeni İndirimli Ürün Girişi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
