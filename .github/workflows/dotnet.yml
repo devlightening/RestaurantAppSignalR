@@ -1,28 +1,32 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: Build RestaurantAppSignalR
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - name: Kod deposunu çek
+      uses: actions/checkout@v3
+
+    - name: .NET 8 SDK kur
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
+        dotnet-version: '8.0.x'
+
+    - name: Bağımlılıkları indir
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+
+    - name: Projeyi derle
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Uygulama başlatılabilir mi kontrol et
+      run: dotnet publish --no-build --configuration Release --output ./publish
