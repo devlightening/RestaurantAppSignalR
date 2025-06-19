@@ -1,0 +1,71 @@
+﻿@model List<ResultContactDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content py-4">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-primary fw-bold mb-0">
+                <i class="la la-phone-square me-2"></i> İletişim Bilgi İşlemleri
+            </h4>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">İletişim Listesi</h5>
+                <small class="text-muted">
+                    Tema uyumluluğu için yalnızca <strong>bir adet</strong> iletişim bilgisi ekleyiniz.
+                </small>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Telefon</th>
+                                <th>Mail</th>
+                                <th>Açıklama</th>
+                                <th class="text-center">Sil</th>
+                                <th class="text-center">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Phone</td>
+                                    <td>@item.Mail</td>
+                                    <td>@item.FooterDescription</td>
+                                    <td class="text-center">
+                                        <a href="/Contact/DeleteContact/@item.ContactId"
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Bu iletişim bilgisini silmek istediğinize emin misiniz?');">
+                                            <i class="la la-trash-alt me-1"></i> Sil
+                                        </a>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="/Contact/UpdateContact/@item.ContactId" class="btn btn-sm btn-outline-success">
+                                            <i class="la la-edit me-1"></i> Güncelle
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-end mt-3">
+                    <a href="/Contact/CreateContact/" class="btn btn-primary">
+                        <i class="la la-plus me-1"></i> Yeni İletişim Ekle
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

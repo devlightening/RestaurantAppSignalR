@@ -1,0 +1,81 @@
+﻿@model CreateContactDto
+@{
+    ViewData["Title"] = "CreateContact";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content py-4">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0 text-primary fw-bold">
+                <i class="la la-address-card me-2"></i> İletişim Bilgisi Ekle
+            </h4>
+        </div>
+
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-1">Yeni İletişim Bilgisi</h5>
+                <small class="text-muted">Lütfen eksiksiz ve doğru şekilde doldurunuz.</small>
+            </div>
+
+            <form method="post" class="needs-validation" novalidate>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="Location" class="form-label fw-semibold">Lokasyon</label>
+                            <input type="text" class="form-control" asp-for="Location" id="Location" placeholder="İstanbul, Türkiye" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Phone" class="form-label fw-semibold">Telefon</label>
+                            <input type="tel" class="form-control" asp-for="Phone" id="Phone" placeholder="+90 5xx xxx xx xx" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Mail" class="form-label fw-semibold">Mail Adresi</label>
+                            <input type="email"
+                                   class="form-control"
+                                   asp-for="Mail"
+                                   id="Mail"
+                                   placeholder="info@example.com"
+                                   required>
+                        </div>
+                        @*
+                        <div class="col-md-6">
+                            <label for="FooterTitle" class="form-label fw-semibold">Alt Başlık</label>
+                            <input type="text" class="form-control" asp-for="FooterTitle" id="FooterTitle" placeholder="Bize Ulaşın">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="OpenDays" class="form-label fw-semibold">Açık Günler</label>
+                            <input type="text" class="form-control" asp-for="OpenDays" id="OpenDays" placeholder="Pazartesi - Cumartesi">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="OpenDaysDescription" class="form-label fw-semibold">Gün Açıklaması</label>
+                            <input type="text" class="form-control" asp-for="OpenDaysDescription" id="OpenDaysDescription" placeholder="Her gün hizmetteyiz">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="OpenHours" class="form-label fw-semibold">Açık Saatler</label>
+                            <input type="text" class="form-control" asp-for="OpenHours" id="OpenHours" placeholder="09:00 - 18:00">
+                        </div>
+                        *@
+                        <div class="col-12">
+                            <label for="FooterDescription" class="form-label fw-semibold">Alt Açıklama</label>
+                            <textarea class="form-control" asp-for="FooterDescription" id="FooterDescription" rows="4" placeholder="Kısa bir açıklama giriniz..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white border-top text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="la la-save me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

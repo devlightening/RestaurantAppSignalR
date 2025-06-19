@@ -1,0 +1,63 @@
+﻿@model UpdateContactDto
+@{
+    ViewData["Title"] = "UpdateContact";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content py-4">
+    <div class="container">
+        <h4 class="page-title mb-4 text-primary fw-bold">Ana Sayfa İletişim Bilgi İşlemleri</h4>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <form method="post" class="shadow p-4 rounded bg-white">
+                    <h5 class="mb-4 border-bottom pb-2 text-secondary">Yeni İletişim Yazı Girişi</h5>
+                    <input type="hidden" asp-for="ContactId" />
+
+                    <div class="mb-3">
+                        <label for="Location" class="form-label fw-semibold">Lokasyonu Giriniz</label>
+                        <input type="text" class="form-control" asp-for="Location" id="Location" placeholder="Örn: İstanbul Ofisi">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Phone" class="form-label fw-semibold">Telefon Numarası Giriniz</label>
+                        <input type="tel" class="form-control" asp-for="Phone" id="Phone" placeholder="+90 555 123 45 67">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Mail" class="form-label fw-semibold">Mail Adresi Giriniz</label>
+                        <input type="email" class="form-control" asp-for="Mail" id="Mail" placeholder="ornek@eposta.com">
+                    </div>
+                    @*
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-semibold">Alt Başlık</label>
+                        <input type="text" class="form-control" asp-for="FooterTitle" id="title" placeholder="Alt başlık giriniz">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="OpenDays" class="form-label fw-semibold">Açık Günler</label>
+                        <input type="text" class="form-control" asp-for="OpenDays" id="OpenDays" placeholder="Pazartesi - Cuma">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="OpenDaysDescription" class="form-label fw-semibold">Açık Günler Açıklama</label>
+                        <input type="text" class="form-control" asp-for="OpenDaysDescription" id="OpenDaysDescription" placeholder="Örn: Hafta içi günleri">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="OpenHours" class="form-label fw-semibold">Açık Saatler</label>
+                        <input type="text" class="form-control" asp-for="OpenHours" id="OpenHours" placeholder="09:00 - 18:00">
+                    </div>
+                    *@
+                    <div class="mb-4">
+                        <label for="Description" class="form-label fw-semibold">Açıklama Giriniz</label>
+                        <textarea rows="5" class="form-control" asp-for="FooterDescription" id="Description" placeholder="İletişim ile ilgili açıklamanızı buraya yazınız..."></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-semibold">İletişim Bilgi Yazısını Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
