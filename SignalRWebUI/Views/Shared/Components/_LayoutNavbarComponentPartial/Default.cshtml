@@ -23,11 +23,18 @@
             </form>
 
             <!-- Sağ Menü -->
-            <ul class="navbar-nav topbar-nav ms-auto d-flex align-items-center gap-3">
+            <ul class="navbar-nav topbar-nav ms-auto d-flex align-items-center gap-2 gap-md-3">
+
+                <!-- Tema Değiştirici -->
+                <li class="nav-item">
+                    <button id="themeToggle" class="btn btn-light btn-sm rounded-circle shadow-sm d-flex align-items-center justify-content-center" title="Tema Değiştir" style="width: 38px; height: 38px;">
+                        <i id="themeIcon" class="bi bi-moon-fill fs-5"></i>
+                    </button>
+                </li>
 
                 <!-- Mesajlar -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" data-toggle="dropdown">
+                    <a class="nav-link p-2 rounded-circle d-flex align-items-center justify-content-center position-relative hover-bg" href="#" id="messagesDropdown" data-toggle="dropdown" style="width: 38px; height: 38px;">
                         <i class="la la-envelope fs-5"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
@@ -40,7 +47,7 @@
 
                 <!-- Bildirimler -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationsDropdown" data-toggle="dropdown">
+                    <a class="nav-link p-2 rounded-circle d-flex align-items-center justify-content-center position-relative hover-bg" href="#" id="notificationsDropdown" data-toggle="dropdown" style="width: 38px; height: 38px;">
                         <i class="la la-bell fs-5"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             3
@@ -63,7 +70,7 @@
                 <!-- Profil -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" data-toggle="dropdown">
-                        <img src="~/Ready-Bootstrap-Dashboard/assets/img/AdminPhoto.jpg" alt="Admin Fotoğraf" class="rounded-circle me-2" width="36" height="36" />
+                        <img src="~/Ready-Bootstrap-Dashboard/assets/img/AdminPhoto.jpg" alt="Admin Fotoğraf" class="rounded-circle me-2 shadow-sm" width="36" height="36" />
                         <span class="fw-semibold">Silvanus</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="profileDropdown" style="min-width: 240px;">

@@ -1,0 +1,54 @@
+﻿@model CreateFeatureDto
+@{
+    ViewData["Title"] = "CreateFeature";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content py-4">
+    <div class="container">
+        <h4 class="page-title text-primary fw-bold mb-4">✨ Yeni Özellik Ekleme</h4>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <form method="post" class="shadow-sm p-4 rounded bg-white">
+                    <h5 class="mb-4 border-bottom pb-2 text-secondary">Özellik Detayları Giriniz</h5>
+
+                    <div class="mb-3">
+                        <label for="Title1" class="form-label fw-semibold">Başlık 1</label>
+                        <input type="text" class="form-control" asp-for="Title1" id="Title1" placeholder="Örn: Lezzetli Menü">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="Description1" class="form-label fw-semibold">Açıklama 1</label>
+                        <textarea class="form-control" asp-for="Description1" id="Description1" rows="3" placeholder="Başlık 1 ile ilgili kısa açıklama giriniz..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Title2" class="form-label fw-semibold">Başlık 2</label>
+                        <input type="text" class="form-control" asp-for="Title2" id="Title2" placeholder="Örn: Hızlı Servis">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="Description2" class="form-label fw-semibold">Açıklama 2</label>
+                        <textarea class="form-control" asp-for="Description2" id="Description2" rows="3" placeholder="Başlık 2 ile ilgili kısa açıklama giriniz..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Title3" class="form-label fw-semibold">Başlık 3</label>
+                        <input type="text" class="form-control" asp-for="Title3" id="Title3" placeholder="Örn: Uygun Fiyat">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="Description3" class="form-label fw-semibold">Açıklama 3</label>
+                        <textarea class="form-control" asp-for="Description3" id="Description3" rows="3" placeholder="Başlık 3 ile ilgili kısa açıklama giriniz..."></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg fw-semibold">
+                            <i class="bi bi-plus-circle me-2"></i> Özellikleri Ekle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

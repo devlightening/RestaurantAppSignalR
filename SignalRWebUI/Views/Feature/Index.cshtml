@@ -1,0 +1,74 @@
+﻿@model List<ResultFeatureDto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="page-title text-primary fw-bold">✨ Özellikler Listesi</h4>
+            <a href="/Feature/CreateFeature" class="btn btn-success shadow-sm">
+                <i class="bi bi-plus-circle"></i> Yeni Özellik Ekle
+            </a>
+        </div>
+
+        <div class="card shadow rounded">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-card-checklist me-2"></i>Özellik Detayları</h5>
+            </div>
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered align-middle text-center">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th style="width: 5%;">#</th>
+                                    <th>Başlık 1</th>
+                                    <th>Açıklama 1</th>
+                                    <th>Başlık 2</th>
+                                    <th>Açıklama 2</th>
+                                    <th>Başlık 3</th>
+                                    <th>Açıklama 3</th>
+                                    <th style="width: 15%;">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.FeatureId</td>
+                                        <td>@item.Title1</td>
+                                        <td>@item.Description1</td>
+                                        <td>@item.Title2</td>
+                                        <td>@item.Description2</td>
+                                        <td>@item.Title3</td>
+                                        <td>@item.Description3</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <a href="/Feature/UpdateFeature/@item.FeatureId" class="btn btn-sm btn-success">
+                                                    <i class="bi bi-pencil-square"></i> Güncelle
+                                                </a>
+                                                <form asp-action="DeleteFeature" asp-controller="Feature" asp-route-id="@item.FeatureId" method="post" onsubmit="return confirm('Bu özelliği silmek istediğinizden emin misiniz?');">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i> Sil
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center">🚫 Özellik bilgisi bulunamadı.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
