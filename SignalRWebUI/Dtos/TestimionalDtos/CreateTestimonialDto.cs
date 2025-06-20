@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SignalR.DtoLayer.TestimonialDto 
+namespace SignalRWebUI.Dtos.TestimonialDtos
 {
-    public class GetTestimonialDto
+    public class CreateTestimonialDto
     {
-        public int TestimonialId { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public string Title { get; set; }

@@ -1,0 +1,61 @@
+﻿@model CreateTestimonialDto
+@{
+    ViewData["Title"] = "CreateTestimonial";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="content py-4">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-primary fw-bold mb-0">
+                <i class="la la-comment me-2"></i> Yeni Müşteri Yorumu
+            </h4>
+            <a href="/Testimonial/Index" class="btn btn-outline-secondary">
+                <i class="la la-arrow-left me-1"></i> Geri Dön
+            </a>
+        </div>
+
+        <div class="card shadow border-0">
+            <div class="card-header bg-light">
+                <h5 class="mb-1">Müşteri Bilgilerini Girin</h5>
+                <small class="text-muted">Lütfen tüm alanları eksiksiz doldurun.</small>
+            </div>
+
+            <form method="post">
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label fw-semibold">Ad Soyad</label>
+                            <input asp-for="Name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Title" class="form-label fw-semibold">Ünvan</label>
+                            <input asp-for="Title" class="form-control" placeholder="Örn: CEO, XYZ Şirketi" required />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ImageUrl" class="form-label fw-semibold">Resim URL</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://..." required />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Comment" class="form-label fw-semibold">Yorum</label>
+                            <textarea asp-for="Comment" class="form-control" rows="3" placeholder="Müşteri yorumu giriniz..." required></textarea>
+                            <span asp-validation-for="Comment" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white text-end border-top">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="la la-save me-1"></i> Yorumu Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

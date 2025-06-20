@@ -9,11 +9,11 @@ namespace SignalRApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestimionalsController : ControllerBase
+    public class TestimonialsController : ControllerBase
     {
         private readonly ITestimonialService _testimonialService;
         private readonly IMapper _mapper;
-        public TestimionalsController(ITestimonialService testimonialService, IMapper mapper)
+        public TestimonialsController(ITestimonialService testimonialService, IMapper mapper)
         {
             _testimonialService = testimonialService;
             _mapper = mapper;
@@ -39,7 +39,7 @@ namespace SignalRApi.Controllers
             return Ok("Testimonial Başarıyla Eklendi");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeleteTestimonial(int id)
         {
             var value = _testimonialService.TGetById(id);
@@ -62,7 +62,7 @@ namespace SignalRApi.Controllers
             return Ok("Testimonial Başarıyla Güncellendi");
         }
 
-        [HttpGet("GetTestimonial")]
+        [HttpGet("{id}")]
         public IActionResult GetTestimonial(int id)
         {
             var value = _testimonialService.TGetById(id);
