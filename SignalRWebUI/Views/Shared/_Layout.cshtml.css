@@ -46,3 +46,20 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+}
+
+    body.dark-mode a {
+        color: #66aaff;
+    }
+
+    body.dark-mode .navbar,
+    body.dark-mode .footer {
+        background-color: #1f1f1f;
+        color: #fff;
+    }
+
+/* Diğer koyu tema stilleri */

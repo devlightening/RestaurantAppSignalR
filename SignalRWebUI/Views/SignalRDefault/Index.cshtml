@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<!-- Sayfanın içeriği burada -->
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <div class="alert alert-success">Bağlantı Durumu : <strong id="connstatus"></strong></div>
+    </div>
+</div>
+
+<!-- Eğer bu div'in amacı sadece içerik taşımaksa, buraya yerleştirilmeli -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <!-- Buraya başka içerik eklenebilir -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7000/signalrhub")
+                .build();
+
+            $("#connstatus").text(connection.state);
+
+            connection.start().then(() => {
+                $("#connstatus").text(connection.state);
+            }).catch(err => {
+                console.log("SignalR bağlantı hatası:", err);
+            });
+        });
+    </script>
+}
