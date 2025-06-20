@@ -1,0 +1,58 @@
+﻿@model UpdateSocialMediaDto
+@{
+    ViewData["Title"] = "UpdateSocialMedia";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+
+<div class="content py-4">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-primary fw-bold mb-0">
+                <i class="la la-edit me-2"></i> Sosyal Medya Hesabını Güncelle
+            </h4>
+            <a href="/SocialMedia/Index" class="btn btn-sm btn-outline-secondary">
+                <i class="la la-arrow-left me-1"></i> Listeye Dön
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0">Form Bilgileri</h5>
+                <small class="text-muted">Sosyal medya hesabı bilgilerini güncelleyiniz.</small>
+            </div>
+
+            <form method="post">
+                <input type="hidden" asp-for="SocialMediaId" />
+
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="Title" class="form-label fw-semibold">Başlık</label>
+                            <input type="text" class="form-control" asp-for="Title" id="Title" placeholder="Örn: Instagram" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Icon" class="form-label fw-semibold">İkon (FontAwesome class)</label>
+                            <input type="text" class="form-control" asp-for="Icon" id="Icon" placeholder="fab fa-instagram" required>
+                            <small class="text-muted">Örn: <code>fab fa-facebook</code></small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="Url" class="form-label fw-semibold">Bağlantı (URL)</label>
+                            <input type="url" class="form-control" asp-for="Url" id="Url" placeholder="https://www.instagram.com/kullaniciadi" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white border-top text-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="la la-save me-1"></i> Güncellemeyi Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
