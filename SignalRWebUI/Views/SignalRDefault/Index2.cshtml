@@ -1,7 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index2";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+
 
 <h1>Index</h1>
 
@@ -41,9 +42,12 @@
 
         $("#connstatus").text(connection.state);
 
-        connection.start().then(() => {
-            $("#connstatus").text(connection.state);
-            connection.invoke("SendCategoryCount");
+            connection.start().then(() => {
+                $("#connstatus").text(connection.state);
+                setInterval(() => {
+                    connection.invoke("SendCategoryCount");
+                },1000);
+
         }).catch((err) => {console.log(err)});
 
 
@@ -52,5 +56,10 @@
         connection.on("ReceiveCategoryCount", (value) => {
             $("#categorycount").text(value);
         });
+
+
     });
+
+
 </script>
+
