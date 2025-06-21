@@ -21,6 +21,11 @@ namespace SignalR.BusinessLayer.Concretes
             _productDal.Add(entity);
         }
 
+        public decimal TAvarageProductPrice()
+        {
+            return _productDal.AvarageProductPrice();
+        }
+
         public void TDelete(Product entity)
         {
             _productDal.Delete(entity);
@@ -39,6 +44,16 @@ namespace SignalR.BusinessLayer.Concretes
         public List<Product> TGetProductsWithCategory()
         {
             return _productDal.GetProductsWithCategory();
+        }
+
+        public string THighestPricedProduct()
+        {
+            return _productDal.HighestPricedProduct();
+        }
+
+        public string TLowestPricedProduct()
+        {
+            return _productDal.LowesPricedProduct();
         }
 
         public int TProductCount()

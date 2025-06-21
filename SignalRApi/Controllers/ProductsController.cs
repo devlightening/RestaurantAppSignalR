@@ -50,6 +50,27 @@ namespace SignalRApi.Controllers
         }
 
 
+        [HttpGet("AvarageProductPrice")]
+        public IActionResult AvarageProductPrice()
+        {
+            var count = _productService.TAvarageProductPrice();
+            return Ok(count);
+        }
+
+        [HttpGet("HighestPricedProduct")]
+        public IActionResult HighestPricedProduct()
+        {
+            var name = _productService.THighestPricedProduct();
+            return Ok(name);
+        }
+
+        [HttpGet("LowesPricedProduct")]
+        public IActionResult LowesPricedProduct()
+        {
+            var count = _productService.TLowestPricedProduct();
+            return Ok(count);
+        }
+
         [HttpPost]
         public IActionResult CreateProduct(CreateProductDto createProductDto)
         {

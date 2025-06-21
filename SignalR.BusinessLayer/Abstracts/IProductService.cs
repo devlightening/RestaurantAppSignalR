@@ -8,5 +8,8 @@ namespace SignalR.BusinessLayer.Abstracts
         public int TProductCount();
         public int TProductCountByCategoryNameHamburger();
         public int TProductCountByCategoryNameDrink();
+        public decimal TAvarageProductPrice();
+        public string TLowestPricedProduct();
+        public string THighestPricedProduct();
     }
 }
