@@ -6,5 +6,7 @@ namespace SignalR.BusinessLayer.Abstracts
     {
         List<Product> TGetProductsWithCategory();
         public int TProductCount();
+        public int TProductCountByCategoryNameHamburger();
+        public int TProductCountByCategoryNameDrink();
     }
 }
