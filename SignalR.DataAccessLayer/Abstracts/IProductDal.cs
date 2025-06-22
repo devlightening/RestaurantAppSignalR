@@ -16,5 +16,6 @@ namespace SignalR.DataAccessLayer.Abstracts
         public decimal AvarageProductPrice();
         public string LowesPricedProduct();
         public string HighestPricedProduct();
+        public decimal AvarageHamburgerPrice();
     }
 }

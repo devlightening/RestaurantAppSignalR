@@ -7,13 +7,13 @@
 *Kategori Adına Göre Ürün Sayısı2
 
 
---Ortalama Fiyat
---En Yüksek Fiyatlı Ürün
---En Düşük Fiyatlı Ürün
+*Ortalama Fiyat
+*En Yüksek Fiyatlı Ürün
+*En Düşük Fiyatlı Ürün
 --Ortalama Hamburger Fiyatı
 
 
---Toplam Sipariş Sayısı
+*Toplam Sipariş Sayısı
 --Aktif Sipariş Sayısı
 --Son Sipariş Tutarı 
 --Kasadaki Tutar

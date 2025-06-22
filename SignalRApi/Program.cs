@@ -55,6 +55,12 @@ internal class Program
         builder.Services.AddScoped<ITestimonialService, TestimonialManager>();
         builder.Services.AddScoped<ITestimonialDal, EfTestimonialDal>();
 
+        builder.Services.AddScoped<IOrderDetailService, OrderDetailManager>();
+        builder.Services.AddScoped<IOrderDetailDal, EfOrderDetailDal>();
+
+        builder.Services.AddScoped<IOrderService, OrderManager>();
+        builder.Services.AddScoped<IOrderDal, EfOrderDal>(); 
+
 
 
         builder.Services.AddControllers();

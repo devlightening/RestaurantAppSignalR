@@ -11,5 +11,6 @@ namespace SignalR.BusinessLayer.Abstracts
         public decimal TAvarageProductPrice();
         public string TLowestPricedProduct();
         public string THighestPricedProduct();
+        public decimal TAvarageHamburgerPrice();
     }
 }
