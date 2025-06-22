@@ -16,7 +16,7 @@
 *Toplam Sipariş Sayısı
 *Aktif Sipariş Sayısı
 *Son Sipariş Tutarı 
---Kasadaki Tutar
+*Kasadaki Tutar
 --Bügünkü Kazanç
 --Masa Sayısı
  
