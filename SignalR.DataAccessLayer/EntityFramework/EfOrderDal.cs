@@ -10,10 +10,28 @@ using System.Threading.Tasks;
 
 namespace SignalR.DataAccessLayer.EntityFramework
 {
-    public class EfOrderDal :GenericRepository<Order>,IOrderDal
+    public class EfOrderDal : GenericRepository<Order>, IOrderDal
     {
         public EfOrderDal(SignalRContext context) : base(context)
         {
+        }
+
+        public int ActiveOrderNumber()
+        {
+            using var context = new SignalRContext();
+            return context.Orders.Where(x=>x.Description== "Müşteri Masada").Count();
+        }
+
+        public decimal LastOrderPrice()
+        {
+            using var context = new SignalRContext();
+            return context.Orders.OrderByDescending(x => x.OrderId).Take(1).Select(y => y.TotalOrderPrice).FirstOrDefault();
+        }
+
+        public int TotalOrderNumber()
+        {
+           using var context = new SignalRContext();
+            return context.Orders.Count();
         }
     }
 }

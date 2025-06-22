@@ -9,5 +9,8 @@ namespace SignalR.BusinessLayer.Abstracts
 {
     public interface IOrderService : IGenericService<Order>
     {
+        public int TTotalOrderNumber();
+        public int TActiveOrderNumber();
+        public decimal TLastOrderPrice();
     }
 }
