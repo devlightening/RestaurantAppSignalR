@@ -11,10 +11,10 @@ namespace SignalR.BusinessLayer.Abstracts
     {
         public int TTotalTableCount(); // Toplam masa sayısı
         public int TAvailableTableCount(); // Boş masa sayısı
-        public int TOccupiedTableCount(); // Dolu masa sayısı
+        public int TNotAvailableTableCount(); // Dolu masa sayısı
         public RestaurantTable TGetByName(string tableName); // Belirli ada sahip masayı getirme
         public List<RestaurantTable> TGetAvailableTables(); // Boş masaları listeleme
-        public List<RestaurantTable> TGetOccupiedTables(); // Dolu masaları listeleme
+        public List<RestaurantTable> TGetNotAvailableTables(); // Dolu masaları listeleme
         public List<RestaurantTable> TGetTablesByStatus(bool status); // Duruma göre masaları listeleme
     }
 }

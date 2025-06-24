@@ -76,10 +76,10 @@ namespace SignalRApi.Controllers
             return Ok(count);
         }
 
-        [HttpGet("OccupiedTableCount")]
-        public IActionResult OccupiedTableCount()
+        [HttpGet("NotAvailableTableCount")]
+        public IActionResult NotAvailableTableCount()
         {
-            var count = _restaurantTableService.TOccupiedTableCount();
+            var count = _restaurantTableService.TNotAvailableTableCount();
             return Ok(count);
         }
 
@@ -98,10 +98,10 @@ namespace SignalRApi.Controllers
             return Ok(tables);
         }
 
-        [HttpGet("OccupiedTables")]
-        public IActionResult OccupiedTables()
+        [HttpGet("NotAvailableTables")]
+        public IActionResult NotAvailableTables()
         {
-            var tables = _restaurantTableService.TGetOccupiedTables();
+            var tables = _restaurantTableService.TGetNotAvailableTables();
             return Ok(tables);
         }
 

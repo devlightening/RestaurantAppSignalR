@@ -11,10 +11,10 @@ namespace SignalR.DataAccessLayer.Abstracts
     {
         public int TotalTableCount();
         public int AvailableTableCount(); // Boş masa sayısı
-        public int OccupiedTableCount(); //Dolu masa sayısı
+        public int NotAvailableTableCount(); //Dolu masa sayısı
         public RestaurantTable GetByName(string tableName); // Belirli ada sahip masayı getirme
         public List<RestaurantTable> GetAvailableTables(); // Boş masaları listeleme
-        public List<RestaurantTable> GetOccupiedTables(); //Dolu masaları listeleme
+        public List<RestaurantTable> GetNotAvailableTables(); //Dolu masaları listeleme
         public List<RestaurantTable> GetTablesByStatus(bool status); // Duruma göre masaları listeleme
 
     }

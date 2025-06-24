@@ -58,9 +58,9 @@ namespace SignalR.BusinessLayer.Concretes
             return _restaurantTableDal.GetListAll();
         }
 
-        public List<RestaurantTable> TGetOccupiedTables()
+        public List<RestaurantTable> TGetNotAvailableTables()
         {
-            return _restaurantTableDal.GetOccupiedTables();
+            return _restaurantTableDal.GetNotAvailableTables();
 
         }
 
@@ -70,9 +70,9 @@ namespace SignalR.BusinessLayer.Concretes
 
         }
 
-        public int TOccupiedTableCount()
-        {
-            return _restaurantTableDal.OccupiedTableCount();
+        public int TNotAvailableTableCount() 
+        { 
+            return _restaurantTableDal.NotAvailableTableCount();
 
         }
 

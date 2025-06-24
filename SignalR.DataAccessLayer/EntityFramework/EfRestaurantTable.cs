@@ -35,7 +35,7 @@ namespace SignalR.DataAccessLayer.EntityFramework
             return context.RestaurantTables.FirstOrDefault(t => t.TableName == tableName);
         }
 
-        public List<RestaurantTable> GetOccupiedTables()
+        public List<RestaurantTable> GetNotAvailableTables()
         {
             using var context = new SignalRContext();
             return context.RestaurantTables.Where(t => t.Status == false).ToList();
@@ -47,7 +47,7 @@ namespace SignalR.DataAccessLayer.EntityFramework
             return context.RestaurantTables.Where(t => t.Status == status).ToList();
         }
 
-        public int OccupiedTableCount()
+        public int NotAvailableTableCount()
         {
             using var context = new SignalRContext();
             return context.RestaurantTables.Count(t => t.Status == false);
