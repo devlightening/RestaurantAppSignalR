@@ -49,7 +49,7 @@ namespace SignalRApi.Controllers
             return Ok("Masa başarıyla silindi.");
         }
 
-        [HttpPut]
+        [HttpPut] 
         public IActionResult UpdateRestaurantTable(UpdateRestaurantTableDto updateRestaurantTableDto)
         {
             _restaurantTableService.TUpdate(new RestaurantTable()
@@ -110,6 +110,15 @@ namespace SignalRApi.Controllers
         {
             var tables = _restaurantTableService.TGetTablesByStatus(status);
             return Ok(tables);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetRestaurantTable(int id)
+        {
+            var table = _restaurantTableService.TGetById(id);
+            if (table == null) return NotFound("Masa bulunamadı.");
+            var result = _mapper.Map<ResultRestaurantTableDto>(table);
+            return Ok(result);
         }
     }
 }

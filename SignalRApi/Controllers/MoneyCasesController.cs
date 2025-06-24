@@ -12,8 +12,9 @@ namespace SignalRApi.Controllers
         private readonly IMoneyCaseService _moneyCaseService;
         private readonly IMapper _mapper;
 
-        public MoneyCasesController(IMapper mapper)
+        public MoneyCasesController(IMoneyCaseService moneyCaseService, IMapper mapper)
         {
+            _moneyCaseService = moneyCaseService;
             _mapper = mapper;
         }
 
