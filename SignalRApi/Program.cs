@@ -59,8 +59,13 @@ internal class Program
         builder.Services.AddScoped<IOrderDetailDal, EfOrderDetailDal>();
 
         builder.Services.AddScoped<IOrderService, OrderManager>();
-        builder.Services.AddScoped<IOrderDal, EfOrderDal>(); 
+        builder.Services.AddScoped<IOrderDal, EfOrderDal>();
 
+        builder.Services.AddScoped<IMoneyCaseService, MoneyCaseManager>();
+        builder.Services.AddScoped<IMoneyCaseDal, EfMoneyCaseDal>();
+
+        builder.Services.AddScoped<IRestaurantTableService , RestaurantTableManager>();
+        builder.Services.AddScoped<IRestaurantTableDal, EfRestaurantTable>();
 
 
         builder.Services.AddControllers();

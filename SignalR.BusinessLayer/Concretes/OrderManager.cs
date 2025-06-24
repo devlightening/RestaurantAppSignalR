@@ -51,6 +51,11 @@ namespace SignalR.BusinessLayer.Concretes
             return _orderDal.LastOrderPrice();
         }
 
+        public decimal TTodayTotalPrice()
+        {
+            return _orderDal.TodayTotalPrice();
+        }
+
         public int TTotalOrderNumber()
         {
             return _orderDal.TotalOrderNumber();

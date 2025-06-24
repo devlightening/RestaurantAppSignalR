@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
 using SignalR.DtoLayer.ProductDto;
+using SignalR.DtoLayer.RestaurantTableDto;
 using SignalR.EntityLayer.Entities;
 
 
@@ -24,7 +25,7 @@ namespace SignalRApi.Controllers
         [HttpGet]
         public IActionResult ProductList()
         {
-            var values = _mapper.Map<List<ResultProductDto>>(_productService.TGetListAll());
+            var values = _mapper.Map<List<ResultRestaurantTableDto>>(_productService.TGetListAll());
             return Ok(values);
         }
 

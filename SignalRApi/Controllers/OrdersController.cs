@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 
@@ -9,10 +10,12 @@ namespace SignalRApi.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IMapper _mapper;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IMapper mapper)
         {
             _orderService = orderService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -35,6 +38,14 @@ namespace SignalRApi.Controllers
         public IActionResult LastOrderPrice()
         {
             var count = _orderService.TLastOrderPrice();
+            return Ok(count);
+
+        }
+
+        [HttpGet("TodayTotalPrice")]
+        public IActionResult TodayTotalPrice()
+        {
+            var count = _orderService.TTodayTotalPrice();
             return Ok(count);
 
         }

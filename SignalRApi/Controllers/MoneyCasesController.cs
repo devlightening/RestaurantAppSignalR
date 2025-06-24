@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 
@@ -9,10 +10,11 @@ namespace SignalRApi.Controllers
     public class MoneyCasesController : ControllerBase
     {
         private readonly IMoneyCaseService _moneyCaseService;
+        private readonly IMapper _mapper;
 
-        public MoneyCasesController(IMoneyCaseService moneyCaseService)
+        public MoneyCasesController(IMapper mapper)
         {
-            _moneyCaseService = moneyCaseService;
+            _mapper = mapper;
         }
 
         [HttpGet("TotalMoneyCaseAmount")]
