@@ -19,6 +19,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors("AllowAll"); // Bunu da ekle
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -26,3 +28,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

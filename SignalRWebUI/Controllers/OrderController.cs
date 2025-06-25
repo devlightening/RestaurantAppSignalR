@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SignalRWebUI.Dtos.OrderDtos;
+using SignalRWebUI.Dtos.ProductDtos;
+using SignalRWebUI.ViewModels;
 using System.Text;
 
 namespace SignalRWebUI.Controllers
@@ -26,29 +28,83 @@ namespace SignalRWebUI.Controllers
             }
             return View();
         }
-        
+
         [HttpGet]
-        public IActionResult CreateOrder()
-        {
-            return View();
-        }
-        /*
-        [HttpPost]
-        public async Task<IActionResult> CreateOrder(CreateOrderDto createOrderDto)
+        public async Task<IActionResult> CreateOrder()
         {
             var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createOrderDto);
-            StringContent stringContent = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json");
-            var responseMessage = client.PostAsync("https://localhost:7000/api/Orders", stringContent);
-            if (responseMessage.Result.IsSuccessStatusCode)
+            var response = await client.GetAsync("https://localhost:7000/api/Products");
+
+            var model = new CreateOrderViewModel();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                model.Products = JsonConvert.DeserializeObject<List<ResultProductDto>>(json);
+            }
+
+            model.Order = new CreateOrderDto
+            {
+                OrderDate = DateTime.Now
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrder(CreateOrderViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Ürün listesi yeniden yüklenmeli çünkü postta gelmez
+                var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync("https://localhost:7000/api/Products");
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonData = await response.Content.ReadAsStringAsync();
+                    model.Products = JsonConvert.DeserializeObject<List<ResultProductDto>>(jsonData);
+                }
+
+                return View(model);
+            }
+
+            // Ürünleri al
+            var selectedProducts = new List<ResultProductDto>();
+            if (model.SelectedProductIds != null && model.SelectedProductIds.Any())
+            {
+                var client = _httpClientFactory.CreateClient();
+
+                foreach (var productId in model.SelectedProductIds)
+                {
+                    var response = await client.GetAsync($"https://localhost:7000/api/Products/{productId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var product = JsonConvert.DeserializeObject<ResultProductDto>(json);
+                        if (product != null)
+                            selectedProducts.Add(product);
+                    }
+                }
+
+                // Toplam tutarı hesapla
+                model.Order.TotalOrderPrice = selectedProducts.Sum(p => p.Price);
+            }
+
+            // Siparişi gönder
+            var postClient = _httpClientFactory.CreateClient();
+            var jsonOrder = JsonConvert.SerializeObject(model.Order);
+            var stringContent = new StringContent(jsonOrder, System.Text.Encoding.UTF8, "application/json");
+
+            var responseMessage = await postClient.PostAsync("https://localhost:7000/api/Orders", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View();
-            }
+
+            return View("CreateOrder", model);
+
         }
+
 
         public async Task<IActionResult> DeleteOrder(int id)
         {
@@ -87,7 +143,7 @@ namespace SignalRWebUI.Controllers
             }
             return View();
         }
-        */
+        
     }
 }
 

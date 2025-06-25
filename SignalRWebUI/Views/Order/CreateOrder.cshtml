@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewData["Title"] = "CreateOrder";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<h1>CreateOrder</h1>
+
+    @model CreateOrderViewModel
+
+@{
+    ViewData["Title"] = "Yeni Sipariş";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+                const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7052/signalrhub")
+            .build();
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        function toggleProduct(checkbox) {
+            // checkbox elemanından parent label'daki price bilgisini alalım
+            const label = checkbox.closest('label');
+            const price = parseFloat(label.getAttribute('data-price'));
+
+            // seçilen checkbox'lar için toplamı hesaplamak için
+            let total = 0;
+            document.querySelectorAll('input[name="SelectedProductIds"]:checked').forEach(chk => {
+                const p = parseFloat(chk.closest('label').getAttribute('data-price'));
+                total += p;
+            });
+
+            // SignalR ile toplam fiyat gönder
+            connection.invoke("SendTotalPrice", total)
+                .catch(err => console.error(err.toString()));
+        }
+
+        connection.on("ReceiveTotalPrice", (total) => {
+            document.getElementById("totalPrice").value = total.toFixed(2);
+        });
+    </script>
+    }
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4">📝 Yeni Sipariş Oluştur</h2>
+
+    <form asp-action="CreateOrder" method="post">
+        <div class="mb-3">
+            <label>Masa No</label>
+            <input asp-for="Order.TableNumber" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label>Açıklama</label>
+            <textarea asp-for="Order.Description" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Sipariş Tarihi</label>
+            <input asp-for="Order.OrderDate" class="form-control" type="datetime-local" required />
+        </div>
+
+        <div class="mb-4">
+            <label>Ürünler</label>
+            <div class="row">
+                @if (Model.Products != null && Model.Products.Any())
+                {
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <label class="form-check border p-3 rounded shadow-sm h-100 d-block"
+                                   data-price="@product.Price"
+                                   style="cursor:pointer;"
+                                   for="check-@product.ProductId">
+                                <input class="form-check-input me-2"
+                                       type="checkbox"
+                                       name="SelectedProductIds"
+                                       value="@product.ProductId"
+                                       id="check-@product.ProductId"
+                                       onchange="toggleProduct(this)" />
+                                <span class="fw-semibold">@product.ProductName</span>
+                                <div class="text-muted mt-1">@product.Price.ToString("C2")</div>
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-warning">Ürün listesi yüklenemedi.</div>
+                }
+            </div>
+
+
+
+            <div class="mb-3">
+                <label>Toplam Tutar</label>
+                <input asp-for="Order.TotalOrderPrice" class="form-control" id="totalPrice" readonly />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Siparişi Kaydet</button>
+    </form>
+</div>

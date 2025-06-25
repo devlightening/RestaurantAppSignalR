@@ -94,11 +94,11 @@ public class SignalRHub : Hub
         var value3= _orderService.TActiveOrderNumber();
         await Clients.All.SendAsync("ReceiveActiveOrderCount", value3);
 
+    }
 
-
-
-
-
-
+    // Yeni eklenen method: client'tan toplam fiyatı al ve yayınla
+    public async Task SendTotalPrice(decimal totalPrice)
+    {
+        await Clients.All.SendAsync("ReceiveTotalPrice", totalPrice);
     }
 }

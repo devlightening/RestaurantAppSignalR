@@ -1,6 +1,5 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+	Layout = null;
 }
 
 <!DOCTYPE html>
@@ -10,17 +9,18 @@
 	<div class="wrapper">
 		@await Component.InvokeAsync("_LayoutNavbarComponentPartial")
 
-
 		@await Component.InvokeAsync("_LayoutSidebarComponentPartial")
+
 		<div class="main-panel">
 			@RenderBody()
-			
+
 			@await Component.InvokeAsync("_LayoutFooterComponentPartial")
 		</div>
 	</div>
+
 	@await Component.InvokeAsync("_LayoutScriptComponentPartial")
+
+	@* 💡 Burası eksikti – Scripts bölümü için eklenmeli *@
+	@RenderSection("Scripts", required: false)
 </body>
-
 </html>
-
-
