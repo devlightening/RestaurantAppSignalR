@@ -1,326 +1,738 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+
+<!-- Script Referansları -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<!-- Font Awesome ve Ek Stiller -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-color: #000000; /* yazılar için siyah */
+        --secondary-color: #333333; /* koyu gri yazı */
+        --success-color: #27ae60;
+        --info-color: #3498db;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 2rem 0;
+        color: var(--primary-color); /* içerik yazıları siyah */
+    }
+
+    .page-header,
+    .card,
+    .connection-status {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .page-header {
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin: 0;
+        font-size: 2.5rem;
+        text-align: center;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        padding-left: 1rem;
+        border-left: 4px solid var(--info-color);
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        position: relative;
+        color: var(--primary-color);
+    }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--card-color), transparent);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+    .card-primary::before {
+        --card-color: var(--info-color);
+    }
+
+    .card-success::before {
+        --card-color: var(--success-color);
+    }
+
+    .card-warning::before {
+        --card-color: var(--warning-color);
+    }
+
+    .card-danger::before {
+        --card-color: var(--danger-color);
+    }
+
+    .card-secondary::before,
+    .card-dark::before {
+        --card-color: var(--primary-color);
+    }
+
+    .card-info::before {
+        --card-color: var(--info-color);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--primary-color); /* ikon yazıları siyah */
+        margin-bottom: 1rem;
+    }
+
+    .card-primary .card-icon,
+    .card-info .card-icon {
+        background: linear-gradient(135deg, var(--info-color), #5dade2);
+        color: var(--primary-color); /* siyah yazı */
+    }
+
+    .card-success .card-icon {
+        background: linear-gradient(135deg, var(--success-color), #58d68d);
+        color: var(--primary-color); /* siyah yazı */
+    }
+
+    .card-warning .card-icon {
+        background: linear-gradient(135deg, var(--warning-color), #f7dc6f);
+        color: var(--primary-color); /* siyah yazı */
+    }
+
+    .card-danger .card-icon {
+        background: linear-gradient(135deg, var(--danger-color), #f1948a);
+        color: var(--primary-color); /* siyah yazı */
+    }
+
+    .card-secondary .card-icon,
+    .card-dark .card-icon {
+        background: linear-gradient(135deg, var(--secondary-color), #85929e);
+        color: var(--primary-color); /* siyah yazı */
+    }
+
+    .card-category {
+        color: var(--primary-color) !important; /* siyah yazı */
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card-title {
+        color: var(--primary-color);
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .section-group {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--primary-color); /* grup yazıları siyah */
+    }
+
+    .connection-status {
+        padding: 1.5rem;
+        text-align: center;
+        margin-top: 2rem;
+        color: var(--primary-color); /* bağlantı durumu yazıları siyah */
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, var(--info-color), #5dade2);
+        color: var(--primary-color); /* badge yazısı siyah */
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    }
+
+    .icon-big {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+        color: var(--primary-color); /* büyük ikon yazıları siyah */
+    }
+
+    /* Tüm sayılar ve içerik için siyah renk zorlaması */
+    .card-body * {
+        color: var(--primary-color) !important;
+    }
+
+    /* Büyük sayılar için özel stil */
+    .card-body h1,
+    .card-body h2,
+    .card-body h3,
+    .card-body .display-1,
+    .card-body .display-2,
+    .card-body .display-3,
+    .card-body .display-4 {
+        color: var(--primary-color) !important;
+    }
+
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+        }
+
+        .icon-big {
+            font-size: 1.5rem;
+            height: 50px;
+        }
+    }
+</style>
+
+
+
 <div class="content">
-	<div class="container-fluid">
-		<h4 class="page-title">Dashboard</h4>
-<div class="row">
-	<div class="col-md-3">
-		<div class="card card-stats card-warning">
-			<div class="card-body ">
-				<div class="row">
-					<div class="col-5">
-						<div class="icon-big text-center">
-							<i class="la la-users"></i>
-						</div>
-					</div>
-					<div class="col-7 d-flex align-items-center">
-						<div class="numbers">
-							<p class="card-category">Visitors</p>
-							<h4 class="card-title">1,294</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="card card-stats card-success">
-			<div class="card-body ">
-				<div class="row">
-					<div class="col-5">
-						<div class="icon-big text-center">
-							<i class="la la-bar-chart"></i>
-						</div>
-					</div>
-					<div class="col-7 d-flex align-items-center">
-						<div class="numbers">
-							<p class="card-category">Sales</p>
-							<h4 class="card-title">$ 1,345</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="card card-stats card-danger">
-			<div class="card-body">
-				<div class="row">
-					<div class="col-5">
-						<div class="icon-big text-center">
-							<i class="la la-newspaper-o"></i>
-						</div>
-					</div>
-					<div class="col-7 d-flex align-items-center">
-						<div class="numbers">
-							<p class="card-category">Subscribers</p>
-							<h4 class="card-title">1303</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="card card-stats card-primary">
-			<div class="card-body ">
-				<div class="row">
-					<div class="col-5">
-						<div class="icon-big text-center">
-							<i class="la la-check-circle"></i>
-						</div>
-					</div>
-					<div class="col-7 d-flex align-items-center">
-						<div class="numbers">
-							<p class="card-category">Order</p>
-							<h4 class="card-title">576</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+    <div class="container-fluid">
+        <!-- Sayfa Başlığı -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-chart-line me-3"></i>
+                Gerçek Zamanlı Analiz Paneli
+            </h1>
+        </div>
 
-		<div class="row">
-			<div class="col-md-3">
-				<div class="card card-stats card-warning">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-users"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Visitors</p>
-									<h4 class="card-title">1,294</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-success">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-bar-chart"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Sales</p>
-									<h4 class="card-title">$ 1,345</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-danger">
-					<div class="card-body">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-newspaper-o"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Subscribers</p>
-									<h4 class="card-title">1303</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-primary">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-check-circle"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Order</p>
-									<h4 class="card-title">576</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+        <script type="text/javascript">
+            $(document).ready(() => {
+                var connection = new signalR.HubConnectionBuilder()
+                    .withUrl("https://localhost:7000/signalrhub")
+                    .build();
 
-		<div class="row">
-			<div class="col-md-3">
-				<div class="card card-stats card-warning">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-users"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Visitors</p>
-									<h4 class="card-title">1,294</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-success">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-bar-chart"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Sales</p>
-									<h4 class="card-title">$ 1,345</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-danger">
-					<div class="card-body">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-newspaper-o"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Subscribers</p>
-									<h4 class="card-title">1303</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-primary">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-check-circle"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Order</p>
-									<h4 class="card-title">576</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+                $("#connstatus").text(connection.state);
 
-		<div class="row">
-			<div class="col-md-3">
-				<div class="card card-stats card-warning">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-users"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Visitors</p>
-									<h4 class="card-title">1,294</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-success">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-bar-chart"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Sales</p>
-									<h4 class="card-title">$ 1,345</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-danger">
-					<div class="card-body">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-newspaper-o"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Subscribers</p>
-									<h4 class="card-title">1303</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card card-stats card-primary">
-					<div class="card-body ">
-						<div class="row">
-							<div class="col-5">
-								<div class="icon-big text-center">
-									<i class="la la-check-circle"></i>
-								</div>
-							</div>
-							<div class="col-7 d-flex align-items-center">
-								<div class="numbers">
-									<p class="card-category">Order</p>
-									<h4 class="card-title">576</h4>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-</div>
-</div>
+                connection.start().then(() => {
+                    $("#connstatus").text(connection.state);
 
+                    // Bağlantı başarılı olduğunda pulse efektini kaldır
+                    $("#connstatus").removeClass("pulse");
+
+                    setInterval(async () => {
+                        try {
+                            await connection.invoke("SendStatistic");
+                        } catch (err) {
+                            console.error("SignalR error:", err);
+                            $("#connstatus").addClass("pulse");
+                        }
+                    }, 1000);
+                }).catch(err => {
+                    console.error("SignalR connection error:", err);
+                    $("#connstatus").text("Bağlantı Hatası");
+                    $("#connstatus").addClass("pulse");
+                });
+
+                // SignalR event handlers with animation
+                connection.on("ReceiveCategoryCount", value => {
+                    $("#categorycount").text(value);
+                    animateCard("#categorycount");
+                });
+                connection.on("ReceiveActiveCategoryCount", value => {
+                    $("#activecategories").text(value);
+                    animateCard("#activecategories");
+                });
+                connection.on("ReceivePassiveCategoryCount", value => {
+                    $("#passivecategories").text(value);
+                    animateCard("#passivecategories");
+                });
+
+                connection.on("ReceiveProductCount", value => {
+                    $("#productcount").text(value);
+                    animateCard("#productcount");
+                });
+                connection.on("ReceiveLowestPricedProduct", value => {
+                    $("#lowestproduct").text(value);
+                    animateCard("#lowestproduct");
+                });
+                connection.on("ReceiveHighestPricedProduct", value => {
+                    $("#highestproduct").text(value);
+                    animateCard("#highestproduct");
+                });
+                connection.on("ReceiveAvarageProductPrice", value => {
+                    $("#averageproduct").text(value + " ₺");
+                    animateCard("#averageproduct");
+                });
+                connection.on("ReceiveAvarageHamburgerPrice", value => {
+                    $("#hamburgeraverage").text(value + " ₺");
+                    animateCard("#hamburgeraverage");
+                });
+
+                connection.on("ReceiveMoneyCase", value => {
+                    $("#moneycase").text(value + " ₺");
+                    animateCard("#moneycase");
+                });
+                connection.on("ReceiveTodayTotalPrice", value => {
+                    $("#todaytotal").text(value + " ₺");
+                    animateCard("#todaytotal");
+                });
+
+                connection.on("ReceiveOrderCount", value => {
+                    $("#ordercount").text(value);
+                    animateCard("#ordercount");
+                });
+                connection.on("ReceiveActiveOrderCount", value => {
+                    $("#activeorders").text(value);
+                    animateCard("#activeorders");
+                });
+                connection.on("ReceiveLastOrderPrice", value => {
+                    $("#lastorder").text(value + " ₺");
+                    animateCard("#lastorder");
+                });
+                 connection.on("ReceiveTotalTableCount", value => {
+                    $("#totaltablecount").text(value);
+                    animateCard("#totaltablecount");
+                });
+                connection.on("ReceiveActiveTableCount", value => {
+                    $("#activetable").text(value);
+                    animateCard("#activetable");
+                });          
+                connection.on("ReceiveNotActiveTableCount", value => {
+                    $("#notactivetable").text(value);
+                    animateCard("#notactivetable");
+                });
+
+
+                // Animasyon fonksiyonu
+                function animateCard(selector) {
+                    $(selector).closest('.card').addClass("pulse");
+                    setTimeout(() => {
+                        $(selector).closest('.card').removeClass("pulse");
+                    }, 500);
+                }
+            });
+        </script>
+
+        <!-- ========================= KATEGORİ GRUBU ========================= -->
+        <div class="section-group">
+            <h3 class="section-title">
+                <i class="fas fa-tags me-2"></i>
+                Kategori Yönetimi
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card card-stats card-info">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-list"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Toplam Kategori</p>
+                                    <h4 class="card-title" id="categorycount">0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-stats card-primary">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Aktif Kategoriler</p>
+                                    <h4 class="card-title" id="activecategories">0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-stats card-secondary">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-ban"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Pasif Kategoriler</p>
+                                    <h4 class="card-title" id="passivecategories">0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================= MASA GRUBU ========================= -->
+        <div class="section-group">
+            <h3 class="section-title">
+                <i class="fas fa-box me-2"></i>
+                Masa Analizi
+            </h3>
+            <div class="row">
+                <!-- Toplam Masa Sayısı -->
+                <div class="col-md-4">
+                    <div class="card card-stats card-success">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-cube"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Toplam Masa Sayısı</p>
+                                    <h4 class="card-title" id="totaltablecount">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aktif Masa Sayısı -->
+                <div class="col-md-4">
+                    <div class="card card-stats card-info">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-chair"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Aktif Masalar</p>
+                                    <h4 class="card-title" id="activetable">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pasif Masa Sayısı -->
+                <div class="col-md-4">
+                    <div class="card card-stats card-danger">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-chair"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Pasif Masalar</p>
+                                    <h4 class="card-title" id="notactivetable">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+            <!-- ========================= ÜRÜN GRUBU ========================= -->
+            <div class="section-group">
+                <h3 class="section-title">
+                    <i class="fas fa-box me-2"></i>
+                    Ürün Analizi
+                </h3>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card card-stats card-success">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-4">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-cube"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="card-category">Ürün Sayısı</p>
+                                        <h4 class="card-title" id="productcount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card card-stats card-danger">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-4">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-hamburger"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="card-category">Hamburger Ortalama</p>
+                                        <h4 class="card-title" id="hamburgeraverage">0 ₺</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card card-stats card-warning">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-4">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-balance-scale"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="card-category">Ortalama Ürün Fiyatı</p>
+                                        <h4 class="card-title" id="averageproduct">0 ₺</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card card-stats card-secondary">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-4">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="card-category">En Ucuz Ürün</p>
+                                        <h4 class="card-title" id="lowestproduct">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- En Pahalı Ürün Kartı -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card card-stats card-primary">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-4">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="card-category">En Pahalı Ürün</p>
+                                        <h4 class="card-title" id="highestproduct">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================= KASA & SATIŞ GRUBU ========================= -->
+            <div class="section-group">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Finansal Analiz
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-stats card-warning">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-wallet"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <p class="card-category">Kasadaki Para</p>
+                                        <h4 class="card-title" id="moneycase">0 ₺</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card card-stats card-success">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <p class="card-category">Bugünkü Toplam Satış</p>
+                                        <h4 class="card-title" id="todaytotal">0 ₺</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================= SİPARİŞ GRUBU ========================= -->
+            <div class="section-group">
+                <h3 class="section-title">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    Sipariş Yönetimi
+                </h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card card-stats card-danger">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <p class="card-category">Sipariş Sayısı</p>
+                                        <h4 class="card-title" id="ordercount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card card-stats card-info">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-hourglass-half"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <p class="card-category">Aktif Siparişler</p>
+                                        <h4 class="card-title" id="activeorders">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card card-stats card-dark">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <div class="card-icon mx-auto">
+                                            <i class="fas fa-credit-card"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <p class="card-category">Son Sipariş Tutarı</p>
+                                        <h4 class="card-title" id="lastorder">0 ₺</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================= BAĞLANTI DURUMU ========================= -->
+            <div class="connection-status">
+                <h5 class="mb-3">
+                    <i class="fas fa-wifi me-2"></i>
+                    Sistem Durumu
+                </h5>
+                <span class="badge badge-info pulse">
+                    <i class="fas fa-circle me-2"></i>
+                    Bağlantı Durumu: <strong id="connstatus">Bekleniyor...</strong>
+                </span>
+            </div>
+        </div>
+    </div>

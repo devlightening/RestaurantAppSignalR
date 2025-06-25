@@ -5,12 +5,108 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="content">
+<style>
+    .update-product-container {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .update-product-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+        .update-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.15);
+        }
+
+    .update-header {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.9) 0%, rgba(251, 191, 36, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .update-form-control {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(245, 158, 11, 0.2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+        .update-form-control:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.15);
+            transform: translateY(-2px);
+        }
+
+    .update-form-label {
+        color: #374151;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .update-form-text {
+        color: #6B7280;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .update-form-check-input:checked {
+        background-color: rgba(245, 158, 11, 0.9);
+        border-color: rgba(245, 158, 11, 0.9);
+    }
+
+    .update-btn-save {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.9) 0%, rgba(251, 191, 36, 0.9) 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+        .update-btn-save:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 1) 0%, rgba(251, 191, 36, 1) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+            color: white;
+        }
+
+    .update-card-footer {
+        background: rgba(249, 250, 251, 0.8);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(229, 231, 235, 0.5);
+    }
+
+    .update-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .update-icon-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+    }
+</style>
+
+<div class="content update-product-container">
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-xl-8 col-lg-9">
-                <div class="card border-0 shadow-lg rounded-4 mt-4">
-                    <div class="card-header bg-gradient bg-warning text-dark rounded-top-4 py-3 px-4 d-flex align-items-center">
+                <div class="card border-0 update-product-card rounded-4 mt-4">
+                    <div class="card-header update-header text-dark rounded-top-4 py-3 px-4 d-flex align-items-center">
                         <i class="fas fa-edit me-2 fs-5"></i>
                         <h4 class="mb-0">Ürün Güncelle</h4>
                     </div>
@@ -21,48 +117,48 @@
                             <input type="hidden" asp-for="ProductId" />
 
                             <div class="mb-3">
-                                <label for="productname" class="form-label fw-bold">📝 Ürün Adı</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="ProductName" id="productname" placeholder="Örn: Karışık Pizza">
-                                <div class="form-text">Ürün menüde nasıl görünecekse o ismi girin.</div>
+                                <label for="productname" class="update-form-label">📝 Ürün Adı</label>
+                                <input type="text" class="form-control form-control-lg update-form-control" asp-for="ProductName" id="productname" placeholder="Örn: Karışık Pizza">
+                                <div class="update-form-text">Ürün menüde nasıl görünecekse o ismi girin.</div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="price" class="form-label fw-bold">💰 Fiyat</label>
-                                <input type="number" step="0.01" class="form-control form-control-lg" asp-for="Price" id="price" placeholder="Örn: 99.99">
-                                <div class="form-text">KDV dahil satış fiyatını giriniz.</div>
+                                <label for="price" class="update-form-label">💰 Fiyat</label>
+                                <input type="number" step="0.01" class="form-control form-control-lg update-form-control" asp-for="Price" id="price" placeholder="Örn: 99.99">
+                                <div class="update-form-text">KDV dahil satış fiyatını giriniz.</div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="imageUrl" class="form-label fw-bold">🖼️ Görsel URL</label>
-                                <input type="text" class="form-control form-control-lg" asp-for="ImageUrl" id="imageUrl" placeholder="https://...">
-                                <div class="form-text">Ürüne ait bir görselin bağlantı adresini girin.</div>
+                                <label for="imageUrl" class="update-form-label">🖼️ Görsel URL</label>
+                                <input type="text" class="form-control form-control-lg update-form-control" asp-for="ImageUrl" id="imageUrl" placeholder="https://...">
+                                <div class="update-form-text">Ürüne ait bir görselin bağlantı adresini girin.</div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="categoryId" class="form-label fw-bold">📂 Kategori</label>
+                                <label for="categoryId" class="update-form-label">📂 Kategori</label>
                                 @Html.DropDownListFor(x => x.CategoryId, (List<SelectListItem>)ViewBag.v, "-- Kategori Seçin --", new
                                     {
-                                        @class = "form-select form-select-lg",
+                                        @class = "form-select form-select-lg update-form-control",
                                         id = "categoryId"
                                     })
-                                <div class="form-text">Bu ürün hangi kategoriye ait olacaksa seçin.</div>
+                                <div class="update-form-text">Bu ürün hangi kategoriye ait olacaksa seçin.</div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="description" class="form-label fw-bold">🗒️ Açıklama</label>
-                                <textarea class="form-control form-control-lg" asp-for="Description" id="description" rows="4" placeholder="Ürün açıklaması..."></textarea>
-                                <div class="form-text">Ürünle ilgili kısa ve açıklayıcı bir metin girin.</div>
+                                <label for="description" class="update-form-label">🗒️ Açıklama</label>
+                                <textarea class="form-control form-control-lg update-form-control update-textarea" asp-for="Description" id="description" rows="4" placeholder="Ürün açıklaması..."></textarea>
+                                <div class="update-form-text">Ürünle ilgili kısa ve açıklayıcı bir metin girin.</div>
                             </div>
 
                             <div class="mb-3 form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="ProductStatus" id="productStatus">
-                                <label class="form-check-label fw-bold" for="productStatus">✅ Aktif mi?</label>
-                                <div class="form-text">Bu kutucuk işaretliyse ürün aktif olarak listelenir.</div>
+                                <input class="form-check-input update-form-check-input" type="checkbox" asp-for="ProductStatus" id="productStatus">
+                                <label class="form-check-label update-form-label" for="productStatus">✅ Aktif mi?</label>
+                                <div class="update-form-text">Bu kutucuk işaretliyse ürün aktif olarak listelenir.</div>
                             </div>
                         </div>
 
-                        <div class="card-footer bg-light d-flex justify-content-end px-4 py-3 rounded-bottom-4">
-                            <button type="submit" class="btn btn-warning btn-lg fw-semibold text-white">
+                        <div class="card-footer update-card-footer d-flex justify-content-end px-4 py-3 rounded-bottom-4">
+                            <button type="submit" class="btn update-btn-save btn-lg fw-semibold">
                                 <i class="fas fa-save me-1"></i> Güncellemeyi Kaydet
                             </button>
                         </div>

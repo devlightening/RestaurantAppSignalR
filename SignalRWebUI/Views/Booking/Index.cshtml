@@ -5,32 +5,249 @@
     int count = 0;
 }
 
-<div class="content py-4">
+<style>
+    .booking-dashboard {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .dashboard-header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .page-title {
+        color: #fff;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+        .page-title i {
+            color: #ffd700;
+            margin-right: 0.5rem;
+            animation: rotate 3s linear infinite;
+        }
+
+
+
+    .btn-new-booking {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.7rem 1.5rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        text-decoration: none;
+    }
+
+        .btn-new-booking:hover {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+            color: white;
+        }
+
+    .booking-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, #f8f9ff, #e8ecf4) !important;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.1) !important;
+        padding: 1.5rem 2rem;
+    }
+
+        .card-header h5 {
+            color: #333;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .card-header small {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+    .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .modern-table {
+        margin: 0;
+        background: white;
+    }
+
+        .modern-table thead th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+
+        .modern-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .modern-table tbody tr:hover {
+                background: linear-gradient(135deg, #f8f9ff, #e8ecf4);
+                transform: scale(1.01);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .modern-table tbody td {
+            padding: 1rem 0.8rem;
+            vertical-align: middle;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+    .status-badge {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+    }
+
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 2px solid;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+    .btn-edit {
+        color: #28a745;
+        border-color: #28a745;
+        background: rgba(40, 167, 69, 0.1);
+    }
+
+        .btn-edit:hover {
+            background: #28a745;
+            color: white;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+    .btn-delete {
+        color: #dc3545;
+        border-color: #dc3545;
+        background: rgba(220, 53, 69, 0.1);
+    }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+    .empty-state {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+        border: 2px dashed rgba(79, 172, 254, 0.3);
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        color: #4facfe;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .booking-dashboard
+
+    {
+        padding: 1rem 0;
+    }
+
+    .dashboard-header {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .modern-table {
+        font-size: 0.8rem;
+    }
+
+        .modern-table thead th,
+        .modern-table tbody td {
+            padding: 0.5rem 0.3rem;
+        }
+
+    }
+</style>
+
+<div class="booking-dashboard">
     <div class="container-fluid">
         <!-- Sayfa Başlığı -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="text-primary fw-bold mb-0">
-                <i class="la la-calendar-check me-2"></i> Rezervasyon İşlemleri
-            </h4>
-            <a href="/Booking/CreateBooking/" class="btn btn-outline-primary">
+        <div class="dashboard-header d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="page-title">
+                    <i class="la la-calendar-check"></i>Rezervasyon İşlemleri
+                </h4>
+            </div>
+            <a href="/Booking/CreateBooking/" class="btn-new-booking">
                 <i class="la la-plus me-1"></i> Yeni Rezervasyon
             </a>
         </div>
 
         <!-- Kart -->
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+        <div class="booking-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
-                    <h5 class="mb-0">Rezervasyon Listesi</h5>
-                    <small class="text-muted">Rezervasyonlarınızı buradan yönetebilirsiniz.</small>
+                    <h5>Rezervasyon Listesi</h5>
+                    <small>Rezervasyonlarınızı buradan yönetebilirsiniz.</small>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 @if (Model != null && Model.Any())
                 {
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle text-center table-bordered">
-                            <thead class="table-light">
+                        <table class="table modern-table text-center">
+                            <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Ad Soyad</th>
@@ -39,7 +256,7 @@
                                     <th>Kişi Sayısı</th>
                                     <th>Tarih</th>
                                     <th>Durum</th>
-                                    <th colspan="2">İşlemler</th>
+                                    <th>İşlemler</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,22 +264,20 @@
                                 {
                                     count++;
                                     <tr>
-                                        <td>@count</td>
+                                        <td><strong>@count</strong></td>
                                         <td>@item.Name</td>
                                         <td>@item.Phone</td>
                                         <td>@item.Mail</td>
-                                        <td>@item.PersonCount</td>
+                                        <td><strong>@item.PersonCount</strong></td>
                                         <td>@item.Date.ToString("dd.MM.yyyy")</td>
                                         <td>
-                                            <span class="badge bg-success">Rezervasyon Alındı</span>
+                                            <span class="status-badge">Rezervasyon Alındı</span>
                                         </td>
                                         <td>
-                                            <a href="/Booking/UpdateBooking/@item.BookingId" class="btn btn-sm btn-outline-success">
+                                            <a href="/Booking/UpdateBooking/@item.BookingId" class="btn-action btn-edit">
                                                 <i class="la la-edit"></i>
                                             </a>
-                                        </td>
-                                        <td>
-                                            <a href="/Booking/DeleteBooking/@item.BookingId" class="btn btn-sm btn-outline-danger" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                            <a href="/Booking/DeleteBooking/@item.BookingId" class="btn-action btn-delete" onclick="return confirm('Silmek istediğinize emin misiniz?')">
                                                 <i class="la la-trash"></i>
                                             </a>
                                         </td>
@@ -74,8 +289,11 @@
                 }
                 else
                 {
-                    <div class="alert alert-info">
-                        Henüz herhangi bir rezervasyon bulunmamaktadır.
+                    <div class="p-4">
+                        <div class="empty-state">
+                            <i class="la la-calendar-times-o" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            Henüz herhangi bir rezervasyon bulunmamaktadır.
+                        </div>
                     </div>
                 }
             </div>

@@ -4,75 +4,150 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
+<style>
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4e54c8;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.5px;
+    }
+
+    .card {
+        border-radius: 1.25rem;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+        border: none;
+    }
+
+    .card-header {
+        background: #f5f7fa;
+        border-radius: 1.25rem 1.25rem 0 0;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    .table {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: #fff;
+    }
+
+        .table th, .table td {
+            vertical-align: middle;
+            font-size: 1rem;
+        }
+
+        .table th {
+            background: #f0f2f8;
+            color: #4e54c8;
+            font-weight: 700;
+        }
+
+    .btn-outline-primary, .btn-outline-danger, .btn-outline-success {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+        .btn-outline-primary:hover {
+            background: #4e54c8;
+            color: #fff;
+            border-color: #4e54c8;
+        }
+
+        .btn-outline-danger:hover {
+            background: #ff4d4f;
+            color: #fff;
+            border-color: #ff4d4f;
+        }
+
+        .btn-outline-success:hover {
+            background: #52c41a;
+            color: #fff;
+            border-color: #52c41a;
+        }
+
+    img {
+        border-radius: 0.5rem;
+        border: 1px solid #e0e0e0;
+    }
+
+    .alert-warning {
+        border-radius: 0.75rem;
+        font-size: 1.05rem;
+    }
+</style>
+
+
 <div class="content">
-	<div class="container-fluid">
-		<h4 class="page-title">Ana Sayfa Hakkımızda İşlemleri</h4>
-		<div class="row">
-			<div class="col-md-12">
+    <div class="container-fluid">
+        <h4 class="page-title">Ana Sayfa Hakkımızda İşlemleri</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Hakkımızda Listesi</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-sub mb-3 text-muted">
+                            Hakkımızda alanıyla ilgili işlemleri yapabilirsiniz. Tema bütünlüğü için sadece 1 tane hakkımızda alanı oluşturmayı unutmayın.
+                        </div>
 
-				<div class="card">
-					<div class="card-header">
-						<div class="card-title">Hakkımızda Listesi</div>
-					</div>
-					<div class="card-body">
-						<div class="card-sub">
-							Hakkımızda alanıyla ilgili işlemleri yapabilirsiniz. Tema bütünlüğü için sadece 1 tane hakkımızda alanı oluşturmayı unutmayın.
-						</div>
+                        @if (Model != null && Model.Any())
+                        {
+                            <table class="table mt-3">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th>Açıklama</th>
+                                        <th>Görsel</th>
+                                        <th>Sil</th>
+                                        <th>Güncelle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Title</td>
+                                            <td>@item.Description</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                {
+                                                    <img src="@item.ImageUrl" alt="Görsel" width="80" height="60" />
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Yok</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="/About/DeleteAbout/@item.AboutId"
+                                                   class="btn btn-outline-danger"
+                                                   onclick="return confirm('Bu hakkımızda yazısını silmek istediğinize emin misiniz?');">
+                                                    Sil
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="/About/UpdateAbout/@item.AboutId"
+                                                   class="btn btn-outline-success">
+                                                    Güncelle
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning mt-3">Henüz bir "Hakkımızda" bilgisi eklenmemiş.</div>
+                        }
 
-						@if (Model != null && Model.Any())
-						{
-							<table class="table mt-3">
-								<thead>
-									<tr>
-										<th scope="col">Başlık</th>
-										<th scope="col">Açıklama</th>
-										<th scope="col">Görsel</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var item in Model)
-									{
-										<tr>
-											<td>@item.Title</td>
-											<td>@item.Description</td>
-											<td>
-												@if (!string.IsNullOrEmpty(item.ImageUrl))
-												{
-													<img src="@item.ImageUrl" alt="Görsel" width="80" height="60" class="img-thumbnail" />
-												}
-												else
-												{
-													<span class="text-muted">Yok</span>
-												}
-											</td>
-											<td>
-												<a href="/About/DeleteAbout/@item.AboutId"
-												   class="btn btn-outline-danger"
-												   onclick="return confirm('Bu hakkımızda yazısını silmek istediğinize emin misiniz?');">
-													Sil
-												</a>
-											</td>
-											<td>
-												<a href="/About/UpdateAbout/@item.AboutId" class="btn btn-outline-success">Güncelle</a>
-											</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						}
-						else
-						{
-							<div class="alert alert-warning mt-3">Henüz bir "Hakkımızda" bilgisi eklenmemiş.</div>
-						}
-
-						<a href="/About/CreateAbout" class="btn btn-outline-primary mt-3">Yeni Hakkımda Yazısı Girişi</a>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
+                        <a href="/About/CreateAbout" class="btn btn-outline-primary mt-3">Yeni Hakkımda Yazısı Girişi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-

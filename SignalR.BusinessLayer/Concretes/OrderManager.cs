@@ -46,6 +46,12 @@ namespace SignalR.BusinessLayer.Concretes
             return _orderDal.GetListAll();
         }
 
+        public List<Order> TGetListWithOrderDetails()
+        {
+            return _orderDal.GetListWithOrderDetails();
+
+        }
+
         public decimal TLastOrderPrice()
         {
             return _orderDal.LastOrderPrice();

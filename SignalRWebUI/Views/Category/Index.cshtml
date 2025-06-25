@@ -1,5 +1,4 @@
 ﻿@model List<ResultCategoryDto>
-
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -8,68 +7,176 @@
 
 <div class="content">
 	<div class="container-fluid">
-		<div class="d-flex justify-content-between align-items-center mb-4">
-			<h4 class="page-title">📁 Kategori İşlemleri</h4>
-			<a href="/Category/CreateCategory" class="btn btn-primary">
-				<i class="fa fa-plus"></i> Yeni Kategori
-			</a>
+		<!-- Sayfa Başlığı -->
+		<div class="page-header">
+			<div class="d-flex justify-content-between align-items-center">
+				<h1 class="page-title">📁 Kategori İşlemleri</h1>
+				<a href="/Category/CreateCategory" class="btn btn-primary pulse">
+					<i class="fa fa-plus"></i> Yeni Kategori
+				</a>
+			</div>
 		</div>
 
-		<div class="card shadow-sm">
-			<div class="card-header bg-primary text-white">
-				<h5 class="mb-0">📋 Kategori Listesi</h5>
-			</div>
+		<!-- Ana Kart -->
+		<div class="card card-primary">
 			<div class="card-body">
+				<div class="section-title">📋 Kategori Listesi</div>
+
 				@if (Model != null && Model.Any())
 				{
-					<table class="table table-hover table-bordered table-striped">
-						<thead class="thead-dark">
-							<tr>
-								<th scope="col" style="width: 5%;">#</th>
-								<th scope="col">Kategori Adı</th>
-								<th scope="col">Durum</th>
-								<th scope="col" style="width: 20%;" class="text-center">İşlemler</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach (var item in Model)
-							{
-								count++;
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
 								<tr>
-									<td>@count</td>
-									<td>@item.CategoryName</td>
-									<td>
-										@if (item.CategoryStatus)
-										{
-											<span class="badge bg-success">Aktif</span>
-										}
-										else
-										{
-											<span class="badge bg-danger">Pasif</span>
-										}
-									</td>
-									<td class="text-center">
-										<div class="btn-group" role="group">
-											<a href="/Category/UpdateCategory/@item.CategoryId" class="btn btn-sm btn-outline-success">
-												<i class="fa fa-edit"></i> Güncelle
-											</a>
-											<form asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.CategoryId" method="post" class="d-inline" onsubmit="return confirm('Bu kategoriyi silmek istediğinizden emin misiniz?');">
-												<button type="submit" class="btn btn-sm btn-outline-danger">
-													<i class="fa fa-trash"></i> Sil
-												</button>
-											</form>
-										</div>
-									</td>
+									<th scope="col" style="width: 5%;" class="text-center">#</th>
+									<th scope="col">Kategori Adı</th>
+									<th scope="col" class="text-center">Durum</th>
+									<th scope="col" style="width: 25%;" class="text-center">İşlemler</th>
 								</tr>
-							}
-						</tbody>
-					</table>
+							</thead>
+							<tbody>
+								@foreach (var item in Model)
+								{
+									count++;
+									<tr>
+										<td class="text-center">@count</td>
+										<td>
+											<strong>@item.CategoryName</strong>
+										</td>
+										<td class="text-center">
+											@if (item.CategoryStatus)
+											{
+												<span class="badge badge-status badge-status-active">
+													<i class="fa fa-check-circle"></i> Aktif
+												</span>
+											}
+											else
+											{
+												<span class="badge badge-status badge-status-passive">
+													<i class="fa fa-times-circle"></i> Pasif
+												</span>
+											}
+										</td>
+
+										<td class="text-center">
+											<div class="btn-group" role="group">
+												<a href="/Category/UpdateCategory/@item.CategoryId" class="btn btn-sm btn-success">
+													<i class="fa fa-edit"></i> Güncelle
+												</a>
+												<form asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.CategoryId" method="post" class="d-inline" onsubmit="return confirm('Bu kategoriyi silmek istediğinizden emin misiniz?');">
+													<button type="submit" class="btn btn-sm btn-danger">
+														<i class="fa fa-trash"></i> Sil
+													</button>
+												</form>
+											</div>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
 				}
 				else
 				{
-					<div class="alert alert-warning">Hiç kategori bulunamadı.</div>
+					<div class="section-group">
+						<div class="text-center">
+							<div class="card-icon">
+								<i class="fa fa-folder-open icon-big"></i>
+							</div>
+							<h3>Hiç kategori bulunamadı</h3>
+							<p class="text-muted">Henüz kategori eklenmemiş. Yeni kategori eklemek için yukarıdaki butonu kullanabilirsiniz.</p>
+							<a href="/Category/CreateCategory" class="btn btn-primary">
+								<i class="fa fa-plus"></i> İlk Kategoriyi Ekle
+							</a>
+						</div>
+					</div>
 				}
 			</div>
 		</div>
 	</div>
 </div>
+
+<style>
+	.table {
+		background: white;
+		border-radius: 10px;
+		overflow: hidden;
+		box-shadow: var(--card-shadow);
+	}
+
+		.table thead th {
+			background: linear-gradient(135deg, var(--info-color), #5dade2);
+			color: var(--primary-color);
+			border: none;
+			font-weight: 600;
+			padding: 1rem;
+		}
+
+		.table tbody tr {
+			transition: all 0.3s ease;
+		}
+
+			.table tbody tr:hover {
+				background: rgba(52, 152, 219, 0.1);
+				transform: translateX(5px);
+			}
+
+		.table tbody td {
+			padding: 1rem;
+			vertical-align: middle;
+			border-color: rgba(0,0,0,0.1);
+		}
+
+	.badge-success {
+		background: linear-gradient(135deg, var(--success-color), #58d68d);
+		color: var(--primary-color);
+		padding: 0.5rem 1rem;
+		border-radius: 20px;
+		font-weight: 600;
+	}
+
+	.badge-danger {
+		background: linear-gradient(135deg, var(--danger-color), #f1948a);
+		color: var(--primary-color);
+		padding: 0.5rem 1rem;
+		border-radius: 20px;
+		font-weight: 600;
+	}
+
+	.btn-group .btn {
+		margin: 0 2px;
+		transition: all 0.3s ease;
+	}
+
+		.btn-group .btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+		}
+
+	.badge-status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.5rem 1rem;
+		border-radius: 25px;
+		font-weight: 600;
+		font-size: 0.95rem;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+		transition: all 0.3s ease;
+	}
+
+		.badge-status i {
+			font-size: 1rem;
+		}
+
+	.badge-status-active {
+		background: linear-gradient(to right, #00c853, #b2ff59); /* canlı yeşil */
+		color: white;
+	}
+
+	.badge-status-passive {
+		background: linear-gradient(to right, #d50000, #ff8a80); /* sıcak kırmızı */
+		color: white;
+	}
+
+</style>

@@ -5,6 +5,123 @@
     int count = 0;
 }
 
+
+<style>
+
+    /* Genel başlık */
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #4e54c8;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Kart tasarımı */
+    .card {
+        border: none;
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        background-color: #ffffff;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-radius: 1.25rem 1.25rem 0 0;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #555;
+    }
+
+    /* Tablo */
+    .table {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: #fff;
+        font-size: 0.95rem;
+    }
+
+        .table th {
+            background-color: #f0f2f8;
+            color: #4e54c8;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: #333;
+        }
+
+    /* Butonlar */
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #ff4d4f;
+        color: #fff;
+        border-color: #ff4d4f;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        color: #fff;
+        border-color: #28a745;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #000;
+        border-color: #ffc107;
+    }
+
+    .btn-outline-dark:hover {
+        background-color: #343a40;
+        color: #fff;
+        border-color: #343a40;
+    }
+
+    .btn-primary {
+        background-color: #4e54c8;
+        border-color: #4e54c8;
+    }
+
+        .btn-primary:hover {
+            background-color: #363bb2;
+            border-color: #363bb2;
+        }
+
+    /* Badge */
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.4em 0.7em;
+        border-radius: 0.5rem;
+    }
+
+    /* Responsive iyileştirme */
+    @@media (max-width: 768px) {
+        .table {
+            font-size: 0.875rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .btn {
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+
 <div class="content py-4">
     <div class="container">
         <h4 class="page-title text-primary fw-bold mb-4">Günün İndirimleri İşlemleri</h4>

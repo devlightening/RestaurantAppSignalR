@@ -18,5 +18,8 @@
 *Son Sipariş Tutarı 
 *Kasadaki Tutar
 *Bügünkü Kazanç
---Masa Sayısı
+**Masa Sayısı
+
+----------------------------------------------	
+İstatistiklerin consume edilmesi.
  

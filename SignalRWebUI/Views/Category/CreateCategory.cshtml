@@ -1,34 +1,212 @@
 ﻿@model CreateCategoryDto
-
-
 @{
     ViewData["Title"] = "CreateCategory";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
 <div class="content">
-	<div class="container-fluid">
-		<h4 class="page-title">Kategori İşlemleri</h4>
-		<div class="row">
-			<div class="col-md-12">
-				<form method="post">
-				<div class="card">
-					<div class="card-header">
-						<div class="card-title">Yeni Kategori Ekleme</div>
-					</div>
-						<div class="card-body">
-							<div class="form-group">
-								<label for="categoryname">Kategori Adını </label>
-								<input type="text" class="form-control" asp-for="CategoryName" id="categoryname" placeholder="Kategori Adı Giriniz..">
-								<small id="categoryHelp" class="form-text text-muted">Yeni bir kategori ekleyerek ürünleri gruplandırabilirsiniz.</small>
-							</div>
-						</div>
-					<div class="card-action">
-						<button class="btn btn-primary">Kategori Ekle</button>
-					</div>
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <!-- Sayfa Başlığı -->
+        <div class="page-header">
+            <h1 class="page-title">➕ Yeni Kategori Ekleme</h1>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form method="post">
+                    <div class="card card-success">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <div class="card-icon">
+                                    <i class="fa fa-plus-circle icon-big"></i>
+                                </div>
+                                <div class="section-title">Yeni Kategori Bilgileri</div>
+                                <p class="text-muted">Ürünlerinizi gruplandırmak için yeni bir kategori oluşturun</p>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-group mt-4">
+                                    <label for="categorystatus" class="form-label">
+                                        <i class="fa fa-toggle-on"></i> Kategori Durumu
+                                    </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-info-circle"></i>
+                                            </span>
+                                        </div>
+                                        <select class="form-control form-control-lg" asp-for="CategoryStatus" id="categorystatus">
+                                            <option value="true">Aktif</option>
+                                            <option value="false">Pasif</option>
+                                        </select>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fa fa-info"></i> Aktif olarak işaretlenen kategoriler menüde görünür.
+                                    </small>
+                                </div>
+                                <label for="categoryname" class="form-label">
+                                    <i class="fa fa-tag"></i> Kategori Adı
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-folder-plus"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-lg" asp-for="CategoryName" id="categoryname" placeholder="Örn: Ana Yemekler, İçecekler, Tatlılar...">
+                                </div>
+                                <small id="categoryHelp" class="form-text text-muted">
+                                    <i class="fa fa-lightbulb"></i> İpucu: Açıklayıcı ve kısa kategori adları tercih edin. Bu ad müşterileriniz tarafından görülecektir.
+                                </small>
+                            </div>
+
+                            <!-- Kategori Örnekleri -->
+                            <div class="section-group">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fa fa-examples"></i> Popüler Kategori Örnekleri:
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="example-categories">
+                                            <span class="badge badge-info category-example" onclick="setCategory('Ana Yemekler')">🍽️ Ana Yemekler</span>
+                                            <span class="badge badge-info category-example" onclick="setCategory('Başlangıçlar')">🥗 Başlangıçlar</span>
+                                            <span class="badge badge-info category-example" onclick="setCategory('İçecekler')">🥤 İçecekler</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="example-categories">
+                                            <span class="badge badge-info category-example" onclick="setCategory('Tatlılar')">🍰 Tatlılar</span>
+                                            <span class="badge badge-info category-example" onclick="setCategory('Salatalar')">🥙 Salatalar</span>
+                                            <span class="badge badge-info category-example" onclick="setCategory('Pizza')">🍕 Pizza</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-center">
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-success btn-lg pulse">
+                                    <i class="fa fa-save"></i> Kategori Oluştur
+                                </button>
+                                <a href="/Category/Index" class="btn btn-secondary btn-lg">
+                                    <i class="fa fa-arrow-left"></i> Geri Dön
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+        .form-control:focus {
+            border-color: var(--success-color);
+            box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, var(--success-color), #58d68d);
+        border: 2px solid #e0e0e0;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .card-footer {
+        background: rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(0,0,0,0.1);
+        padding: 1.5rem;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success-color), #58d68d);
+        border: none;
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+            color: var(--primary-color);
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary-color), #85929e);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(51, 51, 51, 0.4);
+            color: white;
+        }
+
+    .example-categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .category-example {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, var(--info-color), #5dade2);
+        color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+
+        .category-example:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            color: var(--primary-color);
+        }
+
+    .badge-info {
+        background: linear-gradient(135deg, var(--info-color), #5dade2);
+        color: var(--primary-color);
+    }
+</style>
+
+<script>
+    function setCategory(categoryName) {
+        document.getElementById('categoryname').value = categoryName;
+        document.getElementById('categoryname').focus();
+
+        // Küçük bir animasyon efekti
+        const input = document.getElementById('categoryname');
+        input.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            input.style.transform = 'scale(1)';
+        }, 200);
+    }
+</script>

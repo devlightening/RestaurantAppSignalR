@@ -11,7 +11,5 @@ namespace SignalR.EntityLayer.Entities
         public int RestaurantTableId { get; set; }
         public string TableName { get; set; }
         public bool Status { get; set; }
-
-
     }
 }

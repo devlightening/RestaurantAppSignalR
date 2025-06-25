@@ -1,5 +1,4 @@
 ﻿@model SignalRWebUI.Dtos.CategoryDtos.UpdateCategoryDto
-
 @{
     ViewData["Title"] = "Kategori Güncelle";
     Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -7,27 +6,74 @@
 
 <div class="content">
     <div class="container-fluid">
-        <h4 class="page-title">Kategori İşlemleri</h4>
-        <div class="row">
-            <div class="col-md-12">
+        <!-- Sayfa Başlığı -->
+        <div class="page-header">
+            <h1 class="page-title">✏️ Kategori Güncelleme</h1>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
                 <form asp-action="UpdateCategory" asp-controller="Category" method="post">
                     @Html.AntiForgeryToken()
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Kategori Güncelleme Sayfası</div>
-                        </div>
+
+                    <div class="card card-warning">
                         <div class="card-body">
+                            <div class="text-center mb-4">
+                                <div class="card-icon">
+                                    <i class="fa fa-edit icon-big"></i>
+                                </div>
+                                <div class="section-title">Kategori Bilgilerini Düzenle</div>
+                            </div>
+
                             <input type="hidden" asp-for="CategoryId" />
 
                             <div class="form-group">
-                                <label for="categoryname">Kategori Adı</label>
-                                <input type="text" class="form-control" asp-for="CategoryName" id="categoryname" placeholder="Kategori Adı Giriniz...">
+                                <div class="form-group mt-4">
+                                    <label for="categorystatus" class="form-label">
+                                        <i class="fa fa-toggle-on"></i> Kategori Durumu
+                                    </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-info-circle"></i>
+                                            </span>
+                                        </div>
+                                        <select class="form-control form-control-lg" asp-for="CategoryStatus" id="categorystatus">
+                                            <option value="true">Aktif</option>
+                                            <option value="false">Pasif</option>
+                                        </select>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fa fa-info"></i> Aktif olarak işaretlenen kategoriler menüde görünür.
+                                    </small>
+                                </div>
+                                <label for="categoryname" class="form-label">
+                                    <i class="fa fa-tag"></i> Kategori Adı
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-folder"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-lg" asp-for="CategoryName" id="categoryname" placeholder="Kategori adını giriniz...">
+                                </div>
                                 <span class="text-danger" asp-validation-for="CategoryName"></span>
+                                <small class="form-text text-muted">
+                                    <i class="fa fa-info-circle"></i> Bu kategori adı ürün gruplandırması için kullanılacaktır.
+                                </small>
                             </div>
                         </div>
-                        <div class="card-action">
-                            <button type="submit" class="btn btn-primary">Kategori Güncelle</button>
-                            <a href="/Category/Index" class="btn btn-secondary">İptal</a>
+
+                        <div class="card-footer text-center">
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-warning btn-lg pulse">
+                                    <i class="fa fa-save"></i> Kategori Güncelle
+                                </button>
+                                <a href="/Category/Index" class="btn btn-secondary btn-lg">
+                                    <i class="fa fa-times"></i> İptal
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -36,3 +82,71 @@
     </div>
 </div>
 
+<style>
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+        .form-control:focus {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 0 0.2rem rgba(243, 156, 18, 0.25);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, var(--warning-color), #f7dc6f);
+        border: 2px solid #e0e0e0;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .card-footer {
+        background: rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(0,0,0,0.1);
+        padding: 1.5rem;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning-color), #f7dc6f);
+        border: none;
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+            color: var(--primary-color);
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary-color), #85929e);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(51, 51, 51, 0.4);
+            color: white;
+        }
+</style>

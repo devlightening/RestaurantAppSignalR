@@ -1,29 +1,350 @@
 ﻿@model List<ResultRestaurantTableDto>
-
 @{
     ViewData["Title"] = "Masalar";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="content">
+<style>
+    .table-list-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .page-title-list {
+        color: white;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-size: 2.2rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+        .page-title-list i {
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+    @@keyframes bounce {
+        0%, 20%, 50%, 80%, 100%
+
+    {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+
+    }
+
+    .modern-card-list {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+        .modern-card-list:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header-list {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .card-header-list::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .card-header-list:hover::before {
+            left: 100%;
+        }
+
+    .btn-add-new {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        backdrop-filter: blur(10px);
+    }
+
+        .btn-add-new:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+        }
+
+    .modern-table {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin: 0;
+    }
+
+        .modern-table thead {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+        }
+
+            .modern-table thead th {
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 1rem;
+                border: none;
+                font-size: 0.9rem;
+            }
+
+        .modern-table tbody tr {
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+            .modern-table tbody tr:hover {
+                background: rgba(102, 126, 234, 0.1);
+                transform: scale(1.01);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .modern-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+    .status-badge-full {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .status-badge-empty {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
+    }
+
+    .btn-action-edit {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        margin-right: 0.5rem;
+    }
+
+        .btn-action-edit:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #1f639a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-action-delete {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+    }
+
+        .btn-action-delete:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .alert-modern {
+        background: rgba(255, 193, 7, 0.1);
+        border: 2px solid rgba(255, 193, 7, 0.3);
+        border-radius: 15px;
+        color: #856404;
+        padding: 2rem;
+        text-align: center;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    .card-body-list {
+        padding: 0;
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .floating-elements-list {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+        .floating-elements-list::before,
+        .floating-elements-list::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .floating-elements-list::before {
+            top: 20%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .floating-elements-list::after {
+            bottom: 20%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+
+    @@keyframes float {
+        0%, 100%
+
+    {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-30px) rotate(180deg);
+    }
+
+    }
+
+    .table-id-cell {
+        font-weight: 700;
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+
+    .table-name-cell {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .table-list-container
+
+    {
+        padding: 1rem;
+    }
+
+    .page-title-list {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .card-header-list {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .modern-table {
+        font-size: 0.9rem;
+    }
+
+        .modern-table thead th,
+        .modern-table tbody td {
+            padding: 0.75rem 0.5rem;
+        }
+
+    }
+</style>
+
+<div class="table-list-container">
+    <div class="floating-elements-list"></div>
     <div class="container-fluid">
-        <h4 class="page-title"><i class="la la-cutlery"></i> Masa İşlemleri</h4>
+        <h4 class="page-title-list">
+            <i class="la la-cutlery"></i> Masa İşlemleri
+        </h4>
         <div class="row">
             <div class="col-md-12">
-
-                <div class="card shadow rounded">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="modern-card-list">
+                    <div class="card-header-list">
                         <span class="h5 mb-0">Tüm Masalar</span>
-                        <a href="/RestaurantTable/CreateRestaurantTable" class="btn btn-light btn-sm">
+                        <a href="/RestaurantTable/CreateRestaurantTable" class="btn-add-new">
                             <i class="la la-plus"></i> Yeni Masa Ekle
                         </a>
                     </div>
-
-                    <div class="card-body">
+                    <div class="card-body-list">
                         @if (Model != null && Model.Count > 0)
                         {
-                            <table class="table table-striped table-hover table-bordered text-center align-middle">
-                                <thead class="thead-dark">
+                            <table class="table modern-table text-center align-middle">
+                                <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Masa Adı</th>
@@ -35,23 +356,23 @@
                                     @foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td>@item.RestaurantTableId</td>
-                                            <td>@item.TableName</td>
+                                            <td class="table-id-cell">@item.RestaurantTableId</td>
+                                            <td class="table-name-cell">@item.TableName</td>
                                             <td>
                                                 @if (item.Status)
                                                 {
-                                                    <span class="badge badge-danger">Dolu</span>
+                                                    <span class="status-badge-full">Dolu</span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge badge-success">Boş</span>
+                                                    <span class="status-badge-empty">Boş</span>
                                                 }
                                             </td>
                                             <td>
-                                                <a href="/RestaurantTable/UpdateRestaurantTable/@item.RestaurantTableId" class="btn btn-outline-primary btn-sm me-2">
+                                                <a href="/RestaurantTable/UpdateRestaurantTable/@item.RestaurantTableId" class="btn-action-edit">
                                                     <i class="la la-edit"></i> Güncelle
                                                 </a>
-                                                <a href="/RestaurantTable/Delete/@item.RestaurantTableId" class="btn btn-outline-danger btn-sm" onclick="return confirm('Bu masayı silmek istediğinize emin misiniz?');">
+                                                <a href="/RestaurantTable/Delete/@item.RestaurantTableId" class="btn-action-delete" onclick="return confirm('Bu masayı silmek istediğinize emin misiniz?');">
                                                     <i class="la la-trash"></i> Sil
                                                 </a>
                                             </td>
@@ -62,13 +383,12 @@
                         }
                         else
                         {
-                            <div class="alert alert-warning text-center">
+                            <div class="alert-modern">
                                 Henüz kayıtlı masa bulunmamaktadır.
                             </div>
                         }
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
