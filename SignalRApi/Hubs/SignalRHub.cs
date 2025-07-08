@@ -99,6 +99,6 @@ public class SignalRHub : Hub
     // Yeni eklenen method: client'tan toplam fiyatı al ve yayınla
     public async Task SendTotalPrice(decimal totalPrice)
     {
-        await Clients.All.SendAsync("ReceiveTotalPrice", totalPrice);
+        await Clients.Caller.SendAsync("ReceiveTotalPrice", totalPrice);
     }
 }

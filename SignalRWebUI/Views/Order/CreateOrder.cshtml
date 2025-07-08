@@ -1,52 +1,60 @@
-﻿
+﻿@model CreateOrderViewModel
+
 @{
     ViewData["Title"] = "CreateOrder";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<h1>CreateOrder</h1>
-
-    @model CreateOrderViewModel
-
-@{
-    ViewData["Title"] = "Yeni Sipariş";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
-}
-
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
-                const connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:7052/signalrhub")
-            .build();
-
-        connection.start().catch(err => console.error(err.toString()));
-
         function toggleProduct(checkbox) {
-            // checkbox elemanından parent label'daki price bilgisini alalım
-            const label = checkbox.closest('label');
-            const price = parseFloat(label.getAttribute('data-price'));
-
-            // seçilen checkbox'lar için toplamı hesaplamak için
             let total = 0;
+            const selectedList = document.getElementById("selectedProductsList");
+            selectedList.innerHTML = ""; // önceki listeyi temizle
+
             document.querySelectorAll('input[name="SelectedProductIds"]:checked').forEach(chk => {
-                const p = parseFloat(chk.closest('label').getAttribute('data-price'));
-                total += p;
+                const label = chk.closest('label');
+                const price = parseFloat(label.getAttribute('data-price'));
+                const name = label.querySelector("span").innerText;
+
+                total += price;
+
+                // Listeye ürün adını ekle
+                const li = document.createElement("li");
+                li.className = "list-group-item d-flex justify-content-between align-items-center";
+                li.innerText = name;
+
+                const span = document.createElement("span");
+                span.className = "badge bg-primary rounded-pill";
+                span.innerText = price.toFixed(2) + " ₺";
+
+                li.appendChild(span);
+                selectedList.appendChild(li);
             });
 
-            // SignalR ile toplam fiyat gönder
-            connection.invoke("SendTotalPrice", total)
-                .catch(err => console.error(err.toString()));
-        }
+                document.getElementById("totalPrice").value = total.toFixed(2);
+                document.getElementById("totalPriceFormatted").innerText = total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' });
 
-        connection.on("ReceiveTotalPrice", (total) => {
-            document.getElementById("totalPrice").value = total.toFixed(2);
-        });
+
+        }
     </script>
-    }
+}
 
 <div class="container mt-5">
     <h2 class="text-primary mb-4">📝 Yeni Sipariş Oluştur</h2>
+
+    @* ModelState hatalarını göster *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
 
     <form asp-action="CreateOrder" method="post">
         <div class="mb-3">
@@ -93,14 +101,18 @@
                     <div class="alert alert-warning">Ürün listesi yüklenemedi.</div>
                 }
             </div>
+        </div>
 
+        <div class="mb-3">
+            <label>Toplam Tutar</label>
+            <input asp-for="Order.TotalOrderPrice" class="form-control" id="totalPrice" readonly />
+        </div>
 
+        <div class="mb-3">
+            <label>Seçilen Ürünler</label>
+            <ul id="selectedProductsList" class="list-group"></ul>
+        </div>
 
-            <div class="mb-3">
-                <label>Toplam Tutar</label>
-                <input asp-for="Order.TotalOrderPrice" class="form-control" id="totalPrice" readonly />
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Siparişi Kaydet</button>
+        <button type="submit" class="btn btn-primary w-100">Siparişi Kaydet</button>
     </form>
 </div>

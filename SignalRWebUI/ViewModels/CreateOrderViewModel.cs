@@ -1,4 +1,5 @@
-﻿using SignalRWebUI.Dtos.OrderDtos;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using SignalRWebUI.Dtos.OrderDtos;
 using SignalRWebUI.Dtos.ProductDtos; // ResultProductDto burada olmalı
 
 namespace SignalRWebUI.ViewModels
@@ -6,6 +7,8 @@ namespace SignalRWebUI.ViewModels
     public class CreateOrderViewModel
     {
         public CreateOrderDto Order { get; set; }
+
+        [ValidateNever]
         public List<ResultProductDto> Products { get; set; }
 
         // Kullanıcının seçtiği ürün ID'leri burada tutulur (post edilecek)
