@@ -1,11 +1,6 @@
 ﻿using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Abstracts;
 using SignalR.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Concretes
 {
@@ -13,15 +8,20 @@ namespace SignalR.BusinessLayer.Concretes
     {
         private readonly ISliderDal _sliderDal;
 
+        public SliderManager(ISliderDal sliderDal)
+        {
+            _sliderDal = sliderDal;
+        }
+
         public void TAdd(Slider entity)
         {
             _sliderDal.Add(entity);
-
+     
         }
 
         public void TDelete(Slider entity)
         {
-           _sliderDal.Delete(entity);
+            _sliderDal.Delete(entity);
         }
 
         public Slider TGetById(int id)
@@ -36,7 +36,7 @@ namespace SignalR.BusinessLayer.Concretes
 
         public void TUpdate(Slider entity)
         {
-           _sliderDal.Update(entity);
+            _sliderDal.Update(entity);
         }
     }
 }

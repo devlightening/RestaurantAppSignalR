@@ -39,7 +39,7 @@ namespace SignalRWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createSliderDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7000/api/Sliders", stringContent);
+            var responseMessage = await client.PostAsync("https://localhost:7000/api/Sliders/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -58,7 +58,6 @@ namespace SignalRWebUI.Controllers
             return View();
         }
 
-        [HttpGet]
         public async Task<IActionResult> UpdateSlider(int id)
         {
             var client = _httpClientFactory.CreateClient();
@@ -73,12 +72,12 @@ namespace SignalRWebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSlider(UpdateSliderDto updateSliderDto)
+        public async Task<IActionResult> UpdateSlider(UpdateSliderDto updateCategoryDto)
         {
             var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateSliderDto);
+            var jsonData = JsonConvert.SerializeObject(updateCategoryDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync($"https://localhost:7000/api/Sliders/{updateSliderDto.SliderId}", stringContent);
+            var responseMessage = await client.PutAsync($"https://localhost:7000/api/Sliders/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
