@@ -1,4 +1,6 @@
-﻿<section class="client_section layout_padding-bottom">
+﻿@model List<ResultTestimonialDto>
+
+<section class="client_section layout_padding-bottom">
     <div class="container">
         <div class="heading_container heading_center psudo_white_primary mb_45">
             <h2>
@@ -7,42 +9,27 @@
         </div>
         <div class="carousel-wrap row ">
             <div class="owl-carousel client_owl-carousel">
-                <div class="item">
-                    <div class="box">
-                        <div class="detail-box">
-                            <p>
-                                Yemekler gerçekten harikaydı! Özellikle kebapların tadı damağımda kaldı. Personel çok ilgili ve ortam çok samimi. Herkese tavsiye ederim.
-                            </p>
-                            <h6>
-                                Ayşe Yılmaz
-                            </h6>
-                            <p>
-                                İstanbul, Türkiye
-                            </p>
-                        </div>
-                        <div class="img-box">
-                            <img src="~/feane-1.0.0/images/client1.jpg" alt="" class="box-img">
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="box">
-                        <div class="detail-box">
-                            <p>
-                                Ailemle birlikte güzel bir akşam geçirdik. Hem yemekler çok lezzetliydi hem de servis çok hızlıydı. Ortam temiz ve nezih. Tekrar geleceğiz!
-                            </p>
-                            <h6>
-                                Mehmet Karaca
-                            </h6>
-                            <p>
-                                Ankara, Türkiye
-                            </p>
-                        </div>
-                        <div class="img-box">
-                            <img src="~/feane-1.0.0/images/client2.jpg" alt="" class="box-img">
+                @foreach (var item in Model)
+                {
+                    <div class="item">
+                        <div class="box">
+                            <div class="detail-box">
+                                <p>
+                                    @item.Comment
+                               </p>
+                                <h6>
+                                    @item.Name
+                                </h6>
+                                <p>
+                                   @item.Title
+                                </p>
+                            </div>
+                            <div class="img-box">
+                                <img src="@item.ImageUrl" alt="" class="box-img">
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>

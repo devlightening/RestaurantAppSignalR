@@ -1,13 +1,8 @@
-﻿using SignalR.DtoLayer.CategoryDto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SignalRWebUI.Dtos.CategoryDtos;
 
-namespace SignalR.DtoLayer.ProductDto
+namespace SignalRWebUI.Dtos.ProductDtos
 {
-    public class ResultProductWithCategory
+    public class ResultProductWithCategoryDto
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
