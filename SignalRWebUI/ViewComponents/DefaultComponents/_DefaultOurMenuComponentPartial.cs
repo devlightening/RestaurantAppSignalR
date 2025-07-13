@@ -16,10 +16,14 @@ namespace SignalRWebUI.ViewComponents.DefaultComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7000/Api/Products");
-            var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var values = JsonConvert.DeserializeObject<List<ResultProductDto>>(jsonData);
-            return View(values);
+            // Kategori bilgisi içeren endpoint
+            var response = await client.GetAsync("https://localhost:7000/api/Products/ProductsListWithCategory");
+            if (!response.IsSuccessStatusCode) return View(new List<ResultProductDto>());
+
+            var json = await response.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<List<ResultProductDto>>(json);
+
+            return View(products);
         }
     }
 }

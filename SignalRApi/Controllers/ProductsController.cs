@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
+using SignalR.DtoLayer.CategoryDto;
 using SignalR.DtoLayer.ProductDto;
 using SignalR.DtoLayer.RestaurantTableDto;
 using SignalR.EntityLayer.Entities;
@@ -128,17 +129,25 @@ namespace SignalRApi.Controllers
         public IActionResult ProductsListWithCategory()
         {
             var context = new SignalRContext();
-            var values = context.Products.Include(p => p.Category).Select(y => new ResultProductWithCategory
-            {
-                Description = y.Description,
-                ImageUrl = y.ImageUrl,
-                Price = y.Price,
-                ProductId = y.ProductId,
-                ProductName = y.ProductName,
-                ProductStatus = y.ProductStatus,
-                CategoryName = y.Category.CategoryName // Assuming Category has a property CategoryName
-            });
-            return Ok(values.ToList());
+            var values = context.Products
+                .Include(p => p.Category)
+                .Select(y => new ResultProductWithCategory
+                {
+                    Description = y.Description,
+                    ImageUrl = y.ImageUrl,
+                    Price = y.Price,
+                    ProductId = y.ProductId,
+                    ProductName = y.ProductName,
+                    ProductStatus = y.ProductStatus,
+                    Category = new ResultCategoryDto()
+                    {
+                        CategoryId = y.Category.CategoryId,
+                        CategoryName = y.Category.CategoryName,
+                        CategoryStatus = y.Category.CategoryStatus
+                    }
+                }).ToList();
+
+            return Ok(values);
         }
-    }  
+    }
 }

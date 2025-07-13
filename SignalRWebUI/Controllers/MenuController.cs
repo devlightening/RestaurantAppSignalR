@@ -34,7 +34,6 @@ namespace SignalRWebUI.Controllers
                 var jsonData = await responseMessage2.Content.ReadAsStringAsync();
                 categoryDtos = JsonConvert.DeserializeObject<List<ResultCategoryDto>>(jsonData);
             }
-
             productsWithCategory = productsWithCategory
                                                         .Where(p => p.Category != null)
                                                         .OrderBy(p => p.Category.CategoryId)

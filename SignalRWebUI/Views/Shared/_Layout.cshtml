@@ -66,3 +66,19 @@
 
 </body>
 </html>
+<script src="~/lib/isotope/isotope.pkgd.min.js"></script>
+<script>
+    $(window).on('load', function () {
+        var $grid = $('.grid').isotope({
+            itemSelector: '.all',
+            layoutMode: 'fitRows'
+        });
+
+        $('.filters_menu li').on('click', function () {
+            var filterValue = $(this).attr('data-filter');
+            $grid.isotope({ filter: filterValue });
+            $('.filters_menu li').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script>
