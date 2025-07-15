@@ -1,34 +1,174 @@
 ﻿@model List<ResultBasketDto>
+
 @{
     Layout = null;
 
-    // Koleksiyon null ise boş listeye çekerek NullReference önleriz
-    var list = Model ?? new List<SignalRWebUI.Dtos.BasketDtos.ResultBasketDto>();
-
-    decimal subTotal = list.Sum(x => x.Price * x.Count);
-    decimal vat = Math.Round(subTotal * 0.10m, 2);
-    decimal grandTotal = subTotal + vat;
+    // Koleksiyon null gelirse boş liste
+    var items = Model ?? new List<ResultBasketDto>();
+    decimal subTotal = items.Sum(x => x.Price * x.Count);
+    decimal tip = Math.Round(subTotal * 0.04m, 2);
+    decimal grandTotal = subTotal + tip;
 }
 
 <!DOCTYPE html>
-<html>
-@await Component.InvokeAsync("_UILayoutHeadComponentPartial")
+<html lang="tr">
+<head>
+    @await Component.InvokeAsync("_UILayoutHeaderComponentPartial")
+    <style>
+        /* SADECE KUPON KISMINA ÖZEL CSS */
+        .coupon-container {
+            background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(33, 37, 41, 0.3);
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .coupon-container::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255, 193, 7, 0.1) 0%, transparent 70%);
+                animation: couponShimmer 4s infinite;
+            }
+
+        @@keyframes couponShimmer {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        .coupon-title {
+            color: #ffc107;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .coupon-input-group {
+            position: relative;
+            z-index: 2;
+        }
+
+        .coupon-input {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+            .coupon-input:focus {
+                border-color: #ffc107;
+                box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+                background: white;
+                outline: none;
+            }
+
+        .coupon-btn {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            color: #212529;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .coupon-btn:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 30px rgba(255, 193, 7, 0.5);
+            }
+
+            .coupon-btn:active {
+                transform: translateY(0);
+            }
+
+            .coupon-btn.applied {
+                background: linear-gradient(135deg, #00b894, #00a085);
+                box-shadow: 0 8px 20px rgba(0, 184, 148, 0.4);
+                cursor: not-allowed;
+                color: white;
+            }
+
+        .coupon-success {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3);
+            animation: slideIn 0.5s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .coupon-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+    </style>
+</head>
 
 <body class="sub_page">
 
-    @await Component.InvokeAsync("_UILayoutNavbarComponentPartial")
+    <!-- ***** NAV ***** -->
+    <div class="hero_area">
+        @await Component.InvokeAsync("_UILayoutNavbarComponentPartial")
     </div>
-    <div class="container-xxl py-5">
 
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb bg-dark text-white rounded mb-4 px-3 py-2">
-            <a class="breadcrumb-item text-white-50" href="/Default/Index">Ana Sayfa</a>
-            <a class="breadcrumb-item text-white-50" href="/Menu/Index">Menü</a>
+    <!-- ***** BREADCRUMB ***** -->
+    <div class="container-xxl py-4">
+        <nav class="breadcrumb bg-dark text-white rounded px-3 py-2 mb-4">
+            <a class="breadcrumb-item text-white-50" href="/Default">Ana Sayfa</a>
+            <a class="breadcrumb-item text-white-50" href="/Menu">Menü</a>
             <span class="breadcrumb-item active text-warning">Sepet</span>
         </nav>
 
         <div class="row g-4">
-            <!-- Sepet Tablosu -->
+
+            <!-- ==================== TABLE ==================== -->
             <div class="col-lg-8">
                 <div class="table-responsive shadow-sm rounded">
                     <table class="table table-hover align-middle mb-0">
@@ -37,49 +177,43 @@
                                 <th>#</th>
                                 <th>Ürün</th>
                                 <th>Adet</th>
-                                <th>Birim&nbsp;₺</th>
-                                <th>Toplam&nbsp;₺</th>
+                                <th>Birim ₺</th>
+                                <th>Toplam ₺</th>
                                 <th></th>
                             </tr>
                         </thead>
+
                         <tbody class="text-center">
-                            @{
+                            @if (items.Any())
+                            {
                                 var idx = 0;
-                                foreach (var item in list)
+                                foreach (var b in items)
                                 {
                                     idx++;
-                                    var lineTotal = item.Price * item.Count;
+                                    <tr>
+                                        <td>@idx</td>
+                                        <td class="d-flex align-items-center gap-2">
+                                            <img src="@b.Product.ImageUrl" width="45" height="45"
+                                                 class="rounded" alt="@b.Product.ProductName" />
+                                            <span>@b.Product.ProductName</span>
+                                        </td>
+                                        <td>@b.Count</td>
+                                        <td>@b.Price.ToString("0.00")</td>
+                                        <td>@(b.Price * b.Count)</td>
+                                        <td>
+                                            <button data-id="@b.BasketId"
+                                                    data-name="@b.Product.ProductName"
+                                                    class="btn btn-sm btn-danger btn-delete">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 }
                             }
-                            @foreach (var item in list)
-                            {
-                                idx++;
-                                <tr>
-                                    <td>@idx</td>
-                                    <td class="d-flex align-items-center gap-3">
-                                        <img src="@item.Product?.ImageUrl"
-                                             alt="@item.Product?.ProductName"
-                                             class="rounded"
-                                             width="45" height="45" />
-                                        <span class="ms-1">@item.Product?.ProductName</span>
-                                    </td>
-                                    <td>@item.Count</td>
-                                    <td>@item.Price.ToString("0.00")</td>
-                                    <td>@(item.Price * item.Count)</td>
-                                    <td>
-                                        <a class="btn btn-sm btn-danger"
-                                           asp-controller="Basket"
-                                           asp-action="DeleteBasket"
-                                           asp-route-id="@item.BasketId">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                            @if (!list.Any())
+                            else
                             {
                                 <tr>
-                                    <td colspan="6" class="py-4 text-muted">Sepetiniz şu anda boş.</td>
+                                    <td colspan="6" class="py-4 text-muted">Sepetiniz boş.</td>
                                 </tr>
                             }
                         </tbody>
@@ -87,42 +221,46 @@
                 </div>
             </div>
 
-            <!-- Özet & Kupon -->
+            <!-- ==================== SUMMARY / COUPON ==================== -->
             <div class="col-lg-4">
                 <!-- Kupon -->
-                <div class="input-group mb-3 shadow-sm">
-                    <input id="couponCode"
-                           class="form-control border-0"
-                           placeholder="Kupon kodunuz…" />
-                    <button id="applyCoupon"
-                            class="btn btn-warning text-white fw-semibold">
-                        Uygula
-                    </button>
+                <div class="coupon-container">
+                    <h6 class="coupon-title">
+                        <i class="fa fa-gift coupon-icon"></i>
+                        Kupon Kodu
+                    </h6>
+                    <div class="input-group coupon-input-group">
+                        <input id="couponCode" class="form-control coupon-input" placeholder="Kupon kodunuz…" />
+                        <button id="applyCoupon" class="btn coupon-btn">Uygula</button>
+                    </div>
+                    <div id="couponSuccess" class="coupon-success" style="display: none;">
+                        <i class="fa fa-check-circle coupon-icon"></i>
+                        Kupon uygulandı! %15 indirim kazandınız
+                    </div>
                 </div>
 
                 <!-- Sepet Özeti -->
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-warning text-white fw-semibold">
-                        Sepet Özeti
-                    </div>
+                    <div class="card-header bg-warning text-white fw-semibold">Sepet Özeti</div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2 small">
-                            <span>Ara Toplam</span>
-                            <span id="subTotal">@subTotal.ToString("0.00") ₺</span>
+                        <div class="d-flex justify-content-between small mb-2">
+                            <span>Ara Toplam</span>
+                            <span id="subTotal">@subTotal.ToString("0.00") ₺</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2 small">
-                            <span>KDV (%10)</span>
-                            <span id="vat">@vat.ToString("0.00") ₺</span>
+                        <div class="d-flex justify-content-between small mb-2">
+                            <span>Bahşiş (%4)</span>
+                            <span id="tip">@tip.ToString("0.00") ₺</span>
                         </div>
                         <hr />
                         <div class="d-flex justify-content-between fs-5 fw-bold">
-                            <span>Genel Toplam</span>
-                            <span id="grandTotal">@grandTotal.ToString("0.00") ₺</span>
+                            <span>Genel Toplam</span>
+                            <span id="grandTotal">@grandTotal.ToString("0.00") ₺</span>
                         </div>
-                        <button id="checkout"
+
+                        <button id="checkoutButton"
                                 class="btn btn-warning w-100 mt-3 fw-semibold"
-                        @(list.Any() ? "" : "disabled")>
-                            Siparişi Tamamla
+                        @(items.Any() ? "" : "disabled")>
+                            SİPARİŞİ TAMAMLA
                         </button>
                     </div>
                 </div>
@@ -133,26 +271,112 @@
     @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
     @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
 
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        // %15 indirim kuponu örneği
-        document.getElementById('applyCoupon').addEventListener('click', function () {
-            const code = document.getElementById('couponCode').value.trim().toUpperCase();
-            if (code === 'LEZZET15') {
-                const sub   = parseFloat('@subTotal');
-                const disc  = sub * 0.15;
-                const newSub= sub - disc;
-                const newVat= newSub * 0.10;
-                const newTot= newSub + newVat;
+        let couponApplied = false; // Kupon uygulanma durumu
 
-                document.getElementById('subTotal').textContent  = newSub.toFixed(2) + ' ₺';
-                document.getElementById('vat').textContent        = newVat.toFixed(2) + ' ₺';
-                document.getElementById('grandTotal').textContent = newTot.toFixed(2) + ' ₺';
+        /* ----------- ÜRÜN SİL ----------- */
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id   = btn.dataset.id;
+                const name = btn.dataset.name;
 
-                this.classList.replace('btn-warning', 'btn-success');
-                this.textContent = 'Uygulandı';
+                const res = await Swal.fire({
+                    title: `${name} ürünü silinsin mi?`,
+                    icon: 'warning', showCancelButton: true,
+                    confirmButtonText: 'Evet', cancelButtonText: 'Hayır'
+                });
+                if (!res.isConfirmed) return;
+
+                const del = await fetch(`/api/Baskets/${id}`, { method: 'DELETE' });
+                if (del.ok) {
+                    btn.closest('tr').remove();
+                    updateSummary();
+                    Swal.fire({ icon:'success', text:'Silindi' });
+                } else {
+                    Swal.fire({ icon:'error', text:'Silinemedi' });
+                }
+            });
+        });
+
+        /* ----------- ÖZETİ GÜNCELLE ----------- */
+        function updateSummary() {
+            let sub = 0;
+            document.querySelectorAll('tbody tr').forEach(r => {
+                const line = parseFloat(r.children[4].innerText.replace(',', '.'));
+                if (!isNaN(line)) sub += line;
+            });
+
+            // Kupon uygulandıysa indirimi koru
+            if (couponApplied) {
+                sub = sub * 0.85;
             }
+
+            const tip   = +(sub * 0.04).toFixed(2);
+            const total = +(sub + tip).toFixed(2);
+
+            document.getElementById('subTotal'  ).innerText = sub.toFixed(2)   + ' ₺';
+            document.getElementById('tip'       ).innerText = tip.toFixed(2)   + ' ₺';
+            document.getElementById('grandTotal').innerText = total.toFixed(2) + ' ₺';
+        }
+
+        /* ----------- KUPON ----------- */
+        document.getElementById('applyCoupon').addEventListener('click', function() {
+            // Kupon zaten uygulandıysa işlem yapma
+            if (couponApplied) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Kupon Zaten Kullanıldı',
+                    text: 'Bu kupon zaten uygulanmış durumda'
+                });
+                return;
+            }
+
+            const code = document.getElementById('couponCode').value.trim().toUpperCase();
+
+            if (code !== 'LEZZET15') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Geçersiz Kupon',
+                    text: 'Lütfen geçerli bir kupon kodu girin'
+                });
+                return;
+            }
+
+            const sub = parseFloat(document.getElementById('subTotal').innerText);
+            const discSub = +(sub * 0.85).toFixed(2);
+            const newTip  = +(discSub * 0.04).toFixed(2);
+            const newTot  = +(discSub + newTip).toFixed(2);
+
+            document.getElementById('subTotal').innerText   = discSub.toFixed(2) + ' ₺';
+            document.getElementById('tip').innerText        = newTip .toFixed(2) + ' ₺';
+            document.getElementById('grandTotal').innerText = newTot .toFixed(2) + ' ₺';
+
+            // Kupon durumunu güncelle
+            couponApplied = true;
+
+            // Button görünümünü değiştir
+            this.classList.add('applied');
+            this.innerHTML = '<i class="fa fa-check"></i> Uygulandı';
+            this.disabled = true;
+
+            // Input'u devre dışı bırak
+            document.getElementById('couponCode').disabled = true;
+
+            // Başarı mesajını göster
+            document.getElementById('couponSuccess').style.display = 'block';
+
+            // SweetAlert bildirimi
+            Swal.fire({
+                icon: 'success',
+                title: 'Kupon Uygulandı!',
+                text: '%15 indirim kazandınız',
+                timer: 2000,
+                showConfirmButton: false
+            });
         });
     </script>
-
 </body>
 </html>
