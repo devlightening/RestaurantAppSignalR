@@ -13,14 +13,13 @@
 
 		<div class="main-panel">
 			@RenderBody()
-
+			 
 			@await Component.InvokeAsync("_LayoutFooterComponentPartial")
 		</div>
 	</div>
 
 	@await Component.InvokeAsync("_LayoutScriptComponentPartial")
 
-	@* 💡 Burası eksikti – Scripts bölümü için eklenmeli *@
 	@RenderSection("Scripts", required: false)
 </body>
 </html>

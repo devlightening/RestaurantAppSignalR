@@ -4,6 +4,7 @@ using SignalR.DataAccessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
 using SignalR.DataAccessLayer.EntityFramework;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 internal class Program
 {
@@ -64,11 +65,17 @@ internal class Program
         builder.Services.AddScoped<IMoneyCaseService, MoneyCaseManager>();
         builder.Services.AddScoped<IMoneyCaseDal, EfMoneyCaseDal>();
 
-        builder.Services.AddScoped<IRestaurantTableService , RestaurantTableManager>();
+        builder.Services.AddScoped<IRestaurantTableService, RestaurantTableManager>();
         builder.Services.AddScoped<IRestaurantTableDal, EfRestaurantTable>();
 
         builder.Services.AddScoped<ISliderService, SliderManager>();
         builder.Services.AddScoped<ISliderDal, EfSliderDal>();
+
+        builder.Services.AddScoped<IBasketService, BasketManager>();
+        builder.Services.AddScoped<IBasketDal, EfBasketDal>();
+
+        builder.Services.AddControllersWithViews()
+        .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
         builder.Services.AddControllers();

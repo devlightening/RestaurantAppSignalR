@@ -8,5 +8,7 @@
         public string Phone { get; set; }
         public DateTime Date { get; set; }
         public int PersonCount { get; set; }
+        public bool Status { get; set; }
+
     }
 }

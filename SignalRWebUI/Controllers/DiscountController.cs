@@ -87,5 +87,30 @@ namespace SignalRWebUI.Controllers
             }
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeStatusToTrue(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync($"https://localhost:7000/api/Discounts/ChangeStatusToTrue/{id}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return Problem("Status true yaparken bir hata oluştu.");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeStatusToFalse(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync($"https://localhost:7000/api/Discounts/ChangeStatusToFalse/{id}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return Problem("Status false yaparken bir hata oluştu.");
+        }
+
     }
 }

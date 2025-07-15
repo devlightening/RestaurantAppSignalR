@@ -1,0 +1,158 @@
+﻿@model List<ResultBasketDto>
+@{
+    Layout = null;
+
+    // Koleksiyon null ise boş listeye çekerek NullReference önleriz
+    var list = Model ?? new List<SignalRWebUI.Dtos.BasketDtos.ResultBasketDto>();
+
+    decimal subTotal = list.Sum(x => x.Price * x.Count);
+    decimal vat = Math.Round(subTotal * 0.10m, 2);
+    decimal grandTotal = subTotal + vat;
+}
+
+<!DOCTYPE html>
+<html>
+@await Component.InvokeAsync("_UILayoutHeadComponentPartial")
+
+<body class="sub_page">
+
+    @await Component.InvokeAsync("_UILayoutNavbarComponentPartial")
+    </div>
+    <div class="container-xxl py-5">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb bg-dark text-white rounded mb-4 px-3 py-2">
+            <a class="breadcrumb-item text-white-50" href="/Default/Index">Ana Sayfa</a>
+            <a class="breadcrumb-item text-white-50" href="/Menu/Index">Menü</a>
+            <span class="breadcrumb-item active text-warning">Sepet</span>
+        </nav>
+
+        <div class="row g-4">
+            <!-- Sepet Tablosu -->
+            <div class="col-lg-8">
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-warning text-center small text-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Ürün</th>
+                                <th>Adet</th>
+                                <th>Birim&nbsp;₺</th>
+                                <th>Toplam&nbsp;₺</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            @{
+                                var idx = 0;
+                                foreach (var item in list)
+                                {
+                                    idx++;
+                                    var lineTotal = item.Price * item.Count;
+                                }
+                            }
+                            @foreach (var item in list)
+                            {
+                                idx++;
+                                <tr>
+                                    <td>@idx</td>
+                                    <td class="d-flex align-items-center gap-3">
+                                        <img src="@item.Product?.ImageUrl"
+                                             alt="@item.Product?.ProductName"
+                                             class="rounded"
+                                             width="45" height="45" />
+                                        <span class="ms-1">@item.Product?.ProductName</span>
+                                    </td>
+                                    <td>@item.Count</td>
+                                    <td>@item.Price.ToString("0.00")</td>
+                                    <td>@(item.Price * item.Count)</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-danger"
+                                           asp-controller="Basket"
+                                           asp-action="DeleteBasket"
+                                           asp-route-id="@item.BasketId">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!list.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="py-4 text-muted">Sepetiniz şu anda boş.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Özet & Kupon -->
+            <div class="col-lg-4">
+                <!-- Kupon -->
+                <div class="input-group mb-3 shadow-sm">
+                    <input id="couponCode"
+                           class="form-control border-0"
+                           placeholder="Kupon kodunuz…" />
+                    <button id="applyCoupon"
+                            class="btn btn-warning text-white fw-semibold">
+                        Uygula
+                    </button>
+                </div>
+
+                <!-- Sepet Özeti -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-warning text-white fw-semibold">
+                        Sepet Özeti
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span>Ara Toplam</span>
+                            <span id="subTotal">@subTotal.ToString("0.00") ₺</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span>KDV (%10)</span>
+                            <span id="vat">@vat.ToString("0.00") ₺</span>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-between fs-5 fw-bold">
+                            <span>Genel Toplam</span>
+                            <span id="grandTotal">@grandTotal.ToString("0.00") ₺</span>
+                        </div>
+                        <button id="checkout"
+                                class="btn btn-warning w-100 mt-3 fw-semibold"
+                        @(list.Any() ? "" : "disabled")>
+                            Siparişi Tamamla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
+    @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
+
+    <script>
+        // %15 indirim kuponu örneği
+        document.getElementById('applyCoupon').addEventListener('click', function () {
+            const code = document.getElementById('couponCode').value.trim().toUpperCase();
+            if (code === 'LEZZET15') {
+                const sub   = parseFloat('@subTotal');
+                const disc  = sub * 0.15;
+                const newSub= sub - disc;
+                const newVat= newSub * 0.10;
+                const newTot= newSub + newVat;
+
+                document.getElementById('subTotal').textContent  = newSub.toFixed(2) + ' ₺';
+                document.getElementById('vat').textContent        = newVat.toFixed(2) + ' ₺';
+                document.getElementById('grandTotal').textContent = newTot.toFixed(2) + ' ₺';
+
+                this.classList.replace('btn-warning', 'btn-success');
+                this.textContent = 'Uygulandı';
+            }
+        });
+    </script>
+
+</body>
+</html>

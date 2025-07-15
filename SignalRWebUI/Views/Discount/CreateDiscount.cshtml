@@ -33,6 +33,15 @@
                         <textarea class="form-control" asp-for="Description" id="Description" rows="4" placeholder="Ürünün içeriği, porsiyon bilgisi veya özel tarif notları..."></textarea>
                     </div>
 
+                    <!-- ⭐ Aktif / Pasif alanı -->
+                    <div class="form-check form-switch mb-4">
+                        <input asp-for="Status" class="form-check-input" type="checkbox" id="StatusSwitch">
+                        <label class="form-check-label fw-semibold" for="StatusSwitch">
+                            Bu indirim hemen aktif olsun
+                        </label>
+                    </div>
+                    <!-- ⭐ -->
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-danger btn-lg fw-semibold">
                             <i class="bi bi-plus-circle"></i> Menüye Ekle

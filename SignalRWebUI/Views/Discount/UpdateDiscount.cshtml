@@ -4,6 +4,82 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
+<!-- ——— Özel tasarım ——— -->
+<style>
+    /* Başlık tonu ‑ aynısı */
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #4e54c8;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Form kabı */
+    .shadow-card {
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,.06);
+        background: #fff;
+        padding: 2rem 2.5rem;
+    }
+
+    /* Etiket & input */
+    .form-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-control,
+    .form-check-input {
+        border-radius: .6rem;
+        border: 1px solid #d7d7d7;
+        transition: border-color .15s ease;
+    }
+
+        .form-control:focus {
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 .2rem rgba(78,84,200,.15);
+        }
+
+        /* Switch */
+        .form-check-input:checked {
+            background-color: #4e54c8;
+            border-color: #4e54c8;
+        }
+
+    /* Large işlem butonu */
+    .btn-save {
+        background: #4e54c8;
+        border: none;
+        font-weight: 600;
+        color: #fff;
+        border-radius: .6rem;
+        padding: .75rem 1.25rem;
+        transition: all .2s ease-in-out;
+    }
+
+        .btn-save:hover {
+            background: #363bb2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78,84,200,.35);
+        }
+
+    /* Responsive */
+    @@media(max - width:768px) {
+        .shadow-card
+
+    {
+        padding: 1.5rem
+    }
+
+    .page-title {
+        font-size: 1.5rem
+    }
+
+    }
+</style>
+
+
+
 <div class="content py-4">
     <div class="container">
         <h4 class="page-title text-warning fw-bold mb-4">İndirimli Menü Ürünü Güncelle</h4>
@@ -34,6 +110,14 @@
                         <label for="Description" class="form-label fw-semibold">Ürün Açıklaması</label>
                         <textarea class="form-control" asp-for="Description" id="Description" rows="4" placeholder="Yemeğin içeriği, servis şekli veya spesiyal bilgileri..."></textarea>
                     </div>
+                    <!-- ⭐ Aktif / Pasif alanı -->
+                    <div class="form-check form-switch mb-4">
+                        <input asp-for="Status" class="form-check-input" type="checkbox" id="StatusSwitch">
+                        <label class="form-check-label fw-semibold" for="StatusSwitch">
+                            Bu indirim hemen aktif olsun
+                        </label>
+                    </div>
+                    <!-- ⭐ -->
 
                     <div class="d-grid">
                         <button type="submit" class="btn btn-warning btn-lg fw-semibold">
