@@ -271,6 +271,56 @@
     @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
     @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
 
+    <script>
+        /* ----------- ÜRÜN SİL (SweetAlert ile ortada) ----------- */
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async e => {
+                e.preventDefault();                                     // form postunu engelle
+                const id   = btn.closest('form').getAttribute('action') // /Basket/DeleteBasket/{id}
+                             .split('/').pop();                         // id’yi ayıkla
+                const name = btn.closest('tr').querySelector('span')?.innerText ?? '';
+
+                /* Ortada SweetAlert diyaloğu */
+                const ask = await Swal.fire({
+                    title: `${name} ürünü silinsin mi?`,
+                    icon:  'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Evet',
+                    cancelButtonText : 'Hayır',
+                    reverseButtons   : true,        // Hayır solda, Evet sağda
+                    focusCancel      : true,        // ilk odak Hayır’da
+                });
+
+                if (!ask.isConfirmed) return;       // Kullanıcı “Hayır” dedi
+
+                // Silme çağrısı
+                const del = await fetch(`/Basket/DeleteBasket/${id}`, { method: 'POST' });
+
+                if (del.ok) {
+                    /* Satırı tablodan kaldır ve özetleri güncelle */
+                    btn.closest('tr').remove();
+                    updateSummary();
+
+                    await Swal.fire({
+                        title: 'Silindi',
+                        text : `${name} ürünü sepetten kaldırıldı`,
+                        icon : 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Hata',
+                        text : 'Ürün silinirken bir problem oluştu',
+                        icon : 'error'
+                    });
+                }
+            });
+        });
+    </script>
+
+
+
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -336,7 +386,7 @@
 
             const code = document.getElementById('couponCode').value.trim().toUpperCase();
 
-            if (code !== 'LEZZET15') {
+            if (code !== 'COKYEAZÖDE15') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Geçersiz Kupon',
