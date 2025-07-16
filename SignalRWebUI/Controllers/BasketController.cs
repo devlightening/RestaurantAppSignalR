@@ -43,6 +43,7 @@ namespace SignalRWebUI.Controllers
             return NotFound("Böyle bir ürün yok");
         }
 
-         
+
+
     }
 }

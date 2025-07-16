@@ -27,5 +27,14 @@ namespace SignalR.DataAccessLayer.EntityFramework
                 .Where(b => b.RestaurantTableId == id)
                 .ToList();
         }
+
+        public decimal TBasketCount()
+        {
+            using var context = new SignalRContext();
+            return context.Baskets
+                .Where(b => b.Status == true)
+                .Sum(b => b.TotalPrice);
+
+        }
     }
     }

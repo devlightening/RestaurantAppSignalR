@@ -18,6 +18,11 @@ namespace SignalR.BusinessLayer.Concretes
             _basketDal.Add(entity);
         }
 
+        public decimal TBasketCount()
+        {
+            return _basketDal.TBasketCount();
+        }
+
         public void TDelete(Basket entity)
         {
             _basketDal.Delete(entity);

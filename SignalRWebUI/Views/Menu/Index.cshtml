@@ -142,14 +142,14 @@
 
     <script>
         /* ürün sepete ekle */
-        function takeProductId(id, productName, price) {
+        function takeProductId(id, productName, price,count) {
 
             $.ajax({
                 url: '/Menu/AddBasket/',          // ►  POST action’ınız
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    ProductId   : id,
+                    ProductId   : id,   
                     Price       : price,
                     Count       : 1,
                     TotalPrice  : price,

@@ -39,16 +39,13 @@
             }
 
         @@keyframes couponShimmer {
-            0%
+            0% {
+                transform: rotate(0deg);
+            }
 
-        {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .coupon-title {
@@ -130,18 +127,15 @@
         }
 
         @@keyframes slideIn {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .coupon-icon {
@@ -152,6 +146,44 @@
 </head>
 
 <body class="sub_page">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.0/signalr.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(() => {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7000/signalrhub")
+                .build();
+
+            // Bağlantı durumu yazdır
+            $("#connstatus").text(connection.state);
+
+            // SignalR bağlantısını başlat
+            connection.start().then(() => {
+                $("#connstatus").text(connection.state);
+                $("#connstatus").removeClass("pulse");
+
+                // Belirli aralıklarla server'a tetik gönder
+                setInterval(async () => {
+                    try {
+                        await connection.invoke("SendNotifyBasketUpdated");
+                    } catch (err) {
+                        console.error("SignalR hata:", err);
+                        $("#connstatus").addClass("pulse");
+                    }
+                }, 1000);
+            }).catch(err => {
+                console.error("SignalR bağlantı hatası:", err);
+                $("#connstatus").text("Bağlantı Hatası");
+                $("#connstatus").addClass("pulse");
+            });
+
+            connection.on("NotifyBasketUpdated", (data) => {
+            console.log("Sepet güncellendi:", data);
+            updateSummary(); // sadece özet alanlarını güncelle
+            });
+        });
+    </script>
+
 
     <!-- ***** NAV ***** -->
     <div class="hero_area">
@@ -197,7 +229,13 @@
                                                  class="rounded" alt="@b.Product.ProductName" />
                                             <span>@b.Product.ProductName</span>
                                         </td>
-                                        <td>@b.Count</td>
+                                        <td>
+                                            <div class="quantity-control d-flex align-items-center">
+                                                <button class="btn btn-sm btn-outline-secondary decrement" data-id="@b.BasketId">-</button>
+                                                <span class="mx-2 quantity" id="qty-@b.BasketId">@b.Count</span>
+                                                <button class="btn btn-sm btn-outline-secondary increment" data-id="@b.BasketId">+</button>
+                                            </div>
+                                        </td>
                                         <td>@b.Price.ToString("0.00")</td>
                                         <td>@(b.Price * b.Count)</td>
                                         <td>
@@ -271,53 +309,7 @@
     @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
     @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
 
-    <script>
-        /* ----------- ÜRÜN SİL (SweetAlert ile ortada) ----------- */
-        document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', async e => {
-                e.preventDefault();                                     // form postunu engelle
-                const id   = btn.closest('form').getAttribute('action') // /Basket/DeleteBasket/{id}
-                             .split('/').pop();                         // id’yi ayıkla
-                const name = btn.closest('tr').querySelector('span')?.innerText ?? '';
 
-                /* Ortada SweetAlert diyaloğu */
-                const ask = await Swal.fire({
-                    title: `${name} ürünü silinsin mi?`,
-                    icon:  'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Evet',
-                    cancelButtonText : 'Hayır',
-                    reverseButtons   : true,        // Hayır solda, Evet sağda
-                    focusCancel      : true,        // ilk odak Hayır’da
-                });
-
-                if (!ask.isConfirmed) return;       // Kullanıcı “Hayır” dedi
-
-                // Silme çağrısı
-                const del = await fetch(`/Basket/DeleteBasket/${id}`, { method: 'POST' });
-
-                if (del.ok) {
-                    /* Satırı tablodan kaldır ve özetleri güncelle */
-                    btn.closest('tr').remove();
-                    updateSummary();
-
-                    await Swal.fire({
-                        title: 'Silindi',
-                        text : `${name} ürünü sepetten kaldırıldı`,
-                        icon : 'success',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Hata',
-                        text : 'Ürün silinirken bir problem oluştu',
-                        icon : 'error'
-                    });
-                }
-            });
-        });
-    </script>
 
 
 
@@ -325,7 +317,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        let couponApplied = false; // Kupon uygulanma durumu
+        let couponApplied = false;
 
         /* ----------- ÜRÜN SİL ----------- */
         document.querySelectorAll('.btn-delete').forEach(btn => {
@@ -335,18 +327,33 @@
 
                 const res = await Swal.fire({
                     title: `${name} ürünü silinsin mi?`,
-                    icon: 'warning', showCancelButton: true,
-                    confirmButtonText: 'Evet', cancelButtonText: 'Hayır'
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Evet',
+                    cancelButtonText: 'Hayır'
                 });
+
                 if (!res.isConfirmed) return;
 
-                const del = await fetch(`/api/Baskets/${id}`, { method: 'DELETE' });
+                const del = await fetch(`https://localhost:7000/api/Baskets/${id}`, { method: 'DELETE' });
+
                 if (del.ok) {
                     btn.closest('tr').remove();
                     updateSummary();
-                    Swal.fire({ icon:'success', text:'Silindi' });
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Silindi',
+                        text: `${name} sepetten kaldırıldı`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                 } else {
-                    Swal.fire({ icon:'error', text:'Silinemedi' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata',
+                        text: 'Silme işlemi başarısız oldu'
+                    });
                 }
             });
         });
@@ -355,11 +362,10 @@
         function updateSummary() {
             let sub = 0;
             document.querySelectorAll('tbody tr').forEach(r => {
-                const line = parseFloat(r.children[4].innerText.replace(',', '.'));
+                const line = parseFloat(r.children[4].innerText.replace('₺', '').trim().replace(',', '.'));
                 if (!isNaN(line)) sub += line;
             });
 
-            // Kupon uygulandıysa indirimi koru
             if (couponApplied) {
                 sub = sub * 0.85;
             }
@@ -373,8 +379,7 @@
         }
 
         /* ----------- KUPON ----------- */
-        document.getElementById('applyCoupon').addEventListener('click', function() {
-            // Kupon zaten uygulandıysa işlem yapma
+             document.getElementById('applyCoupon').addEventListener('click', function() {
             if (couponApplied) {
                 Swal.fire({
                     icon: 'warning',
@@ -386,7 +391,18 @@
 
             const code = document.getElementById('couponCode').value.trim().toUpperCase();
 
-            if (code !== 'COKYEAZÖDE15') {
+            // Boş giriş kontrolü
+            if (!code) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Kupon Kodu Girmediniz',
+                    text: 'Lütfen bir kupon kodu girin'
+                });
+                return;
+            }
+
+            // Geçersiz kupon kontrolü
+            if (code !== 'HALIL15') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Geçersiz Kupon',
@@ -395,30 +411,23 @@
                 return;
             }
 
-            const sub = parseFloat(document.getElementById('subTotal').innerText);
-            const discSub = +(sub * 0.85).toFixed(2);
-            const newTip  = +(discSub * 0.04).toFixed(2);
-            const newTot  = +(discSub + newTip).toFixed(2);
+            // Geçerli kupon → İndirim uygulama işlemleri
+            let sub = parseFloat(document.getElementById('subTotal').innerText.replace('₺', '').trim().replace(',', '.'));
+            sub = +(sub * 0.85).toFixed(2); // %15 indirim
+            const tip = +(sub * 0.04).toFixed(2); // %4 bahşiş
+            const total = +(sub + tip).toFixed(2); // toplam
 
-            document.getElementById('subTotal').innerText   = discSub.toFixed(2) + ' ₺';
-            document.getElementById('tip').innerText        = newTip .toFixed(2) + ' ₺';
-            document.getElementById('grandTotal').innerText = newTot .toFixed(2) + ' ₺';
+            document.getElementById('subTotal').innerText = sub.toFixed(2) + ' ₺';
+            document.getElementById('tip').innerText = tip.toFixed(2) + ' ₺';
+            document.getElementById('grandTotal').innerText = total.toFixed(2) + ' ₺';
 
-            // Kupon durumunu güncelle
             couponApplied = true;
-
-            // Button görünümünü değiştir
             this.classList.add('applied');
             this.innerHTML = '<i class="fa fa-check"></i> Uygulandı';
             this.disabled = true;
-
-            // Input'u devre dışı bırak
             document.getElementById('couponCode').disabled = true;
-
-            // Başarı mesajını göster
             document.getElementById('couponSuccess').style.display = 'block';
 
-            // SweetAlert bildirimi
             Swal.fire({
                 icon: 'success',
                 title: 'Kupon Uygulandı!',
@@ -426,6 +435,63 @@
                 timer: 2000,
                 showConfirmButton: false
             });
+        });
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Arttır
+            document.querySelectorAll('.increment').forEach(btn => {
+                btn.addEventListener('click', () => updateQuantity(btn.dataset.id, +1));
+            });
+
+            // Azalt
+            document.querySelectorAll('.decrement').forEach(btn => {
+                btn.addEventListener('click', () => updateQuantity(btn.dataset.id, -1));
+            });
+
+            async function updateQuantity(basketId, change) {
+            const quantitySpan = document.getElementById(`qty-${basketId}`);
+            let currentQty = parseInt(quantitySpan.innerText);
+            const newQty = currentQty + change;
+            if (newQty < 1) return;
+
+            const response = await fetch(`https://localhost:7000/api/Baskets/${basketId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ count: newQty })
+            });
+
+            if (response.ok) {
+                quantitySpan.innerText = newQty;
+
+                // 1️⃣ Satır toplamını güncelle
+                const row = quantitySpan.closest('tr');
+                const unitPrice = parseFloat(row.children[3].innerText.replace(',', '.'));
+                const newLineTotal = +(unitPrice * newQty).toFixed(2);
+                row.children[4].innerText = newLineTotal.toFixed(2) + ' ₺';
+
+                // 2️⃣ Sepet özetini güncelle
+                updateSummary();
+
+                // 3️⃣ SignalR server'a haber ver
+                try {
+                    await connection.invoke("SendNotifyBasketUpdated");
+                } catch (err) {
+                    console.error("SignalR invoke error:", err);
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata',
+                    text: 'Adet güncellenemedi'
+                });
+            }
+        }
+
         });
     </script>
 </body>

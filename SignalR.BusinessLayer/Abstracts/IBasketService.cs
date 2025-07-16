@@ -10,5 +10,6 @@ namespace SignalR.BusinessLayer.Abstracts
     public interface IBasketService : IGenericService<Basket>
     {
         List<Basket> TGetBasketsByRestaurantTableNumber(int id);
+        public decimal TBasketCount();
     }
 }

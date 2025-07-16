@@ -57,7 +57,7 @@ namespace SignalRWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createBasketDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7000/api/BasketS", stringContent);
+            var responseMessage = await client.PostAsync("https://localhost:7000/api/Baskets", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return Ok("Eklendi");

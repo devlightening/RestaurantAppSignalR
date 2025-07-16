@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
@@ -16,11 +17,13 @@ namespace SignalRApi.Controllers
     {
         private readonly IBasketService _basketService;
         private readonly IMapper _mapper;
+        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public BasketsController(IBasketService basketservice, IMapper mapper)
+        public BasketsController(IBasketService basketService, IMapper mapper, IHubContext<SignalRHub> hubContext)
         {
-            _basketService = basketservice;
-              _mapper = mapper;
+            _basketService = basketService;
+            _mapper = mapper;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -36,19 +39,45 @@ namespace SignalRApi.Controllers
         public IActionResult CreateBasket(CreateBasketDto createBasketDto)
         {
             using var context = new SignalRContext();
+
             if (createBasketDto != null)
             {
-                _basketService.TAdd(new Basket()
+                var existingBasket = context.Baskets
+                    .FirstOrDefault(x => x.ProductId == createBasketDto.ProductId && x.RestaurantTableId == 4 && x.Status == true);
+
+                if (existingBasket != null)
                 {
-                    ProductId = createBasketDto.ProductId,
-                    Count = 1,
-                    RestaurantTableId = 4,
-                    Price = context.Products.Where(x => x.ProductId == createBasketDto.ProductId).Select(a => a.Price).FirstOrDefault(),
-                    TotalPrice = 0,
-                    Status = true
-                });
+                    // Aynı ürün varsa, adet ve toplam fiyat güncellenir
+                    existingBasket.Count += 1;
+                    existingBasket.TotalPrice = existingBasket.Price * existingBasket.Count;
+
+                    context.Baskets.Update(existingBasket);
+                }
+                else
+                {
+                    // Ürün sepette yoksa, yeni olarak eklenir
+                    var price = context.Products
+                        .Where(x => x.ProductId == createBasketDto.ProductId)
+                        .Select(a => a.Price)
+                        .FirstOrDefault();
+
+                    var newBasket = new Basket()
+                    {
+                        ProductId = createBasketDto.ProductId,
+                        Count = 1,
+                        RestaurantTableId = 4,
+                        Price = price,
+                        TotalPrice = price,
+                        Status = true
+                    };
+
+                    context.Baskets.Add(newBasket);
+                }
+
+                context.SaveChanges();
                 return Ok("Sepet başarıyla eklendi");
             }
+
             return NotFound("Sepet başarıyla eklenemedi");
         }
 
@@ -66,9 +95,9 @@ namespace SignalRApi.Controllers
             if (value != null)
             {
                 _basketService.TDelete(value);
-                return Ok("Sepet başarıyla eklendi");
+                return Ok("Ürün başarıyla Sepetten Çıkarıldı");
             }
-            return NotFound("Sepet başarıyla eklenemedi");
+            return NotFound("Ürün Sepetten Çıkarılamadı");
         }
 
         [HttpGet("BasketListByMenuTableWithProductName")]
@@ -86,8 +115,27 @@ namespace SignalRApi.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCount(int id, [FromBody] CountUpdateDto countUpdateDto)
+        {
+            var basket = _basketService.TGetById(id);
+            if (basket == null)
+                return NotFound();
 
+            basket.Count = countUpdateDto.Count;
+            basket.TotalPrice = basket.Count * basket.Price;
+            _basketService.TUpdate(basket);
 
+            await _hubContext.Clients.All.SendAsync("ReceiveBasketUpdate");
 
+            return Ok("Güncellendi");
+        }
+
+        [HttpGet("BasketCount")]
+        public IActionResult BasketCount()
+        {
+            var count = _basketService.TBasketCount();
+            return Ok(count);
+        }
     }
 }
