@@ -11,6 +11,7 @@ public class SignalRHub : Hub
     private readonly IRestaurantTableService _restaurantTableService;
     private readonly IBookingService _bookingService;
     private readonly IBasketService _basketService;
+    private readonly INotificationService _notificationService;
 
     public SignalRHub(ICategoryService categoryService, 
         IProductService productService,
@@ -19,7 +20,8 @@ public class SignalRHub : Hub
         IOrderDetailService orderDetailService, 
         IRestaurantTableService restaurantTableService, 
         IBookingService bookingService,
-        IBasketService basketService)
+        IBasketService basketService,
+        INotificationService notificationService)
 
     {
         _categoryService = categoryService;
@@ -30,6 +32,8 @@ public class SignalRHub : Hub
         _restaurantTableService = restaurantTableService;
         _bookingService = bookingService;
         _basketService = basketService;
+        _notificationService = notificationService;
+
     }
 
     public async Task SendStatistic()
@@ -109,5 +113,17 @@ public class SignalRHub : Hub
     {
         var value = _basketService.TBasketCount();
         await Clients.All.SendAsync("ReceiveBasketUpdate",value);
+    }
+
+    public async Task GetBookingList()
+    {
+        var value = _bookingService.TGetListAll();
+        await Clients.All.SendAsync("ReceiveGetBookingList", value);
+    }
+
+    public async Task SendNotification()
+    {
+        var value = _notificationService.TNotificationCountByStatusFalse();
+        await Clients.All.SendAsync("ReceiveNotificationCountByFalse", value);
     }
 }

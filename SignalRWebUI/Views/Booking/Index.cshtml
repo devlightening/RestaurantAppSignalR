@@ -1,9 +1,12 @@
 ﻿@model List<ResultBookingDto>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Rezervasyonlar";
     Layout = "~/Views/AdminLayout/Index.cshtml";
-    int count = 0;
 }
+<!-- Script Referansları -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
 <style>
     .booking-dashboard {
@@ -28,14 +31,6 @@
         margin: 0;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-
-        .page-title i {
-            color: #ffd700;
-            margin-right: 0.5rem;
-            animation: rotate 3s linear infinite;
-        }
-
-
 
     .btn-new-booking {
         background: linear-gradient(135deg, #4facfe, #00f2fe);
@@ -66,14 +61,8 @@
         transition: all 0.3s ease;
     }
 
-        .booking-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-        }
-
     .card-header {
-        background: linear-gradient(135deg, #f8f9ff, #e8ecf4) !important;
-        border-bottom: 1px solid rgba(102, 126, 234, 0.1) !important;
+        background: linear-gradient(135deg, #f8f9ff, #e8ecf4);
         padding: 1.5rem 2rem;
     }
 
@@ -84,48 +73,34 @@
             font-size: 1.3rem;
         }
 
-        .card-header small {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
     .table-responsive {
         border-radius: 10px;
         overflow: hidden;
     }
 
     .modern-table {
-        margin: 0;
         background: white;
     }
 
         .modern-table thead th {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            border: none;
             padding: 1rem 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             font-size: 0.85rem;
         }
-
-        .modern-table tbody tr {
-            transition: all 0.3s ease;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-            .modern-table tbody tr:hover {
-                background: linear-gradient(135deg, #f8f9ff, #e8ecf4);
-                transform: scale(1.01);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            }
 
         .modern-table tbody td {
             padding: 1rem 0.8rem;
             vertical-align: middle;
-            border: none;
             font-size: 0.9rem;
+        }
+
+        .modern-table tbody tr:hover {
+            background: linear-gradient(135deg, #f8f9ff, #e8ecf4);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
     .status-badge {
@@ -135,22 +110,17 @@
         border-radius: 20px;
         font-size: 0.8rem;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        border: none;
-        box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
     }
 
     .btn-action {
         width: 35px;
         height: 35px;
-        border-radius: 50%;
+        border-radius: 8px;
         border: 2px solid;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
-        text-decoration: none;
         margin: 0 2px;
     }
 
@@ -163,8 +133,7 @@
         .btn-edit:hover {
             background: #28a745;
             color: white;
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            transform: scale(1.1);
         }
 
     .btn-delete {
@@ -176,8 +145,7 @@
         .btn-delete:hover {
             background: #dc3545;
             color: white;
-            transform: scale(1.1) rotate(-5deg);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            transform: scale(1.1);
         }
 
     .empty-state {
@@ -189,46 +157,18 @@
         color: #4facfe;
         font-size: 1.1rem;
         font-weight: 500;
-    }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .booking-dashboard
-
-    {
-        padding: 1rem 0;
-    }
-
-    .dashboard-header {
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-    }
-
-    .modern-table {
-        font-size: 0.8rem;
-    }
-
-        .modern-table thead th,
-        .modern-table tbody td {
-            padding: 0.5rem 0.3rem;
-        }
-
+        display: none;
     }
 </style>
 
 <div class="booking-dashboard">
     <div class="container-fluid">
-        <!-- Sayfa Başlığı -->
+
+        <!-- Başlık -->
         <div class="dashboard-header d-flex justify-content-between align-items-center">
-            <div>
-                <h4 class="page-title">
-                    <i class="la la-calendar-check"></i>Rezervasyon İşlemleri
-                </h4>
-            </div>
+            <h4 class="page-title">
+                <i class="la la-calendar-check"></i> Rezervasyon İşlemleri
+            </h4>
             <a href="/Booking/CreateBooking/" class="btn-new-booking">
                 <i class="la la-plus me-1"></i> Yeni Rezervasyon
             </a>
@@ -239,64 +179,99 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
                     <h5>Rezervasyon Listesi</h5>
-                    <small>Rezervasyonlarınızı buradan yönetebilirsiniz.</small>
+                    <small>Bu tablo anlık olarak güncellenir.</small>
                 </div>
+                <div id="connstatus" class="badge bg-secondary pulse">Bağlantı Yok</div>
             </div>
+
             <div class="card-body p-0">
-                @if (Model != null && Model.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table modern-table text-center">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Ad Soyad</th>
-                                    <th>Telefon</th>
-                                    <th>Mail</th>
-                                    <th>Kişi Sayısı</th>
-                                    <th>Tarih</th>
-                                    <th>Durum</th>
-                                    <th>İşlemler</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    count++;
-                                    <tr>
-                                        <td><strong>@count</strong></td>
-                                        <td>@item.Name</td>
-                                        <td>@item.Phone</td>
-                                        <td>@item.Mail</td>
-                                        <td><strong>@item.PersonCount</strong></td>
-                                        <td>@item.Date.ToString("dd.MM.yyyy")</td>
-                                        <td>
-                                            <span class="status-badge">Rezervasyon Alındı</span>
-                                        </td>
-                                        <td>
-                                            <a href="/Booking/UpdateBooking/@item.BookingId" class="btn-action btn-edit">
-                                                <i class="la la-edit"></i>
-                                            </a>
-                                            <a href="/Booking/DeleteBooking/@item.BookingId" class="btn-action btn-delete" onclick="return confirm('Silmek istediğinize emin misiniz?')">
-                                                <i class="la la-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="p-4">
-                        <div class="empty-state">
-                            <i class="la la-calendar-times-o" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
-                            Henüz herhangi bir rezervasyon bulunmamaktadır.
-                        </div>
-                    </div>
-                }
+                <div class="table-responsive">
+                    <table class="table modern-table text-center">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ad Soyad</th>
+                                <th>Telefon</th>
+                                <th>Mail</th>
+                                <th>Kişi Sayısı</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booking-table-body">
+                            <!-- SignalR verileri buraya gelecek -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 empty-state">
+                    <i class="la la-calendar-times-o" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                    Henüz herhangi bir rezervasyon bulunmamaktadır.
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- SignalR Script -->
+<script type="text/javascript">
+    $(document).ready(() => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:7000/signalrhub")
+            .build();
+
+        connection.start().then(() => {
+            $("#connstatus").text("Bağlandı").removeClass("pulse");
+
+            setInterval(async () => {
+                try {
+                    await connection.invoke("GetBookingList");
+                } catch (err) {
+                    console.error("GetBookingList error:", err);
+                    $("#connstatus").addClass("pulse").text("Hata");
+                }
+            }, 5000);
+        }).catch(err => {
+            console.error("SignalR bağlantı hatası:", err);
+            $("#connstatus").text("Bağlantı Hatası").addClass("pulse");
+        });
+
+        connection.on("ReceiveGetBookingList", data => {
+            const tbody = $("#booking-table-body");
+            tbody.empty();
+
+            if (data && data.length > 0) {
+                $(".empty-state").hide();
+                $(".table-responsive").show();
+
+                let count = 0;
+                data.forEach(item => {
+                    count++;
+                    tbody.append(`
+                        <tr>
+                            <td><strong>${count}</strong></td>
+                            <td>${item.name}</td>
+                            <td>${item.phone}</td>
+                            <td>${item.mail}</td>
+                            <td><strong>${item.personCount}</strong></td>
+                            <td>${new Date(item.date).toLocaleDateString()}</td>
+                            <td><span class="status-badge">Rezervasyon Alındı</span></td>
+                            <td>
+                                <a href="/Booking/UpdateBooking/${item.bookingId}" class="btn-action btn-edit">
+                                    <i class="la la-edit"></i>
+                                </a>
+                                <a href="/Booking/DeleteBooking/${item.bookingId}" class="btn-action btn-delete" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                    <i class="la la-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            } else {
+                $(".table-responsive").hide();
+                $(".empty-state").show();
+            }
+        });
+    });
+</script>

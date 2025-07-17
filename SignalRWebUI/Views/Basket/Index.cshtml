@@ -10,11 +10,61 @@
     decimal grandTotal = subTotal + tip;
 }
 
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     @await Component.InvokeAsync("_UILayoutHeaderComponentPartial")
     <style>
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .quantity-control .btn {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                font-weight: bold;
+                border: none;
+                outline: none;
+                transition: all 0.2s ease-in-out;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
+
+            .quantity-control .decrement {
+                background-color: #e74c3c; /* Kırmızı */
+                color: #fff;
+            }
+
+                .quantity-control .decrement:hover {
+                    background-color: #c0392b;
+                    transform: scale(1.05);
+                }
+
+            .quantity-control .increment {
+                background-color: #2ecc71; /* Yeşil */
+                color: #fff;
+            }
+
+                .quantity-control .increment:hover {
+                    background-color: #27ae60;
+                    transform: scale(1.05);
+                }
+
+            .quantity-control .quantity {
+                min-width: 30px;
+                text-align: center;
+                font-size: 16px;
+                font-weight: 600;
+                color: #333;
+            }
+
+
+
         /* SADECE KUPON KISMINA ÖZEL CSS */
         .coupon-container {
             background: linear-gradient(135deg, #212529 0%, #343a40 100%);
@@ -402,7 +452,7 @@
             }
 
             // Geçersiz kupon kontrolü
-            if (code !== 'HALIL15') {
+            if (code !== 'AHSEN15') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Geçersiz Kupon',

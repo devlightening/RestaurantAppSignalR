@@ -49,20 +49,12 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link p-2 rounded-circle d-flex align-items-center justify-content-center position-relative hover-bg" href="#" id="notificationsDropdown" data-toggle="dropdown" style="width: 38px; height: 38px;">
                         <i class="la la-bell fs-5"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
+                        <span id="notificationcount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
                         </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end notif-box">
                         <li><div class="dropdown-title">4 Yeni Bildirim</div></li>
-                        <li>
-                            <div class="notif-center">
-                                <a href="#"><div class="notif-icon notif-primary"><i class="la la-user-plus"></i></div><div class="notif-content"><span>Yeni kullanıcı kaydoldu</span><span class="time">5 dk önce</span></div></a>
-                                <a href="#"><div class="notif-icon notif-success"><i class="la la-comment"></i></div><div class="notif-content"><span>Rahmad yorum yaptı</span><span class="time">12 dk önce</span></div></a>
-                                <a href="#"><div class="notif-img"><img src="assets/img/profile2.jpg" alt="Profil"></div><div class="notif-content"><span>Reza mesaj gönderdi</span><span class="time">12 dk önce</span></div></a>
-                                <a href="#"><div class="notif-icon notif-danger"><i class="la la-heart"></i></div><div class="notif-content"><span>Farrah beğendi</span><span class="time">17 dk önce</span></div></a>
-                            </div>
-                        </li>
                         <li><a class="see-all" href="#"><strong>Tüm bildirimleri gör</strong> <i class="la la-angle-right"></i></a></li>
                     </ul>
                 </li>
@@ -93,3 +85,30 @@
         </div>
     </nav>
 </div>
+
+
+<!-- jQuery, Bootstrap, SignalR kütüphaneleri -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/signalrhub") // veya tam adres: "https://localhost:7000/signalrhub"
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start().then(function () {
+            console.log("✅ SignalR bağlantısı kuruldu.");
+        }).catch(function (err) {
+            console.error("❌ SignalR bağlantı hatası:", err);
+        });
+
+        // Sunucudan mesaj geldiğinde sayıyı güncelle
+        connection.on("ReceiveNotificationCountByFalse", function (value) {
+            console.log("🔔 Bildirim sayısı alındı:", value);
+            $("#notificationcount").text(value);
+        });
+    });
+</script>
