@@ -1,0 +1,125 @@
+﻿<style >
+/* Genel sayfa stili */
+body {
+    background: #f7f9fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2.text-primary {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control, textarea {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+    .form-control:focus, textarea:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.2);
+    }
+
+label {
+    font-weight: 600;
+}
+
+.form-check {
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s;
+}
+
+    .form-check:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+
+.form-check-input:checked + span {
+    color: #0d6efd;
+}
+
+.btn-primary {
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        transform: scale(1.02);
+    }
+
+/* Seçilen ürün listesi */
+#selectedProductsList {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+    #selectedProductsList .list-group-item {
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        margin-bottom: 5px;
+    }
+
+.badge.bg-primary {
+    font-size: 0.9rem;
+    background-color: #0d6efd !important;
+    padding: 0.4em 0.6em;
+}
+
+/* Uyarılar */
+.alert-danger, .alert-warning {
+    animation: bounceIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive ayarlamalar */
+@media (max-width: 768px) {
+    .col-md-4 {
+        width: 100%;
+    }
+}
+
+</style >

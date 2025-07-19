@@ -5,7 +5,11 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
+
+
+
 @section Scripts {
+    <link rel="stylesheet" href="~/css/site.css" />
     <script>
         function toggleProduct(checkbox) {
             let total = 0;
@@ -40,6 +44,7 @@
     </script>
 }
 
+
 <div class="container mt-5">
     <h2 class="text-primary mb-4">📝 Yeni Sipariş Oluştur</h2>
 
@@ -56,6 +61,7 @@
         </div>
     }
 
+    
     <form asp-action="CreateOrder" method="post">
         <div class="mb-3">
             <label>Masa No</label>

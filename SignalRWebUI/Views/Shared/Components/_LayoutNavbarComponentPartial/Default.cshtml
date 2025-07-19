@@ -1,4 +1,6 @@
-﻿<div class="main-header bg-white shadow-sm">
+﻿
+
+<div class="main-header bg-white shadow-sm">
     <div class="logo-header d-flex justify-content-between align-items-center px-3">
         <a href="index.html" class="logo fw-bold text-primary d-flex align-items-center">
             <i class="la la-cog me-2"></i> Admin Panel
@@ -49,12 +51,16 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link p-2 rounded-circle d-flex align-items-center justify-content-center position-relative hover-bg" href="#" id="notificationsDropdown" data-toggle="dropdown" style="width: 38px; height: 38px;">
                         <i class="la la-bell fs-5"></i>
+
+                        <!-- Bildirim sayısı göstermek için navbar kısmındaki badge -->
                         <span id="notificationcount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                         </span>
                     </a>
+
+
                     <ul class="dropdown-menu dropdown-menu-end notif-box">
-                        <li><div class="dropdown-title">4 Yeni Bildirim</div></li>
+                        <li><div class="dropdown-title">Yeni Bildirimler</div></li>
                         <li><a class="see-all" href="#"><strong>Tüm bildirimleri gör</strong> <i class="la la-angle-right"></i></a></li>
                     </ul>
                 </li>
@@ -86,29 +92,120 @@
     </nav>
 </div>
 
-
-<!-- jQuery, Bootstrap, SignalR kütüphaneleri -->
+<!-- jQuery, Bootstrap ve SignalR kütüphaneleri -->
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(function () {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/signalrhub") // veya tam adres: "https://localhost:7000/signalrhub"
+            .withUrl("/signalrhub") // SignalR hub endpoint’in
             .withAutomaticReconnect()
             .build();
 
-        connection.start().then(function () {
-            console.log("✅ SignalR bağlantısı kuruldu.");
-        }).catch(function (err) {
-            console.error("❌ SignalR bağlantı hatası:", err);
-        });
+        connection.start()
+            .then(() => {
+                console.log("✅ SignalR bağlantısı başarılı");
+            })
+            .catch(err => {
+                console.error("❌ SignalR bağlantı hatası:", err.toString());
+            });
 
-        // Sunucudan mesaj geldiğinde sayıyı güncelle
-        connection.on("ReceiveNotificationCountByFalse", function (value) {
-            console.log("🔔 Bildirim sayısı alındı:", value);
-            $("#notificationcount").text(value);
+        connection.on("ReceiveNotificationCountByFalse", function (count) {
+            console.log("🔔 Bildirim sayısı:", count);
+            if (count > 0) {
+                $("#notificationcount").text(count).show();
+            } else {
+                $("#notificationcount").hide();
+            }
         });
+    });
+</script>
+<style>
+    /* Body ve genel arka plan */
+    body.dark-theme {
+        background-color: #121212 !important;
+        color: #eee !important;
+    }
+
+        /* Header ve navbar */
+        body.dark-theme .main-header,
+        body.dark-theme .navbar {
+            background-color: #1f1f1f !important;
+            color: #ddd !important;
+        }
+
+        /* Sayfa içeriği */
+        body.dark-theme .content,
+        body.dark-theme .container-fluid {
+            background-color: #181818 !important;
+            color: #ddd !important;
+        }
+
+        /* Butonlar */
+        body.dark-theme .btn-light {
+            background-color: #333 !important;
+            color: #eee !important;
+            border-color: #555 !important;
+        }
+
+        /* Inputlar */
+        body.dark-theme input.form-control {
+            background-color: #222 !important;
+            color: #eee !important;
+            border: 1px solid #444 !important;
+        }
+
+        /* Dropdown menüler */
+        body.dark-theme .dropdown-menu {
+            background-color: #222 !important;
+            color: #ddd !important;
+        }
+
+        /* Linkler */
+        body.dark-theme a {
+            color: #66b2ff;
+        }
+
+            body.dark-theme a:hover {
+                color: #3399ff;
+            }
+
+        /* Badge (bildirim sayısı) */
+        body.dark-theme .badge.bg-danger {
+            background-color: #ff6b6b !important;
+        }
+
+        /* Scroll bar koyu tema (modern tarayıcılar için) */
+        body.dark-theme ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body.dark-theme ::-webkit-scrollbar-track {
+            background: #1f1f1f;
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb {
+            background-color: #555;
+            border-radius: 10px;
+            border: 2px solid #1f1f1f;
+        }
+</style>
+
+<script>
+    document.getElementById('themeToggle').addEventListener('click', function () {
+      const body = document.body;
+      const icon = document.getElementById('themeIcon');
+
+      if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        icon.classList.remove('bi-sun-fill');
+        icon.classList.add('bi-moon-fill');
+      } else {
+        body.classList.add('dark-theme');
+        icon.classList.remove('bi-moon-fill');
+        icon.classList.add('bi-sun-fill');
+      }
     });
 </script>
