@@ -41,6 +41,12 @@ namespace SignalR.DataAccessLayer.EntityFramework
             return context.RestaurantTables.Where(t => t.Status == false).ToList();
         }
 
+         public List<RestaurantTable> GetTablesByLocation(TableLocation location)
+         {
+             using var context = new SignalRContext();
+             return context.RestaurantTables.Where(t => t.Location == location).ToList();
+         }
+
         public List<RestaurantTable> GetTablesByStatus(bool status)
         {
             using var context = new SignalRContext();

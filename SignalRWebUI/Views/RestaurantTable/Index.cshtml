@@ -4,392 +4,499 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<style>
-    .table-list-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 2rem 0;
-    }
-
-    .page-title-list {
-        color: white;
-        font-weight: 700;
-        margin-bottom: 2rem;
-        text-align: center;
-        font-size: 2.2rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-    }
-
-        .page-title-list i {
-            font-size: 2rem;
-            animation: bounce 2s infinite;
+@section styles {
+    <style>
+        .table-grid-container {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
         }
 
-    @@keyframes bounce {
-        0%, 20%, 50%, 80%, 100%
-
-    {
-        transform: translateY(0);
-    }
-
-    40% {
-        transform: translateY(-10px);
-    }
-
-    60% {
-        transform: translateY(-5px);
-    }
-
-    }
-
-    .modern-card-list {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        overflow: hidden;
-    }
-
-        .modern-card-list:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-        }
-
-    .card-header-list {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1.5rem;
-        border: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-        .card-header-list::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .card-header-list:hover::before {
-            left: 100%;
-        }
-
-    .btn-add-new {
-        background: rgba(255, 255, 255, 0.2);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 25px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        backdrop-filter: blur(10px);
-    }
-
-        .btn-add-new:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-            text-decoration: none;
-        }
-
-    .modern-table {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin: 0;
-    }
-
-        .modern-table thead {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-        }
-
-            .modern-table thead th {
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                padding: 1rem;
-                border: none;
-                font-size: 0.9rem;
+            .table-grid-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v20h20v-20c11.046 0 20-8.954 20-20H20z'/%3E%3C/g%3E%3C/svg%3E");
+                animation: backgroundMove 20s linear infinite;
             }
 
-        .modern-table tbody tr {
-            transition: all 0.3s ease;
-            border: none;
+        @@keyframes backgroundMove {
+            0%
+
+        {
+            transform: translateX(0) translateY(0);
         }
 
-            .modern-table tbody tr:hover {
-                background: rgba(102, 126, 234, 0.1);
-                transform: scale(1.01);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        100% {
+            transform: translateX(40px) translateY(40px);
+        }
+
+        }
+
+        .page-title-grid {
+            color: white;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 2.8rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+            .page-title-grid i {
+                font-size: 3rem;
+                animation: pulse 2s ease-in-out infinite;
+                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
             }
 
-        .modern-table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+            opacity: 1;
         }
 
-    .status-badge-full {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-        color: white;
-        padding: 0.4rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
-    }
-
-    .status-badge-empty {
-        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-        color: white;
-        padding: 0.4rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
-    }
-
-    .btn-action-edit {
-        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
-        margin-right: 0.5rem;
-    }
-
-        .btn-action-edit:hover {
-            background: linear-gradient(135deg, #2980b9 0%, #1f639a 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
-            color: white;
-            text-decoration: none;
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
         }
 
-    .btn-action-delete {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
-    }
-
-        .btn-action-delete:hover {
-            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
-            color: white;
-            text-decoration: none;
         }
 
-    .alert-modern {
-        background: rgba(255, 193, 7, 0.1);
-        border: 2px solid rgba(255, 193, 7, 0.3);
-        border-radius: 15px;
-        color: #856404;
-        padding: 2rem;
-        text-align: center;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-    }
-
-    .card-body-list {
-        padding: 0;
-        background: rgba(255, 255, 255, 0.8);
-    }
-
-    .floating-elements-list {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        z-index: -1;
-    }
-
-        .floating-elements-list::before,
-        .floating-elements-list::after {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 150px;
+        .header-card {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
         }
 
-        .floating-elements-list::before {
-            top: 20%;
-            left: 20%;
-            animation-delay: 0s;
+        .btn-add-new-grid {
+            background: linear-gradient(135deg, #00c851 0%, #00a843 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 200, 81, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .floating-elements-list::after {
-            bottom: 20%;
-            right: 20%;
-            animation-delay: 4s;
+            .btn-add-new-grid:hover {
+                background: linear-gradient(135deg, #00a843 0%, #007e33 100%);
+                transform: translateY(-5px) scale(1.05);
+                box-shadow: 0 20px 40px rgba(0, 200, 81, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+            .btn-add-new-grid i {
+                font-size: 1.2rem;
+                transition: transform 0.3s ease;
+            }
+
+            .btn-add-new-grid:hover i {
+                transform: rotate(180deg);
+            }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+            position: relative;
+            z-index: 2;
         }
 
-    @@keyframes float {
-        0%, 100%
-
-    {
-        transform: translateY(0px) rotate(0deg);
-    }
-
-    50% {
-        transform: translateY(-30px) rotate(180deg);
-    }
-
-    }
-
-    .table-id-cell {
-        font-weight: 700;
-        color: #667eea;
-        font-size: 1.1rem;
-    }
-
-    .table-name-cell {
-        font-weight: 600;
-        color: #2c3e50;
-        font-size: 1rem;
-    }
-
-    @@media (max-width: 768px) {
-        .table-list-container
-
-    {
-        padding: 1rem;
-    }
-
-    .page-title-list {
-        font-size: 1.8rem;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .card-header-list {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-
-    .modern-table {
-        font-size: 0.9rem;
-    }
-
-        .modern-table thead th,
-        .modern-table tbody td {
-            padding: 0.75rem 0.5rem;
+        .table-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid transparent;
         }
 
-    }
-</style>
+            .table-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+                transform: translateX(-100%);
+                transition: transform 0.6s ease;
+                z-index: 1;
+            }
 
-<div class="table-list-container">
-    <div class="floating-elements-list"></div>
+            .table-card:hover::before {
+                transform: translateX(100%);
+            }
+
+            .table-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            }
+
+            .table-card.occupied {
+                border-color: #e74c3c;
+                background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(255, 255, 255, 0.95) 100%);
+            }
+
+                .table-card.occupied:hover {
+                    box-shadow: 0 25px 50px rgba(231, 76, 60, 0.2);
+                    border-color: #c0392b;
+                }
+
+            .table-card.available {
+                border-color: #27ae60;
+                background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(255, 255, 255, 0.95) 100%);
+            }
+
+                .table-card.available:hover {
+                    box-shadow: 0 25px 50px rgba(39, 174, 96, 0.2);
+                    border-color: #219a52;
+                }
+
+        .table-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .table-card.occupied .table-icon {
+            color: #e74c3c;
+            filter: drop-shadow(0 0 20px rgba(231, 76, 60, 0.3));
+        }
+
+        .table-card.available .table-icon {
+            color: #27ae60;
+            filter: drop-shadow(0 0 20px rgba(39, 174, 96, 0.3));
+        }
+
+        .table-card:hover .table-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .table-info {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .table-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .table-id {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .status-badge-grid {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-occupied {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .status-available {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-table-action {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+        }
+
+            .btn-edit:hover {
+                background: linear-gradient(135deg, #2980b9 0%, #1f639a 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+
+            .btn-delete:hover {
+                background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .no-tables-message {
+            text-align: center;
+            padding: 4rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+            .no-tables-message i {
+                font-size: 4rem;
+                margin-bottom: 1rem;
+                opacity: 0.7;
+            }
+
+            .no-tables-message h3 {
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+                font-weight: 600;
+            }
+
+            .no-tables-message p {
+                font-size: 1.1rem;
+                opacity: 0.8;
+                margin-bottom: 2rem;
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .table-grid-container
+
+        {
+            padding: 1rem;
+        }
+
+        .page-title-grid {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+            .page-title-grid i {
+                font-size: 2.5rem;
+            }
+
+        .tables-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .table-card {
+            padding: 1.5rem;
+        }
+
+        .table-icon {
+            font-size: 3rem;
+        }
+
+        .table-name {
+            font-size: 1.3rem;
+        }
+
+        .header-card {
+            padding: 1.5rem;
+        }
+
+        .btn-add-new-grid {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        }
+
+        @@media (max-width: 480px) {
+            .tables-grid
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        .table-actions {
+            flex-direction: column;
+        }
+
+        .btn-table-action {
+            flex: none;
+        }
+
+        }
+    </style>
+}
+
+<div class="table-grid-container">
     <div class="container-fluid">
-        <h4 class="page-title-list">
-            <i class="la la-cutlery"></i> Masa İşlemleri
-        </h4>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="modern-card-list">
-                    <div class="card-header-list">
-                        <span class="h5 mb-0">Tüm Masalar</span>
-                        <a href="/RestaurantTable/CreateRestaurantTable" class="btn-add-new">
-                            <i class="la la-plus"></i> Yeni Masa Ekle
-                        </a>
-                    </div>
-                    <div class="card-body-list">
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            <table class="table modern-table text-center align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Masa Adı</th>
-                                        <th>Durum</th>
-                                        <th>İşlemler</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td class="table-id-cell">@item.RestaurantTableId</td>
-                                            <td class="table-name-cell">@item.TableName</td>
-                                            <td>
-                                                @if (item.Status)
-                                                {
-                                                    <span class="status-badge-full">Dolu</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="status-badge-empty">Boş</span>
-                                                }
-                                            </td>
-                                            <td>
-                                                <a href="/RestaurantTable/UpdateRestaurantTable/@item.RestaurantTableId" class="btn-action-edit">
-                                                    <i class="la la-edit"></i> Güncelle
-                                                </a>
-                                                <a href="/RestaurantTable/Delete/@item.RestaurantTableId" class="btn-action-delete" onclick="return confirm('Bu masayı silmek istediğinize emin misiniz?');">
-                                                    <i class="la la-trash"></i> Sil
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                        else
-                        {
-                            <div class="alert-modern">
-                                Henüz kayıtlı masa bulunmamaktadır.
-                            </div>
-                        }
-                    </div>
+        <h4 class="page-title-grid">
+
+            <div class="header-card text-center">
+                <div class="btn-group mb-3" role="group" aria-label="Konum Filtreleme" style="gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                    <button class="btn btn-primary filter-btn" data-filter="All">Tümü</button>
+                    @foreach (var location in ViewBag.Locations as List<string>)
+                    {
+                        <button class="btn btn-outline-light filter-btn" data-filter="@location">@location</button>
+                    }
                 </div>
             </div>
+            <i class="la la-cutlery"></i>
+            Masa İşlemleri
+        </h4>
+
+        <div class="header-card text-center">
+            <a href="/RestaurantTable/CreateRestaurantTable" class="btn-add-new-grid">
+                <i class="la la-plus"></i>
+                Yeni Masa Ekle
+            </a>
         </div>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="tables-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="table-card @(item.Status ? "occupied" : "available")" data-location="@item.Location">
+                        <div class="table-info">
+                            <div class="table-icon">
+                                <i class="la la-cutlery"></i>
+                            </div>
+                            <h5 class="table-name">@item.TableName</h5>
+                            <p class="table-id">Masa #@item.RestaurantTableId</p>
+                            <span class="status-badge-grid @(item.Status ? "status-occupied" : "status-available")">
+                                @if (item.Status)
+                                {
+                                    <text><i class="la la-user"></i> Dolu</text>
+                                }
+                                else
+                                {
+                                    <text><i class="la la-check"></i> Boş</text>
+                                }
+                            </span>
+                        </div>
+                        <div class="table-actions">
+                            <a href="/RestaurantTable/UpdateRestaurantTable/@item.RestaurantTableId" class="btn-table-action btn-edit">
+                                <i class="la la-edit"></i> Güncelle
+                            </a>
+                            <a href="/RestaurantTable/Delete/@item.RestaurantTableId"
+                               class="btn-table-action btn-delete"
+                               onclick="return confirm('Bu masayı silmek istediğinize emin misiniz?');">
+                                <i class="la la-trash"></i> Sil
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-tables-message">
+                <i class="la la-cutlery"></i>
+                <h3>Henüz Masa Bulunmuyor</h3>
+                <p>Restoran masalarınızı eklemek için yukarıdaki butonu kullanabilirsiniz.</p>
+                <a href="/RestaurantTable/CreateRestaurantTable" class="btn-add-new-grid">
+                    <i class="la la-plus"></i>
+                    İlk Masanızı Ekleyin
+                </a>
+            </div>
+        }
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const tableCards = document.querySelectorAll('.table-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+
+                filterButtons.forEach(btn => btn.classList.remove('btn-primary'));
+                button.classList.add('btn-primary');
+
+                tableCards.forEach(card => {
+                    const location = card.getAttribute('data-location');
+                    if (filter === "All" || location === filter) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+            });
+        });
+    });
+</script>

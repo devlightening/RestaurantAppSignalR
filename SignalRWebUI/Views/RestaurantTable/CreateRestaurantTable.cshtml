@@ -166,7 +166,6 @@
         }
     }
 </style>
-
 <div class="table-create-container">
     <div class="container">
         <h4 class="page-title-modern">Masa İşlemleri</h4>
@@ -183,6 +182,7 @@
                                 <input type="text" class="form-control form-control-modern" asp-for="TableName" id="tablename" placeholder="Masa Adı Giriniz...">
                                 <span asp-validation-for="TableName" class="validation-error"></span>
                             </div>
+
                             <div class="form-group-modern">
                                 <label for="status" class="form-label-modern">Durum</label>
                                 <select class="form-control form-control-modern" asp-for="Status" id="status">
@@ -190,6 +190,17 @@
                                     <option value="false">Boş</option>
                                 </select>
                                 <span asp-validation-for="Status" class="validation-error"></span>
+                            </div>
+
+                            <div class="form-group-modern">
+                                <label for="Location" class="form-label-modern">Konum</label>
+                                <select asp-for="Location" class="form-control form-control-modern" id="Location">
+                                    <option value="">Seçiniz</option>
+                                    <option value="Salon">Salon</option>
+                                    <option value="Balkon">Balkon</option>
+                                    <option value="UstKat">Üst Kat</option>
+                                </select>
+                                <span asp-validation-for="Location" class="validation-error"></span>
                             </div>
                         </div>
                         <div class="card-footer-modern">

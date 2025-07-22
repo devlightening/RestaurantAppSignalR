@@ -16,6 +16,7 @@ namespace SignalR.DataAccessLayer.Abstracts
         public List<RestaurantTable> GetAvailableTables(); // Boş masaları listeleme
         public List<RestaurantTable> GetNotAvailableTables(); //Dolu masaları listeleme
         public List<RestaurantTable> GetTablesByStatus(bool status); // Duruma göre masaları listeleme
+        public List<RestaurantTable> GetTablesByLocation(TableLocation location); // Duruma göre masaları listeleme
 
     }
 }

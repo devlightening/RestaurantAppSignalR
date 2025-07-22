@@ -16,5 +16,6 @@ namespace SignalR.BusinessLayer.Abstracts
         public List<RestaurantTable> TGetAvailableTables(); // Boş masaları listeleme
         public List<RestaurantTable> TGetNotAvailableTables(); // Dolu masaları listeleme
         public List<RestaurantTable> TGetTablesByStatus(bool status); // Duruma göre masaları listeleme
+        public List<RestaurantTable> TGetTablesByLocation(TableLocation location); // Konuma göre masaları listeleme
     }
 }

@@ -10,5 +10,6 @@ namespace SignalRWebUI.Dtos.RestaurantTableDtos
     {
         public string TableName { get; set; }
         public bool Status { get; set; }
+        public string Location { get; set; }
     }
 }

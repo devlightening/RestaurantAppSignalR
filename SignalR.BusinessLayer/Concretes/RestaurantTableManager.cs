@@ -64,6 +64,11 @@ namespace SignalR.BusinessLayer.Concretes
 
         }
 
+        public List<RestaurantTable> TGetTablesByLocation(TableLocation location)
+        {
+            return _restaurantTableDal.GetTablesByLocation(location);
+        }
+
         public List<RestaurantTable> TGetTablesByStatus(bool status)
         {
             return _restaurantTableDal.GetTablesByStatus(status);

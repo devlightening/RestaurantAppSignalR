@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using SignalR.EntityLayer.Entities;
 using SignalRWebUI.Dtos.RestaurantTableDtos;
 using SignalRWebUI.Dtos.RestaurantTableDtos;
 using System.Text;
@@ -17,6 +19,10 @@ namespace SignalRWebUI.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var locations = Enum.GetNames(typeof(TableLocation)).ToList();
+            ViewBag.Locations = locations;
+
+
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.GetAsync("https://localhost:7000/api/RestaurantTables");
             if (responseMessage.IsSuccessStatusCode)
@@ -71,8 +77,29 @@ namespace SignalRWebUI.Controllers
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                 var values = JsonConvert.DeserializeObject<UpdateRestaurantTableDto>(jsonData);
+
+                // Enum değerlerini ViewBag ile gönder
+                var locations = Enum.GetValues(typeof(TableLocation))
+                                    .Cast<TableLocation>()
+                                    .Select(x => new SelectListItem
+                                    {
+                                        Text = x.ToString(),
+                                        Value = x.ToString()
+                                    }).ToList();
+                ViewBag.Locations = locations;
+
                 return View(values);
             }
+
+            // Hata durumunda da enum değerlerini gönder
+            ViewBag.Locations = Enum.GetValues(typeof(TableLocation))
+                                    .Cast<TableLocation>()
+                                    .Select(x => new SelectListItem
+                                    {
+                                        Text = x.ToString(),
+                                        Value = x.ToString()
+                                    }).ToList();
+
             return View();
         }
 
@@ -83,12 +110,22 @@ namespace SignalRWebUI.Controllers
             var jsonData = JsonConvert.SerializeObject(updateRestaurantTableDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var responseMessage = await client.PutAsync("https://localhost:7000/api/RestaurantTables/", stringContent);
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
             }
-            return View(); 
-        }
 
+            // Başarısız ise tekrar dropdown için enum değerlerini ekle
+            ViewBag.Locations = Enum.GetValues(typeof(TableLocation))
+                                    .Cast<TableLocation>()
+                                    .Select(x => new SelectListItem
+                                    {
+                                        Text = x.ToString(),
+                                        Value = x.ToString()
+                                    }).ToList();
+
+            return View(updateRestaurantTableDto);
+        }
     }
 }
