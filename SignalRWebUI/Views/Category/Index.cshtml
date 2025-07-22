@@ -96,87 +96,235 @@
 	</div>
 </div>
 
-<style>
-	.table {
-		background: white;
-		border-radius: 10px;
-		overflow: hidden;
-		box-shadow: var(--card-shadow);
-	}
+@section styles {
+    <style>
+        /* Genel kapsayıcı */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+            background: #fff;
+            padding: 1.5rem 1rem;
+        }
 
-		.table thead th {
-			background: linear-gradient(135deg, var(--info-color), #5dade2);
-			color: var(--primary-color);
-			border: none;
-			font-weight: 600;
-			padding: 1rem;
-		}
+        /* Tablo */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            table-layout: fixed;
+        }
 
-		.table tbody tr {
-			transition: all 0.3s ease;
-		}
+            /* Başlık */
+            .table thead th {
+                background: linear-gradient(135deg, #2980b9, #3498db);
+                color: white;
+                font-weight: 700;
+                padding: 1rem 1.5rem;
+                border-radius: 14px 14px 0 0;
+                text-align: left;
+                font-size: 1rem;
+                user-select: none;
+            }
 
-			.table tbody tr:hover {
-				background: rgba(52, 152, 219, 0.1);
-				transform: translateX(5px);
-			}
+            /* Gövde satırları */
+            .table tbody tr {
+                background: #f8faff;
+                border-radius: 14px;
+                box-shadow: 0 1px 8px rgb(0 0 0 / 0.06);
+                transition: background-color 0.35s ease, transform 0.35s ease;
+                cursor: pointer;
+            }
 
-		.table tbody td {
-			padding: 1rem;
-			vertical-align: middle;
-			border-color: rgba(0,0,0,0.1);
-		}
+                .table tbody tr:hover {
+                    background: #d6eaff;
+                    transform: translateX(8px);
+                    box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);
+                }
 
-	.badge-success {
-		background: linear-gradient(135deg, var(--success-color), #58d68d);
-		color: var(--primary-color);
-		padding: 0.5rem 1rem;
-		border-radius: 20px;
-		font-weight: 600;
-	}
+            /* Hücreler */
+            .table tbody td {
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+                border: none;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
 
-	.badge-danger {
-		background: linear-gradient(135deg, var(--danger-color), #f1948a);
-		color: var(--primary-color);
-		padding: 0.5rem 1rem;
-		border-radius: 20px;
-		font-weight: 600;
-	}
+                .table tbody td.text-center {
+                    text-align: center;
+                }
 
-	.btn-group .btn {
-		margin: 0 2px;
-		transition: all 0.3s ease;
-	}
+                /* Sıralama */
+                .table tbody td:first-child {
+                    font-weight: 700;
+                    color: #2980b9;
+                    width: 5%;
+                }
 
-		.btn-group .btn:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-		}
+                /* Kategori adı */
+                .table tbody td:nth-child(2) {
+                    font-weight: 600;
+                    font-size: 1.1rem;
+                    color: #222;
+                    width: 50%;
+                }
 
-	.badge-status {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.5rem 1rem;
-		border-radius: 25px;
-		font-weight: 600;
-		font-size: 0.95rem;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-		transition: all 0.3s ease;
-	}
+        /* Durum badge */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 1.15rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 3px 10px rgb(0 0 0 / 0.08);
+            user-select: none;
+            transition: background-color 0.3s ease;
+            min-width: 90px;
+            justify-content: center;
+        }
 
-		.badge-status i {
-			font-size: 1rem;
-		}
+            .badge-status i {
+                font-size: 1.2rem;
+            }
 
-	.badge-status-active {
-		background: linear-gradient(to right, #00c853, #b2ff59); /* canlı yeşil */
-		color: white;
-	}
+        .badge-status-active {
+            background: #27ae60;
+            color: white;
+            box-shadow: 0 3px 14px #27ae6050;
+        }
 
-	.badge-status-passive {
-		background: linear-gradient(to right, #d50000, #ff8a80); /* sıcak kırmızı */
-		color: white;
-	}
+        .badge-status-passive {
+            background: #c0392b;
+            color: white;
+            box-shadow: 0 3px 14px #c0392b50;
+        }
 
-</style>
+        /* İşlem butonları */
+        .btn-group {
+            display: inline-flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .btn-group .btn {
+                padding: 0.5rem 1.15rem;
+                font-size: 0.95rem;
+                border-radius: 8px;
+                border: none;
+                box-shadow: 0 3px 8px rgb(0 0 0 / 0.12);
+                transition: all 0.25s ease;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                color: white;
+            }
+
+            .btn-group .btn-sm.btn-success {
+                background: #2ecc71;
+            }
+
+                .btn-group .btn-sm.btn-success:hover {
+                    background: #27ae60;
+                    box-shadow: 0 6px 16px #27ae6050;
+                    transform: translateY(-4px);
+                }
+
+            .btn-group .btn-sm.btn-danger {
+                background: #e74c3c;
+            }
+
+                .btn-group .btn-sm.btn-danger:hover {
+                    background: #c0392b;
+                    box-shadow: 0 6px 16px #c0392b50;
+                    transform: translateY(-4px);
+                }
+
+            /* İkonlar */
+            .btn-group .btn i {
+                font-size: 1.15rem;
+            }
+
+        /* Boş liste */
+        .section-group {
+            background: #f0f6fb;
+            border-radius: 18px;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #34495e;
+            box-shadow: inset 0 0 12px #dce6f0;
+        }
+
+            .section-group i {
+                font-size: 3.8rem;
+                margin-bottom: 1rem;
+                color: #3498db;
+                user-select: none;
+            }
+
+            .section-group h3 {
+                font-weight: 700;
+                margin-bottom: 0.6rem;
+            }
+
+            .section-group p {
+                font-size: 1.05rem;
+                margin-bottom: 1.7rem;
+                color: #7f8c8d;
+            }
+
+        /* Responsive */
+        @@media (max-width: 576px) {
+            .table-responsive {
+                padding: 0.8rem;
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table tbody tr {
+                display: block;
+                margin-bottom: 1.3rem;
+                box-shadow: 0 4px 14px rgb(0 0 0 / 0.14);
+                border-radius: 16px;
+                background: white;
+                padding: 1.1rem 1rem;
+            }
+
+            .table tbody td {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.8rem 1.1rem;
+                border: none;
+                white-space: normal;
+                font-size: 0.95rem;
+            }
+
+                .table tbody td::before {
+                    content: attr(data-label);
+                    font-weight: 700;
+                    color: #2980b9;
+                    flex: 1;
+                    text-align: left;
+                }
+
+                .table tbody td.text-center {
+                    text-align: right;
+                }
+
+            .btn-group {
+                justify-content: flex-end;
+                margin-top: 0.6rem;
+            }
+        }
+    </style>
+}

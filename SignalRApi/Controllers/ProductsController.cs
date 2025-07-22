@@ -125,6 +125,7 @@ namespace SignalRApi.Controllers
             var value = _productService.TGetById(id);
             return Ok(value);
         }
+
         [HttpGet("ProductsListWithCategory")]
         public IActionResult ProductsListWithCategory()
         {

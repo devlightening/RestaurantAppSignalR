@@ -101,101 +101,130 @@
     </div>
 </div>
 
-<style>
-    .form-control {
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.9);
-    }
-
-        .form-control:focus {
-            border-color: var(--success-color);
-            box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
-            background: white;
-            transform: translateY(-2px);
+@section styles {
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #7f8c8d;
+            --success-color: #27ae60;
+            --info-color: #3498db;
+            --radius: 12px;
         }
 
-    .form-label {
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
-    }
+        /* Form kontrolü */
+        .form-control {
+            border: 1.8px solid #dcdde1;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.1rem;
+            background-color: #ffffffcc;
+            font-size: 1rem;
+            transition: all 0.25s ease-in-out;
+        }
 
-    .input-group-text {
-        background: linear-gradient(135deg, var(--success-color), #58d68d);
-        border: 2px solid #e0e0e0;
-        color: var(--primary-color);
-        font-weight: 600;
-    }
+            .form-control:focus {
+                border-color: var(--success-color);
+                box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.25);
+                background-color: #ffffff;
+                transform: scale(1.02);
+            }
 
-    .card-footer {
-        background: rgba(255, 255, 255, 0.1);
-        border-top: 1px solid rgba(0,0,0,0.1);
-        padding: 1.5rem;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, var(--success-color), #58d68d);
-        border: none;
-        color: var(--primary-color);
-        font-weight: 600;
-        padding: 0.75rem 2rem;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-    }
-
-        .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        /* Etiketler */
+        .form-label {
+            font-weight: 600;
             color: var(--primary-color);
+            margin-bottom: 0.4rem;
+            font-size: 1rem;
         }
 
-    .btn-secondary {
-        background: linear-gradient(135deg, var(--secondary-color), #85929e);
-        border: none;
-        color: white;
-        font-weight: 600;
-        padding: 0.75rem 2rem;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-    }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(51, 51, 51, 0.4);
+        /* Input grup metinleri */
+        .input-group-text {
+            background: linear-gradient(135deg, var(--success-color), #58d68d);
+            border: 1.8px solid #dcdde1;
             color: white;
+            font-weight: 600;
+            border-radius: var(--radius) 0 0 var(--radius);
+            padding: 0.6rem 1rem;
+            transition: background 0.3s ease;
         }
 
-    .example-categories {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .category-example {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background: linear-gradient(135deg, var(--info-color), #5dade2);
-        color: var(--primary-color);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 500;
-    }
-
-        .category-example:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-            color: var(--primary-color);
+        /* Kart alt kısmı */
+        .card-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            padding: 1.5rem;
+            border-radius: 0 0 var(--radius) var(--radius);
         }
 
-    .badge-info {
-        background: linear-gradient(135deg, var(--info-color), #5dade2);
-        color: var(--primary-color);
-    }
-</style>
+        /* Başarı butonu */
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #58d68d);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: var(--radius);
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 3px 6px rgba(39, 174, 96, 0.2);
+        }
+
+            .btn-success:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+            }
+
+        /* İkincil buton */
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary-color), #95a5a6);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: var(--radius);
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 3px 6px rgba(127, 140, 141, 0.25);
+        }
+
+            .btn-secondary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 18px rgba(127, 140, 141, 0.4);
+            }
+
+        /* Örnek kategoriler */
+        .example-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .category-example {
+            background: linear-gradient(135deg, var(--info-color), #5dade2);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+            .category-example:hover {
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 4px 15px rgba(52, 152, 219, 0.25);
+            }
+
+        /* Bilgi etiketi */
+        .badge-info {
+            background: linear-gradient(135deg, var(--info-color), #5dade2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
+}
 
 <script>
     function setCategory(categoryName) {

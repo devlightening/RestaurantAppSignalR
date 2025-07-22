@@ -14,8 +14,8 @@
 
 <style>
     :root {
-        --primary-color: #000000; /* yazılar için siyah */
-        --secondary-color: #333333; /* koyu gri yazı */
+        --primary-color: #000;
+        --secondary-color: #333;
         --success-color: #27ae60;
         --info-color: #3498db;
         --warning-color: #f39c12;
@@ -25,22 +25,24 @@
         --card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
 
-    .content {
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--primary-color);
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         padding: 2rem 0;
-        color: var(--primary-color); /* içerik yazıları siyah */
     }
 
     .page-header,
     .card,
-    .connection-status {
+    .connection-status,
+    .section-group {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         border-radius: 15px;
         box-shadow: var(--card-shadow);
         border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--primary-color);
     }
 
     .page-header {
@@ -49,30 +51,27 @@
     }
 
     .page-title {
-        color: var(--primary-color);
         font-weight: 700;
-        margin: 0;
         font-size: 2.5rem;
         text-align: center;
+        margin: 0;
     }
 
     .section-title {
-        color: var(--primary-color);
         font-weight: 600;
-        margin-bottom: 1.5rem;
         font-size: 1.5rem;
+        margin-bottom: 1.5rem;
         padding-left: 1rem;
         border-left: 4px solid var(--info-color);
     }
 
     .card {
-        border: none;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
-        overflow: hidden;
         position: relative;
-        color: var(--primary-color);
+        overflow: hidden;
+        border: none;
+        margin-bottom: 1.5rem;
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
         .card::before {
@@ -90,6 +89,7 @@
             box-shadow: var(--card-hover-shadow);
         }
 
+    /* Card color variants */
     .card-primary::before {
         --card-color: var(--info-color);
     }
@@ -117,6 +117,7 @@
 
     .card-body {
         padding: 2rem;
+        color: var(--primary-color);
     }
 
     .card-icon {
@@ -127,73 +128,68 @@
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
-        color: var(--primary-color); /* ikon yazıları siyah */
         margin-bottom: 1rem;
     }
 
+    /* Card icon background variants */
     .card-primary .card-icon,
     .card-info .card-icon {
         background: linear-gradient(135deg, var(--info-color), #5dade2);
-        color: var(--primary-color); /* siyah yazı */
     }
 
     .card-success .card-icon {
         background: linear-gradient(135deg, var(--success-color), #58d68d);
-        color: var(--primary-color); /* siyah yazı */
     }
 
     .card-warning .card-icon {
         background: linear-gradient(135deg, var(--warning-color), #f7dc6f);
-        color: var(--primary-color); /* siyah yazı */
     }
 
     .card-danger .card-icon {
         background: linear-gradient(135deg, var(--danger-color), #f1948a);
-        color: var(--primary-color); /* siyah yazı */
     }
 
     .card-secondary .card-icon,
     .card-dark .card-icon {
         background: linear-gradient(135deg, var(--secondary-color), #85929e);
-        color: var(--primary-color); /* siyah yazı */
+    }
+
+    /* Force black text on icons */
+    .card-icon {
+        color: var(--primary-color);
     }
 
     .card-category {
-        color: var(--primary-color) !important; /* siyah yazı */
         font-size: 0.9rem;
         font-weight: 500;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        color: var(--primary-color) !important;
     }
 
     .card-title {
-        color: var(--primary-color);
         font-size: 1.8rem;
         font-weight: 700;
         margin: 0;
+        color: var(--primary-color);
     }
 
     .section-group {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
         padding: 2rem;
         margin-bottom: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--primary-color); /* grup yazıları siyah */
+        border-radius: 20px;
     }
 
     .connection-status {
         padding: 1.5rem;
         text-align: center;
         margin-top: 2rem;
-        color: var(--primary-color); /* bağlantı durumu yazıları siyah */
     }
 
     .badge-info {
         background: linear-gradient(135deg, var(--info-color), #5dade2);
-        color: var(--primary-color); /* badge yazısı siyah */
+        color: var(--primary-color);
         padding: 0.5rem 1.5rem;
         border-radius: 25px;
         font-weight: 600;
@@ -205,23 +201,21 @@
         animation: pulse 2s infinite;
     }
 
-    }
-
     .icon-big {
         font-size: 2rem;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 60px;
-        color: var(--primary-color); /* büyük ikon yazıları siyah */
+        color: var(--primary-color);
     }
 
-    /* Tüm sayılar ve içerik için siyah renk zorlaması */
+    /* Force black color on all text inside card-body */
     .card-body * {
         color: var(--primary-color) !important;
     }
 
-    /* Büyük sayılar için özel stil */
+    /* Large headings inside card */
     .card-body h1,
     .card-body h2,
     .card-body h3,
@@ -232,35 +226,40 @@
         color: var(--primary-color) !important;
     }
 
+    /* Responsive */
     @@media (max-width: 768px) {
-        .page-title {
-            font-size: 2rem;
-        }
+        .page-title
 
-        .section-title {
-            font-size: 1.25rem;
-        }
+    {
+        font-size: 2rem;
+    }
 
-        .card-body {
-            padding: 1.5rem;
-        }
+    .section-title {
+        font-size: 1.25rem;
+    }
 
-        .card-icon {
-            width: 50px;
-            height: 50px;
-            font-size: 1.25rem;
-        }
+    .card-body {
+        padding: 1.5rem;
+    }
 
-        .card-title {
-            font-size: 1.5rem;
-        }
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
 
-        .icon-big {
-            font-size: 1.5rem;
-            height: 50px;
-        }
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    .icon-big {
+        font-size: 1.5rem;
+        height: 50px;
+    }
+
     }
 </style>
+
 
 
 

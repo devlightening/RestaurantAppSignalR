@@ -1,0 +1,90 @@
+﻿@model CreateNotificationDto
+@{
+    ViewData["Title"] = "CreateNotification";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .notification-form-container {
+        background: linear-gradient(135deg, rgba(186,230,253,0.1), rgba(96,165,250,0.08));
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .notification-form-card {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        padding: 2rem;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+
+        .notification-form-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+        }
+
+    .form-group label {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.95rem;
+        transition: border-color 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 0.1rem rgba(37,99,235,0.25);
+        }
+
+    .btn-submit {
+        background-color: #2563eb;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            background-color: #1e40af;
+        }
+</style>
+
+<div class="content notification-form-container">
+    <div class="container-fluid">
+        <div class="col-md-8 offset-md-2">
+            <div class="notification-form-card">
+                <h2>🔔 Yeni Bildirim Oluştur</h2>
+                <form method="post">
+                    <div class="form-group mb-3">
+                        <label for="type">Bildirim Türü</label>
+                        <input type="text" class="form-control" asp-for="Type" id="type" placeholder="Örn: Rezervasyon, Sipariş, Uyarı">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="icon">İkon (La Icon Sınıfı)</label>
+                        <input type="text" class="form-control" asp-for="Icon" id="icon" placeholder="Örn: la la-bell, la la-exclamation">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="description">Açıklama</label>
+                        <input type="text" class="form-control" asp-for="Description" id="description" placeholder="Bildirim açıklaması giriniz...">
+                    </div>
+
+                    <button type="submit" class="btn btn-submit">
+                        ✅ Bildirimi Ekle
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

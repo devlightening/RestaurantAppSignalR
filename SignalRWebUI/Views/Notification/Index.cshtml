@@ -1,0 +1,223 @@
+﻿@model List<ResultNotificationDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+
+
+
+<style>
+    .notif-list-container {
+        background: linear-gradient(to right, #f0f9ff, #e0f2fe);
+        padding: 2rem 0;
+        min-height: 100vh;
+    }
+
+    .notif-list-header {
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(16px);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notif-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2563eb;
+        margin: 0;
+    }
+
+    .notif-card {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+
+    table.notif-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 0.5rem;
+        font-size: 0.9rem;
+        color: #334155;
+        min-width: 750px;
+    }
+
+        table.notif-table thead th {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            padding: 0.85rem 1rem;
+            font-weight: 600;
+            text-align: left;
+            border: none;
+        }
+
+        table.notif-table tbody tr {
+            background-color: #ffffffcc;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+            table.notif-table tbody tr:hover {
+                background-color: #e0f2fe;
+                transform: scale(1.005);
+            }
+
+        table.notif-table td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        background-color: #16a34a;
+    }
+
+        .badge-status.false {
+            background-color: #ef4444;
+        }
+
+    .icon-preview {
+        font-size: 1.25rem;
+    }
+
+    .btn-details {
+        background-color: #2563eb;
+        color: white;
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .btn-details:hover {
+            background-color: #1d4ed8;
+            text-decoration: none;
+        }
+
+    .no-data {
+        text-align: center;
+        padding: 2rem;
+        font-weight: 600;
+        color: #555;
+    }
+
+    @@media (max-width: 768px) {
+        .notif-title
+
+    {
+        font-size: 1.2rem;
+    }
+
+    table.notif-table {
+        font-size: 0.8rem;
+    }
+
+    }
+</style>
+
+
+
+
+
+
+
+<div class="content notif-list-container">
+    <div class="container-fluid">
+        <div class="notif-list-header">
+            <h2 class="notif-title">🔔 Bildirim Listesi</h2>
+            <a href="@Url.Action("CreateNotification", "Notification")" class="btn btn-primary">
+                ➕ Yeni Bildirim
+            </a>
+        </div>
+
+        <div class="notif-card">
+            @if (Model != null && Model.Any())
+            {
+                <table class="notif-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Açıklama</th>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                            <th class="text-center" style="min-width: 120px;">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.NotificationID</td>
+                                <td>@item.Description</td>
+                                <td>@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    <span class="badge-status @(item.Status ? "" : "false")">
+                                        @(item.Status ? "Okundu" : "Okunmadı")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0);" class="btn-view-details mark-read-btn" data-id="@item.NotificationID">
+                                        <i class="fa fa-eye"></i> Görüntüle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="no-data">Henüz bildirim bulunmamaktadır.</div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    success: function () {
+        const btn = $(`.mark-read-btn[data-id='${id}']`);
+        btn.text("✔ Okundu").removeClass("btn-view-details").addClass("btn-success");
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".mark-read-btn").click(function () {
+            const id = $(this).data("id");
+
+            // Önce okundu yap
+            $.ajax({
+                url: `/api/Notifications/NotificationStatusTrue?id=${id}`,
+                type: "GET",
+                success: function () {
+                    // Bildirim okundu yapıldıktan sonra detay sayfasına yönlendirme yap
+                  //  window.location.href = `/Notification/Detail/${id}`;
+                },
+                error: function () {
+                    alert("Bildirimi okundu yaparken hata oluştu.");
+                }
+            });
+        });
+    });
+</script>
