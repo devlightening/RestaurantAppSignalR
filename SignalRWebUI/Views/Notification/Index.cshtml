@@ -129,8 +129,31 @@
     table.notif-table {
         font-size: 0.8rem;
     }
+    
+   }
 
+
+
+    .btn-view-details {
+        background-color: #3b82f6;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        border: none;
     }
+
+        .btn-view-details:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+
 </style>
 
 
@@ -169,14 +192,20 @@
                                 <td>@item.Description</td>
                                 <td>@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
                                 <td>
-                                    <span class="badge-status @(item.Status ? "" : "false")">
+                                    <span class="badge-status @(item.Status ? "" : "false")" data-status="@item.Status">
                                         @(item.Status ? "Okundu" : "Okunmadı")
                                     </span>
                                 </td>
+
                                 <td class="text-center">
-                                    <a href="javascript:void(0);" class="btn-view-details mark-read-btn" data-id="@item.NotificationID">
-                                        <i class="fa fa-eye"></i> Görüntüle
-                                    </a>
+                                    @if (!item.Status) // Sadece okunmadı ise buton göster
+                                    {
+                                        <a href="javascript:void(0);"
+                                           class="btn-view-details mark-read-btn"
+                                           data-id="@item.NotificationID">
+                                            <i class="fa fa-eye"></i> Görüntüle
+                                        </a>
+                                    }
                                 </td>
                             </tr>
                         }
@@ -193,26 +222,24 @@
 
 
 <script>
-
-    success: function () {
-        const btn = $(`.mark-read-btn[data-id='${id}']`);
-        btn.text("✔ Okundu").removeClass("btn-view-details").addClass("btn-success");
-    }
-
-</script>
-
-<script>
     $(document).ready(function () {
         $(".mark-read-btn").click(function () {
             const id = $(this).data("id");
+            const $btn = $(this);
+            const $row = $btn.closest("tr");
 
-            // Önce okundu yap
             $.ajax({
-                url: `/api/Notifications/NotificationStatusTrue?id=${id}`,
+                 url: `https://localhost:7000/api/Notifications/NotificationStatusTrue/${id}`,
                 type: "GET",
                 success: function () {
-                    // Bildirim okundu yapıldıktan sonra detay sayfasına yönlendirme yap
-                  //  window.location.href = `/Notification/Detail/${id}`;
+                    // DURUM hücresini güncelle
+                    const $statusCell = $row.find(".badge-status");
+                    $statusCell
+                        .removeClass("false")
+                        .text("Okundu");
+
+                    // Butonun olduğu hücreyi ✔ Okundu olarak değiştir
+                    $btn.closest("td").html('<span class="text-success fw-bold">✔ Okundu</span>');
                 },
                 error: function () {
                     alert("Bildirimi okundu yaparken hata oluştu.");
