@@ -541,6 +541,9 @@
                             </button>
                         }
                     }
+                    <button class="filter-btn" data-filter="available">
+                        <i class="la la-check-circle"></i> Boş Masalar
+                    </button>
                 </div>
             </div>
             <div>
@@ -578,14 +581,13 @@
                                 </button>
                             </form>
                         </div>
-
                     </div>
                 }
             </div>
         }
         else
         {
-            <div class="no-tables-message">
+            <div class="no-tables-message" style="display:none;">
                 <i class="la la-cutlery"></i>
                 <h3>Henüz Masa Bulunmuyor</h3>
                 <p>Restoran masalarınızı eklemek için yukarıdaki butonu kullanabilirsiniz.</p>
@@ -598,28 +600,86 @@
     </div>
 </div>
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const filterButtons = document.querySelectorAll('.filter-btn');
-        const tableCards = document.querySelectorAll('.table-card');
+        const tablesGrid = document.querySelector('.tables-grid'); // Masa kartlarının bulunduğu container
+        const noTablesMessage = document.querySelector('.no-tables-message');
+
+        const normalize = str => str?.trim().toLowerCase();
 
         filterButtons.forEach(button => {
             button.addEventListener('click', function () {
-                const filter = this.getAttribute('data-filter')?.trim().toLowerCase();
+                const filter = normalize(this.getAttribute('data-filter'));
 
-                // Tüm butonlardan active sınıfını kaldır
+                // Buton aktifliğini güncelle
                 filterButtons.forEach(btn => btn.classList.remove('active'));
-
-                // Tıklanan butona active sınıfını ekle
                 this.classList.add('active');
 
-                // Masaları filtrele
-                tableCards.forEach(card => {
-                        const normalize = str => str?.trim().toLowerCase();
+                if (filter === "available") {
+                    fetch("https://localhost:7000/api/RestaurantTables/AvailableTables")
+                        .then(res => {
+                            if (!res.ok) throw new Error('API isteği başarısız');
+                            return res.json();
+                        })
+                        .then(data => {
+                            console.log(data); // Gelen veriyi kontrol et
 
-                        const filter = normalize(this.getAttribute('data-filter'));
-                        const location = normalize(card.getAttribute('data-location'));
+                            if (!data || data.length === 0) {
+                                if (tablesGrid) tablesGrid.style.display = "none";
+                                if (noTablesMessage) {
+                                    noTablesMessage.style.display = "block";
+                                    noTablesMessage.querySelector('h3').textContent = "Boş Masa Bulunamadı";
+                                    noTablesMessage.querySelector('p').textContent = "Şu anda boş masa bulunmamaktadır.";
+                                }
+                                return;
+                            }
 
+                            if (noTablesMessage) noTablesMessage.style.display = "none";
+                            if (tablesGrid) tablesGrid.style.display = "grid";
+
+                            // Masaları oluştur
+                            const cardsHTML = data.map(item => `
+                                <div class="table-card available" data-location="${item.Location || item.location}">
+                                    <div class="table-info">
+                                        <div class="table-icon">
+                                            <i class="la la-cutlery"></i>
+                                        </div>
+                                        <h5 class="table-name">${item.Location || item.location}</h5>
+                                        <p class="table-id">Masa No: ${item.TableNo || item.tableNo}</p>
+                                        <span class="status-badge-grid status-available">
+                                            <i class="la la-check"></i> Boş
+                                        </span>
+                                    </div>
+                                    <div class="table-actions">
+                                        <a href="/RestaurantTable/UpdateRestaurantTable/${item.RestaurantTableId || item.restaurantTableId}" class="btn-table-action btn-edit">
+                                            <i class="la la-edit"></i> Güncelle
+                                        </a>
+                                        <form asp-action="DeleteRestaurantTable" asp-controller="RestaurantTable" asp-route-id="${item.RestaurantTableId || item.restaurantTableId}" method="post" onsubmit="return confirm('Bu masayı silmek istediğinize emin misiniz?');" style="display:inline; flex:1;">
+                                            <button type="submit" class="btn-table-action btn-delete">
+                                                <i class="la la-trash"></i> Sil
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            `).join('');
+
+                            if (tablesGrid) tablesGrid.innerHTML = cardsHTML;
+                        })
+                        .catch(err => {
+                            alert("Boş masalar yüklenemedi.");
+                            console.error(err);
+                        });
+
+                    return;
+                }
+
+                // Diğer filtreler için
+                const cards = document.querySelectorAll('.table-card');
+
+                cards.forEach(card => {
+                    const location = normalize(card.getAttribute('data-location'));
                     if (filter === "all" || location === filter) {
                         card.style.display = "block";
                         setTimeout(() => {
@@ -638,6 +698,7 @@
         });
 
         // Sayfa yüklendiğinde animasyon
+        const tableCards = document.querySelectorAll('.table-card');
         tableCards.forEach((card, index) => {
             card.style.opacity = "0";
             card.style.transform = "translateY(20px)";
@@ -648,3 +709,4 @@
         });
     });
 </script>
+

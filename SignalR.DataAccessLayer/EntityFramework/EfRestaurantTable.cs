@@ -19,14 +19,14 @@ namespace SignalR.DataAccessLayer.EntityFramework
         public int AvailableTableCount()
         {
             using var context = new SignalRContext();
-            return context.RestaurantTables.Count(t => t.Status == true);
+            return context.RestaurantTables.Count(t => t.Status == false);
         }
 
 
         public List<RestaurantTable> GetAvailableTables()
         {
            using var context = new SignalRContext();
-            return context.RestaurantTables.Where(t => t.Status == true).ToList();
+            return context.RestaurantTables.Where(t => t.Status == false).ToList();
         }
 
         public RestaurantTable GetByTableNo(int tableNo)
@@ -38,7 +38,7 @@ namespace SignalR.DataAccessLayer.EntityFramework
         public List<RestaurantTable> GetNotAvailableTables()
         {
             using var context = new SignalRContext();
-            return context.RestaurantTables.Where(t => t.Status == false).ToList();
+            return context.RestaurantTables.Where(t => t.Status == true).ToList();
         }
 
          public List<RestaurantTable> GetTablesByLocation(TableLocation location)
@@ -56,8 +56,7 @@ namespace SignalR.DataAccessLayer.EntityFramework
         public int NotAvailableTableCount()
         {
             using var context = new SignalRContext();
-            return context.RestaurantTables.Count(t => t.Status == false);
-
+            return context.RestaurantTables.Count(t => t.Status == true); // ✔️ Dolu masaları sayar
         }
 
         public int TotalTableCount()
