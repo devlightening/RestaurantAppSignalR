@@ -128,4 +128,13 @@ public class SignalRHub : Hub
         var value1 = _notificationService.TGetAllNotificationByFalse();
         await Clients.All.SendAsync("ReceiveNotificationListByFalse", value1);
     }
+
+    public async Task SendRestaurantTables()
+    {
+        var value1 = _restaurantTableService.TAvailableTableCount();
+        await Clients.All.SendAsync("ReceiveRestaurantTableCountAvailable", value1);
+
+        var value = _restaurantTableService.TGetAvailableTables();
+        await Clients.All.SendAsync("ReceiveRestaurantTableByAvailable", value);
+    }
 }

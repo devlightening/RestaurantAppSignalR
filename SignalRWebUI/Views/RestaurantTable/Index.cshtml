@@ -543,6 +543,7 @@
                     }
                     <button class="filter-btn" data-filter="available">
                         <i class="la la-check-circle"></i> Boş Masalar
+                        <span id="availableTableCount" style="margin-left: 6px; font-weight: bold; color: #28a745;">(0)</span>
                     </button>
                 </div>
             </div>
@@ -601,19 +602,62 @@
 </div>
 
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const filterButtons = document.querySelectorAll('.filter-btn');
-        const tablesGrid = document.querySelector('.tables-grid'); // Masa kartlarının bulunduğu container
+        const tablesGrid = document.querySelector('.tables-grid');
         const noTablesMessage = document.querySelector('.no-tables-message');
 
         const normalize = str => str?.trim().toLowerCase();
 
+        // Ortak HTML render fonksiyonu
+        function renderTableCards(data) {
+            if (!data || data.length === 0) {
+                if (tablesGrid) tablesGrid.style.display = "none";
+                if (noTablesMessage) {
+                    noTablesMessage.style.display = "block";
+                    noTablesMessage.querySelector('h3').textContent = "Boş Masa Bulunamadı";
+                    noTablesMessage.querySelector('p').textContent = "Şu anda boş masa bulunmamaktadır.";
+                }
+                return;
+            }
+
+            if (noTablesMessage) noTablesMessage.style.display = "none";
+            if (tablesGrid) tablesGrid.style.display = "grid";
+
+            const cardsHTML = data.map(item => `
+                <div class="table-card available" data-location="${item.Location || item.location}">
+                    <div class="table-info">
+                        <div class="table-icon"><i class="la la-cutlery"></i></div>
+                        <h5 class="table-name">${item.Location || item.location}</h5>
+                        <p class="table-id">Masa No: ${item.TableNo || item.tableNo}</p>
+                        <span class="status-badge-grid status-available">
+                            <i class="la la-check"></i> Boş
+                        </span>
+                    </div>
+                    <div class="table-actions">
+                        <a href="/RestaurantTable/UpdateRestaurantTable/${item.RestaurantTableId || item.restaurantTableId}" class="btn-table-action btn-edit">
+                            <i class="la la-edit"></i> Güncelle
+                        </a>
+                        <form asp-action="DeleteRestaurantTable" asp-controller="RestaurantTable" asp-route-id="${item.RestaurantTableId || item.restaurantTableId}" method="post" onsubmit="return confirm('Bu masayı silmek istediğinize emin misiniz?');" style="display:inline; flex:1;">
+                            <button type="submit" class="btn-table-action btn-delete">
+                                <i class="la la-trash"></i> Sil
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `).join('');
+
+            tablesGrid.innerHTML = cardsHTML;
+        }
+
+        // Filtre butonları
         filterButtons.forEach(button => {
             button.addEventListener('click', function () {
                 const filter = normalize(this.getAttribute('data-filter'));
 
-                // Buton aktifliğini güncelle
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
 
@@ -624,48 +668,7 @@
                             return res.json();
                         })
                         .then(data => {
-                            console.log(data); // Gelen veriyi kontrol et
-
-                            if (!data || data.length === 0) {
-                                if (tablesGrid) tablesGrid.style.display = "none";
-                                if (noTablesMessage) {
-                                    noTablesMessage.style.display = "block";
-                                    noTablesMessage.querySelector('h3').textContent = "Boş Masa Bulunamadı";
-                                    noTablesMessage.querySelector('p').textContent = "Şu anda boş masa bulunmamaktadır.";
-                                }
-                                return;
-                            }
-
-                            if (noTablesMessage) noTablesMessage.style.display = "none";
-                            if (tablesGrid) tablesGrid.style.display = "grid";
-
-                            // Masaları oluştur
-                            const cardsHTML = data.map(item => `
-                                <div class="table-card available" data-location="${item.Location || item.location}">
-                                    <div class="table-info">
-                                        <div class="table-icon">
-                                            <i class="la la-cutlery"></i>
-                                        </div>
-                                        <h5 class="table-name">${item.Location || item.location}</h5>
-                                        <p class="table-id">Masa No: ${item.TableNo || item.tableNo}</p>
-                                        <span class="status-badge-grid status-available">
-                                            <i class="la la-check"></i> Boş
-                                        </span>
-                                    </div>
-                                    <div class="table-actions">
-                                        <a href="/RestaurantTable/UpdateRestaurantTable/${item.RestaurantTableId || item.restaurantTableId}" class="btn-table-action btn-edit">
-                                            <i class="la la-edit"></i> Güncelle
-                                        </a>
-                                        <form asp-action="DeleteRestaurantTable" asp-controller="RestaurantTable" asp-route-id="${item.RestaurantTableId || item.restaurantTableId}" method="post" onsubmit="return confirm('Bu masayı silmek istediğinize emin misiniz?');" style="display:inline; flex:1;">
-                                            <button type="submit" class="btn-table-action btn-delete">
-                                                <i class="la la-trash"></i> Sil
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            `).join('');
-
-                            if (tablesGrid) tablesGrid.innerHTML = cardsHTML;
+                            renderTableCards(data);
                         })
                         .catch(err => {
                             alert("Boş masalar yüklenemedi.");
@@ -675,9 +678,8 @@
                     return;
                 }
 
-                // Diğer filtreler için
+                // Konuma göre filtreleme
                 const cards = document.querySelectorAll('.table-card');
-
                 cards.forEach(card => {
                     const location = normalize(card.getAttribute('data-location'));
                     if (filter === "all" || location === filter) {
@@ -707,6 +709,10 @@
                 card.style.transform = "translateY(0)";
             }, index * 100);
         });
+
+        
+
     });
 </script>
+
 
