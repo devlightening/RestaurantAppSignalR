@@ -29,14 +29,25 @@ namespace SignalRApi.Controllers
         [HttpPost]
         public IActionResult CreateRestaurantTable(CreateRestaurantTableDto createRestaurantTableDto)
         {
-
-            _restaurantTableService.TAdd(new RestaurantTable()
+            // Enum.IsDefined ile kontrol yapabilirsin ama bu genelde gerekmez, model binding başarısızsa zaten hata döner.
+            if (!Enum.IsDefined(typeof(TableLocation), createRestaurantTableDto.Location))
             {
-                TableName = createRestaurantTableDto.TableName,
-                Status = createRestaurantTableDto.Status
-            });
+                return BadRequest("Geçersiz veya eksik masa konumu bilgisi.");
+            }
+
+            var newTable = new RestaurantTable()
+            {
+                TableNo = createRestaurantTableDto.TableNo,
+                Status = createRestaurantTableDto.Status,
+                Location = createRestaurantTableDto.Location
+            };
+
+            _restaurantTableService.TAdd(newTable);
+
             return Ok("Masa Başarıyla Eklendi");
         }
+
+
 
         [HttpDelete("{id}")]
         public IActionResult DeleteRestaurantTable(int id)
@@ -55,7 +66,7 @@ namespace SignalRApi.Controllers
             _restaurantTableService.TUpdate(new RestaurantTable()
             {
                 RestaurantTableId = updateRestaurantTableDto.RestaurantTableId,
-                TableName = updateRestaurantTableDto.TableName,
+                TableNo = updateRestaurantTableDto.TableNo,
                 Status = updateRestaurantTableDto.Status
             });
             return Ok("Masa Başarıyla Güncellendi");
@@ -83,10 +94,10 @@ namespace SignalRApi.Controllers
             return Ok(count);
         }
 
-        [HttpGet("GetByName")]
-        public IActionResult GetByName(string tableName)
+        [HttpGet("GetByTableNo")]
+        public IActionResult GetByTableNo(int tableNo)
         {
-            var table = _restaurantTableService.TGetByName(tableName);
+            var table = _restaurantTableService.TGetByTableNo(tableNo);
             if (table == null) return NotFound();
             return Ok(table);
         }

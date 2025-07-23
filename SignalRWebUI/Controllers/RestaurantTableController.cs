@@ -57,6 +57,8 @@ namespace SignalRWebUI.Controllers
             }
         }
 
+
+        
         public async Task<IActionResult> DeleteRestaurantTable(int id)
         {
             var client = _httpClientFactory.CreateClient();
@@ -78,30 +80,21 @@ namespace SignalRWebUI.Controllers
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
                 var values = JsonConvert.DeserializeObject<UpdateRestaurantTableDto>(jsonData);
 
-                // Enum değerlerini ViewBag ile gönder
-                var locations = Enum.GetValues(typeof(TableLocation))
-                                    .Cast<TableLocation>()
-                                    .Select(x => new SelectListItem
-                                    {
-                                        Text = x.ToString(),
-                                        Value = x.ToString()
-                                    }).ToList();
-                ViewBag.Locations = locations;
+                // ViewBag'ı burada doldur
+                ViewBag.Locations = Enum.GetValues(typeof(TableLocation))
+                    .Cast<TableLocation>()
+                    .Select(x => new SelectListItem
+                    {
+                        Text = x.ToString(),
+                        Value = x.ToString()
+                    }).ToList();
 
                 return View(values);
             }
 
-            // Hata durumunda da enum değerlerini gönder
-            ViewBag.Locations = Enum.GetValues(typeof(TableLocation))
-                                    .Cast<TableLocation>()
-                                    .Select(x => new SelectListItem
-                                    {
-                                        Text = x.ToString(),
-                                        Value = x.ToString()
-                                    }).ToList();
-
-            return View();
+            return View(); // ViewBag burada da null olmamalı
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateRestaurantTable(UpdateRestaurantTableDto updateRestaurantTableDto)
@@ -116,16 +109,17 @@ namespace SignalRWebUI.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Başarısız ise tekrar dropdown için enum değerlerini ekle
+            // Hata varsa ViewBag tekrar set edilmeli
             ViewBag.Locations = Enum.GetValues(typeof(TableLocation))
-                                    .Cast<TableLocation>()
-                                    .Select(x => new SelectListItem
-                                    {
-                                        Text = x.ToString(),
-                                        Value = x.ToString()
-                                    }).ToList();
+                .Cast<TableLocation>()
+                .Select(x => new SelectListItem
+                {
+                    Text = x.ToString(),
+                    Value = x.ToString()
+                }).ToList();
 
             return View(updateRestaurantTableDto);
         }
+
     }
 }

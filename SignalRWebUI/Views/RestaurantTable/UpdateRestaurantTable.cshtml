@@ -229,11 +229,13 @@
                         </div>
                         <div class="card-body-modern">
                             <input type="hidden" asp-for="RestaurantTableId" />
+
                             <div class="form-group-modern">
                                 <label for="tablename" class="form-label-modern">Masa Adı</label>
-                                <input type="text" class="form-control form-control-modern" asp-for="TableName" id="tablename" placeholder="Masa adını giriniz...">
-                                <span asp-validation-for="TableName" class="validation-error"></span>
+                                <input type="text" class="form-control form-control-modern" asp-for="TableNo" id="tablename" placeholder="Masa adını giriniz...">
+                                <span asp-validation-for="TableNo" class="validation-error"></span>
                             </div>
+
                             <div class="form-group-modern">
                                 <label for="status" class="form-label-modern">Durum</label>
                                 <select class="form-control form-control-modern" asp-for="Status" id="status">
@@ -242,7 +244,16 @@
                                 </select>
                                 <span asp-validation-for="Status" class="validation-error"></span>
                             </div>
+
+                            <div class="form-group-modern">
+                                <label for="location" class="form-label-modern">Konum</label>
+                                <select class="form-control form-control-modern" asp-for="Location" asp-items="ViewBag.Locations">
+                                    <option value="">Seçiniz</option>
+                                </select>
+                                <span asp-validation-for="Location" class="validation-error"></span>
+                            </div>
                         </div>
+
                         <div class="card-footer-modern text-end">
                             <button type="submit" class="btn btn-modern-success me-3">Güncelle</button>
                             <a href="/RestaurantTable/Index" class="btn-modern-secondary">İptal</a>

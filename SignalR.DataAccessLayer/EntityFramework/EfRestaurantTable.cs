@@ -29,10 +29,10 @@ namespace SignalR.DataAccessLayer.EntityFramework
             return context.RestaurantTables.Where(t => t.Status == true).ToList();
         }
 
-        public RestaurantTable GetByName(string tableName)
+        public RestaurantTable GetByTableNo(int tableNo)
         {
             using var context = new SignalRContext();
-            return context.RestaurantTables.FirstOrDefault(t => t.TableName == tableName);
+            return context.RestaurantTables.FirstOrDefault(t => t.TableNo == tableNo);
         }
 
         public List<RestaurantTable> GetNotAvailableTables()

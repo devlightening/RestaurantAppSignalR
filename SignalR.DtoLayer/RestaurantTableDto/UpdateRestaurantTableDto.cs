@@ -1,10 +1,12 @@
-﻿namespace SignalR.DtoLayer.RestaurantTableDto
+﻿using SignalR.EntityLayer.Entities;
+
+namespace SignalR.DtoLayer.RestaurantTableDto
 {
     public class UpdateRestaurantTableDto
     {
         public int RestaurantTableId { get; set; }
-        public string TableName { get; set; }
+        public int TableNo { get; set; }
         public bool Status { get; set; }
-        public string Location { get; set; }
+        public TableLocation Location { get; set; }
     }
 }

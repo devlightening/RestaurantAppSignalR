@@ -46,9 +46,9 @@ namespace SignalR.BusinessLayer.Concretes
             return _restaurantTableDal.GetById(id);
         }
 
-        public RestaurantTable TGetByName(string tableName)
+        public RestaurantTable TGetByTableNo(int tableNo)
         {
-            return _restaurantTableDal.GetByName(tableName);
+            return _restaurantTableDal.GetByTableNo(tableNo);
 
         }
 

@@ -9,7 +9,7 @@ namespace SignalR.EntityLayer.Entities
     public class RestaurantTable
     {
         public int RestaurantTableId { get; set; }
-        public string TableName { get; set; }
+        public int TableNo { get; set; }
         public bool Status { get; set; }
         public List<Basket> Baskets { get; set; }
         public ICollection<Order> Order { get; set; }

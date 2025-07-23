@@ -1,11 +1,13 @@
-﻿namespace SignalRWebUI.Dtos.RestaurantTableDtos
+﻿using SignalR.EntityLayer.Entities;
+
+namespace SignalRWebUI.Dtos.RestaurantTableDtos
 {
     public class ResultRestaurantTableDto
     {
         public int RestaurantTableId { get; set; }
-        public string TableName { get; set; }
+        public int TableNo { get; set; }
         public bool Status { get; set; }
-        public string Location { get; set; }
+        public TableLocation Location { get; set; }
 
     }
 }
