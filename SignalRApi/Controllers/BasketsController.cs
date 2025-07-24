@@ -43,7 +43,7 @@ namespace SignalRApi.Controllers
             if (createBasketDto != null)
             {
                 var existingBasket = context.Baskets
-                    .FirstOrDefault(x => x.ProductId == createBasketDto.ProductId && x.RestaurantTableId == 4 && x.Status == true);
+                    .FirstOrDefault(x => x.ProductId == createBasketDto.ProductId && x.RestaurantTableId == 24 && x.Status == false);
 
                 if (existingBasket != null)
                 {
@@ -65,7 +65,7 @@ namespace SignalRApi.Controllers
                     {
                         ProductId = createBasketDto.ProductId,
                         Count = 1,
-                        RestaurantTableId = 4,
+                        RestaurantTableId = 24,
                         Price = price,
                         TotalPrice = price,
                         Status = true

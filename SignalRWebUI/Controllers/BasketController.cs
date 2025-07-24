@@ -17,7 +17,7 @@ namespace SignalRWebUI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
 
-            var response = await client.GetAsync("https://localhost:7000/api/Baskets/BasketListByMenuTableWithProductName?id=4");
+            var response = await client.GetAsync("https://localhost:7000/api/Baskets/BasketListByMenuTableWithProductName?id=24");
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"API Hatası: {response.StatusCode}");
