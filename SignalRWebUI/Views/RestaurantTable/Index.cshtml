@@ -6,6 +6,90 @@
 
 @section styles {
     <style>
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px 18px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 34px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: 0.4s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 20px;
+                width: 20px;
+                background-color: white;
+                border-radius: 50%;
+                left: 3px;
+                bottom: 2px;
+                transition: 0.4s;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #00c851 0%, #00a843 100%);
+            border-color: #00c851;
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(24px);
+            }
+
+        .toggle-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .available-count {
+            font-weight: bold;
+            color: #00c851;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
         .table-grid-container {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
             min-height: 100vh;
@@ -26,13 +110,16 @@
             }
 
         @@keyframes backgroundMove {
-            0% {
-                transform: translateX(0) translateY(0);
-            }
+            0%
 
-            100% {
-                transform: translateX(40px) translateY(40px);
-            }
+        {
+            transform: translateX(0) translateY(0);
+        }
+
+        100% {
+            transform: translateX(40px) translateY(40px);
+        }
+
         }
 
         .page-title-grid {
@@ -57,15 +144,18 @@
             }
 
         @@keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+            0%, 100%
 
-            50% {
-                transform: scale(1.1);
-                opacity: 0.8;
-            }
+        {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
         }
 
         .header-card {
@@ -106,6 +196,7 @@
             display: flex;
             gap: 0.8rem;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .filter-btn {
@@ -303,27 +394,31 @@
         }
 
         .status-badge-grid {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1.4rem;
             border-radius: 50px;
             font-weight: 700;
             font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-available {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
         }
 
         .status-occupied {
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
             box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
-        }
-
-        .status-available {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-            color: white;
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
         }
 
         .table-actions {
@@ -345,17 +440,13 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
             cursor: pointer;
-            user-select: none;
-            /* display: inline-flex ile button ve a için uyumlu */
-            display: inline-flex;
         }
 
-        /* Güncelle butonu (Mavi) */
         .btn-edit {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
@@ -370,7 +461,6 @@
                 text-decoration: none;
             }
 
-        /* Sil butonu (Kırmızı) */
         .btn-delete {
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
@@ -385,7 +475,6 @@
                 text-decoration: none;
             }
 
-        /* Button ve a için ortak: Sil butonun içindeki button da aynı hizaya gelsin */
         .table-actions form {
             margin: 0;
             flex: 1;
@@ -393,7 +482,6 @@
 
             .table-actions form button.btn-delete {
                 width: 100%;
-                height: 100%;
             }
 
         .no-tables-message {
@@ -421,99 +509,119 @@
             }
 
             .no-tables-message p {
-                font-size: 1.1rem; 
+                font-size: 1.1rem;
                 opacity: 0.8;
                 margin-bottom: 2rem;
             }
 
         /* Responsive Design */
         @@media (max-width: 992px) {
-            .header-card {
-                flex-direction: column;
-                text-align: center;
-            }
+            .header-card
 
-            .filter-section {
-                justify-content: center;
-            }
+        {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .filter-section {
+            justify-content: center;
+        }
+
+        .toggle-wrapper {
+            margin-left: 0;
+            margin-top: 1rem;
+        }
+
         }
 
         @@media (max-width: 768px) {
-            .table-grid-container {
-                padding: 1rem;
+            .table-grid-container
+
+        {
+            padding: 1rem;
+        }
+
+        .page-title-grid {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+            .page-title-grid i {
+                font-size: 2.5rem;
             }
 
-            .page-title-grid {
-                font-size: 2rem;
-                flex-direction: column;
-                gap: 15px;
-            }
+        .tables-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
 
-                .page-title-grid i {
-                    font-size: 2.5rem;
-                }
+        .table-card {
+            padding: 1.5rem;
+        }
 
-            .tables-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1.5rem;
-            }
+        .table-icon {
+            font-size: 3rem;
+        }
 
-            .table-card {
-                padding: 1.5rem;
-            }
+        .table-name {
+            font-size: 1.3rem;
+        }
 
-            .table-icon {
-                font-size: 3rem;
-            }
+        .header-card {
+            padding: 1.5rem;
+        }
 
-            .table-name {
-                font-size: 1.3rem;
-            }
+        .btn-add-new-grid {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+        }
 
-            .header-card {
-                padding: 1.5rem;
-            }
+        .filter-buttons {
+            justify-content: center;
+        }
 
-            .btn-add-new-grid {
-                padding: 0.8rem 1.5rem;
-                font-size: 0.9rem;
-            }
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.8rem;
+        }
 
-            .filter-buttons {
-                justify-content: center;
-            }
-
-            .filter-btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.8rem;
-            }
         }
 
         @@media (max-width: 480px) {
-            .tables-grid {
-                grid-template-columns: 1fr;
-            }
+            .tables-grid
 
-            .table-actions {
-                flex-direction: column;
-            }
+        {
+            grid-template-columns: 1fr;
+        }
 
-            .btn-table-action {
-                flex: none;
-            }
+        .table-actions {
+            flex-direction: column;
+        }
 
-            .filter-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
+        .btn-table-action {
+            flex: none;
+        }
 
-            .filter-btn {
-                width: 100%;
-                justify-content: center;
-            }
+        .filter-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .filter-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .toggle-wrapper {
+            width: 100%;
+            justify-content: center;
+        }
+
         }
     </style>
 }
+
 
 <div class="table-grid-container">
     <div class="container-fluid">
@@ -529,22 +637,28 @@
                     Konum Filtresi:
                 </div>
                 <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="All">
+                    <button class="filter-btn active" data-filter="all">
                         <i class="la la-th"></i> Tümü
                     </button>
                     @if (ViewBag.Locations != null)
                     {
                         @foreach (var location in ViewBag.Locations as List<string>)
                         {
-                            <button class="filter-btn" data-filter="@location">
+                            <button class="filter-btn" data-filter="@location.ToLower()">
                                 <i class="la la-map-marker"></i> @location
                             </button>
                         }
                     }
-                    <button class="filter-btn" data-filter="available">
-                        <i class="la la-check-circle"></i> Boş Masalar
-                        <span id="availableTableCount" style="margin-left: 6px; font-weight: bold; color: #28a745;">(0)</span>
-                    </button>
+                    <div class="toggle-wrapper">
+                        <div class="toggle-box">
+                            <label class="switch">
+                                <input type="checkbox" id="availableToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="toggle-label">Sadece Boş Masalar</span>
+                        </div>
+                        <span id="availableTableCount" class="available-count">(0)</span>
+                    </div>
                 </div>
             </div>
             <div>
@@ -555,12 +669,15 @@
             </div>
         </div>
 
-        @if (Model != null && Model.Count > 0)
-        {
-            <div class="tables-grid">
+        <div class="tables-grid" id="tablesGrid">
+            @if (Model != null && Model.Count > 0)
+            {
                 @foreach (var item in Model)
                 {
-                    <div class="table-card @(item.Status ? "occupied" : "available")" data-location="@item.Location">
+                    <div class="table-card @(item.Status ? "occupied" : "available")"
+                         data-location="@item.Location"
+                         data-table-id="@item.RestaurantTableId"
+                         data-status="@(item.Status ? "occupied" : "available")">
                         <div class="table-info">
                             <div class="table-icon">
                                 <i class="la la-cutlery"></i>
@@ -584,22 +701,21 @@
                         </div>
                     </div>
                 }
-            </div>
-        }
-        else
-        {
-            <div class="no-tables-message" style="display:none;">
-                <i class="la la-cutlery"></i>
-                <h3>Henüz Masa Bulunmuyor</h3>
-                <p>Restoran masalarınızı eklemek için yukarıdaki butonu kullanabilirsiniz.</p>
-                <a href="/RestaurantTable/CreateRestaurantTable" class="btn-add-new-grid">
-                    <i class="la la-plus"></i>
-                    İlk Masanızı Ekleyin
-                </a>
-            </div>
-        }
+            }
+        </div>
+
+        <div class="no-tables-message" id="noTablesMessage" style="display:@(Model != null && Model.Count > 0 ? "none" : "block")">
+            <i class="la la-cutlery"></i>
+            <h3>Henüz Masa Bulunmuyor</h3>
+            <p>Restoran masalarınızı eklemek için yukarıdaki butonu kullanabilirsiniz.</p>
+            <a href="/RestaurantTable/CreateRestaurantTable" class="btn-add-new-grid">
+                <i class="la la-plus"></i>
+                İlk Masanızı Ekleyin
+            </a>
+        </div>
     </div>
 </div>
+
 
 
 
@@ -607,41 +723,134 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const filterButtons = document.querySelectorAll('.filter-btn');
-        const tablesGrid = document.querySelector('.tables-grid');
-        const noTablesMessage = document.querySelector('.no-tables-message');
+        const tablesGrid = document.getElementById('tablesGrid');
+        const noTablesMessage = document.getElementById('noTablesMessage');
+        const availableCountSpan = document.getElementById("availableTableCount");
+        const toggleAvailable = document.getElementById("availableToggle");
 
-        const normalize = str => str?.trim().toLowerCase();
+        let currentFilter = 'all';
+        let allTables = []; // Tüm masaları saklamak için
 
-        // Ortak HTML render fonksiyonu
-        function renderTableCards(data) {
-            if (!data || data.length === 0) {
-                if (tablesGrid) tablesGrid.style.display = "none";
-                if (noTablesMessage) {
-                    noTablesMessage.style.display = "block";
+        // SignalR bağlantısını oluştur
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:7000/signalrhub")
+            .build();
+
+        // SignalR bağlantısını başlat
+        connection.start().then(() => {
+            console.log("✅ SignalR bağlantısı kuruldu");
+            loadInitialData();
+
+            // Her 3 saniyede bir güncelleme istegi gönder
+            setInterval(async () => {
+                try {
+                    await connection.invoke("SendRestaurantTables");
+                } catch (err) {
+                    console.error("SignalR invoke hatası:", err);
+                }
+            }, 3000);
+        }).catch(err => {
+            console.error("SignalR bağlantı hatası:", err);
+            loadInitialData(); // SignalR bağlanamasa bile ilk verileri yükle
+        });
+
+        // SignalR'dan tüm masalar geldiğinde
+        connection.on("ReceiveRestaurantTables", (tables) => {
+            console.log("📥 SignalR - Tüm masalar güncellendi:", tables);
+            allTables = tables;
+            updateAvailableCount();
+            applyCurrentFilter();
+        });
+
+        // SignalR'dan boş masa sayısı geldiğinde
+        connection.on("ReceiveRestaurantTableCountAvailable", (count) => {
+            console.log("📥 SignalR - Boş masa sayısı:", count);
+            if (availableCountSpan) {
+                availableCountSpan.textContent = `(${count})`;
+            }
+        });
+
+        // İlk veri yükleme
+        function loadInitialData() {
+            fetch("https://localhost:7000/api/RestaurantTables")
+                .then(res => res.json())
+                .then(data => {
+                    allTables = data;
+                    updateAvailableCount();
+                    applyCurrentFilter();
+                })
+                .catch(err => {
+                    console.error("İlk veriler yüklenemedi:", err);
+                });
+        }
+
+        // Boş masa sayısını güncelle
+        function updateAvailableCount() {
+            const availableCount = allTables.filter(table => !table.status).length;
+            if (availableCountSpan) {
+                availableCountSpan.textContent = `(${availableCount})`;
+            }
+        }
+
+        // Mevcut filtreyi uygula
+        function applyCurrentFilter() {
+            let filteredTables = allTables;
+
+            // Toggle aktif ise sadece boş masalar
+            if (toggleAvailable.checked) {
+                filteredTables = filteredTables.filter(table => !table.status);
+            }
+
+            // Konum filtresi
+            if (currentFilter !== 'all') {
+                filteredTables = filteredTables.filter(table =>
+                    table.location.toLowerCase() === currentFilter
+                );
+            }
+
+            renderTableCards(filteredTables);
+        }
+
+        // Masa kartlarını oluştur
+        function renderTableCards(tables) {
+            if (!tables || tables.length === 0) {
+                tablesGrid.style.display = "none";
+                noTablesMessage.style.display = "block";
+
+                if (toggleAvailable.checked) {
                     noTablesMessage.querySelector('h3').textContent = "Boş Masa Bulunamadı";
-                    noTablesMessage.querySelector('p').textContent = "Şu anda boş masa bulunmamaktadır.";
+                    noTablesMessage.querySelector('p').textContent = "Şu anda seçilen kriterlere uygun boş masa bulunmamaktadır.";
+                } else {
+                    noTablesMessage.querySelector('h3').textContent = "Masa Bulunamadı";
+                    noTablesMessage.querySelector('p').textContent = "Seçilen kriterlere uygun masa bulunmamaktadır.";
                 }
                 return;
             }
 
-            if (noTablesMessage) noTablesMessage.style.display = "none";
-            if (tablesGrid) tablesGrid.style.display = "grid";
+            noTablesMessage.style.display = "none";
+            tablesGrid.style.display = "grid";
 
-            const cardsHTML = data.map(item => `
-                <div class="table-card available" data-location="${item.Location || item.location}">
+            const cardsHTML = tables.map(table => `
+                <div class="table-card ${table.status ? 'occupied' : 'available'}"
+                     data-location="${table.location.toLowerCase()}"
+                     data-table-id="${table.restaurantTableId}"
+                     data-status="${table.status ? 'occupied' : 'available'}">
                     <div class="table-info">
-                        <div class="table-icon"><i class="la la-cutlery"></i></div>
-                        <h5 class="table-name">${item.Location || item.location}</h5>
-                        <p class="table-id">Masa No: ${item.TableNo || item.tableNo}</p>
-                        <span class="status-badge-grid status-available">
-                            <i class="la la-check"></i> Boş
+                        <div class="table-icon">
+                            <i class="la la-cutlery"></i>
+                        </div>
+                        <h5 class="table-name">${table.location}</h5>
+                        <p class="table-id">Masa No: ${table.tableNo}</p>
+                        <span class="status-badge-grid ${table.status ? 'status-occupied' : 'status-available'}">
+                            <i class="la ${table.status ? 'la-user' : 'la-check'}"></i>
+                            ${table.status ? 'Dolu' : 'Boş'}
                         </span>
                     </div>
                     <div class="table-actions">
-                        <a href="/RestaurantTable/UpdateRestaurantTable/${item.RestaurantTableId || item.restaurantTableId}" class="btn-table-action btn-edit">
+                        <a href="/RestaurantTable/UpdateRestaurantTable/${table.restaurantTableId}" class="btn-table-action btn-edit">
                             <i class="la la-edit"></i> Güncelle
                         </a>
-                        <form asp-action="DeleteRestaurantTable" asp-controller="RestaurantTable" asp-route-id="${item.RestaurantTableId || item.restaurantTableId}" method="post" onsubmit="return confirm('Bu masayı silmek istediğinize emin misiniz?');" style="display:inline; flex:1;">
+                        <form action="/RestaurantTable/DeleteRestaurantTable/${table.restaurantTableId}" method="post" onsubmit="return confirm('Bu masayı silmek istediğinize emin misiniz?');" style="display:inline; flex:1;">
                             <button type="submit" class="btn-table-action btn-delete">
                                 <i class="la la-trash"></i> Sil
                             </button>
@@ -651,67 +860,43 @@
             `).join('');
 
             tablesGrid.innerHTML = cardsHTML;
+
+            // Animasyon ekle
+            const cards = tablesGrid.querySelectorAll('.table-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.4s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
         }
 
-        // Filtre butonları
+        // Filtreleme butonları
         filterButtons.forEach(button => {
             button.addEventListener('click', function () {
-                const filter = normalize(this.getAttribute('data-filter'));
+                const filter = this.getAttribute('data-filter');
+                currentFilter = filter;
 
+                // Aktif buton stilini güncelle
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
 
-                if (filter === "available") {
-                    fetch("https://localhost:7000/api/RestaurantTables/AvailableTables")
-                        .then(res => {
-                            if (!res.ok) throw new Error('API isteği başarısız');
-                            return res.json();
-                        })
-                        .then(data => {
-                            renderTableCards(data);
-                        })
-                        .catch(err => {
-                            alert("Boş masalar yüklenemedi.");
-                            console.error(err);
-                        });
-
-                    return;
-                }
-
-                // Konuma göre filtreleme
-                const cards = document.querySelectorAll('.table-card');
-                cards.forEach(card => {
-                    const location = normalize(card.getAttribute('data-location'));
-                    if (filter === "all" || location === filter) {
-                        card.style.display = "block";
-                        setTimeout(() => {
-                            card.style.opacity = "1";
-                            card.style.transform = "scale(1)";
-                        }, 50);
-                    } else {
-                        card.style.opacity = "0";
-                        card.style.transform = "scale(0.8)";
-                        setTimeout(() => {
-                            card.style.display = "none";
-                        }, 300);
-                    }
-                });
+                // Filtreyi uygula
+                applyCurrentFilter();
             });
         });
 
-        // Sayfa yüklendiğinde animasyon
-        const tableCards = document.querySelectorAll('.table-card');
-        tableCards.forEach((card, index) => {
-            card.style.opacity = "0";
-            card.style.transform = "translateY(20px)";
-            setTimeout(() => {
-                card.style.opacity = "1";
-                card.style.transform = "translateY(0)";
-            }, index * 100);
+        // Toggle değişikliği
+        toggleAvailable.addEventListener("change", function () {
+            console.log("🔄 Toggle durumu:", this.checked);
+            applyCurrentFilter();
         });
 
-        
-
+        // Sayfa yüklendiğinde boş masa sayısını güncelle
+        updateAvailableCount();
     });
 </script>
 
