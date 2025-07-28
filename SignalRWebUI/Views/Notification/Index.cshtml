@@ -221,30 +221,4 @@
 </div>
 
 
-<script>
-    $(document).ready(function () {
-        $(".mark-read-btn").click(function () {
-            const id = $(this).data("id");
-            const $btn = $(this);
-            const $row = $btn.closest("tr");
-
-            $.ajax({
-                 url: `https://localhost:7000/api/Notifications/NotificationStatusTrue/${id}`,
-                type: "GET",
-                success: function () {
-                    // DURUM hücresini güncelle
-                    const $statusCell = $row.find(".badge-status");
-                    $statusCell
-                        .removeClass("false")
-                        .text("Okundu");
-
-                    // Butonun olduğu hücreyi ✔ Okundu olarak değiştir
-                    $btn.closest("td").html('<span class="text-success fw-bold">✔ Okundu</span>');
-                },
-                error: function () {
-                    alert("Bildirimi okundu yaparken hata oluştu.");
-                }
-            });
-        });
-    });
-</script>
+<script src="~/js/Notification.js"></script>
