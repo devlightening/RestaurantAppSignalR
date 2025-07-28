@@ -16,6 +16,23 @@ namespace SignalR.DataAccessLayer.Concrete
                 "Server=DESKTOP-4UQ0AMN\\SQLEXPRESS01;Database=SignalRDb;Integrated Security=True;TrustServerCertificate=True;");
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.SenderUser)
+                .WithMany(u => u.SentMessages)
+                .HasForeignKey(m => m.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.ReceiverUser)
+                .WithMany(u => u.ReceivedMessages)
+                .HasForeignKey(m => m.ReceiverUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
         public DbSet<About> Abouts { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<SocialMedia> SocialMedias { get; set; }
@@ -32,5 +49,7 @@ namespace SignalR.DataAccessLayer.Concrete
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<Basket> Baskets { get; set; } 
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }

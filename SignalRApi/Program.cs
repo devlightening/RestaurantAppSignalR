@@ -77,6 +77,16 @@ internal class Program
         builder.Services.AddScoped<INotificationService, NotificationManager>();
         builder.Services.AddScoped<INotificationDal, EfNotificationDal>();
 
+        builder.Services.AddScoped<IAppUserService, AppUserManager>();
+        builder.Services.AddScoped<IAppUserDal, EfAppUserDal>();
+
+        builder.Services.AddScoped<IMessageService, MessageManager>();
+        builder.Services.AddScoped<IMessageDal, EfMessageDal>();
+
+
+
+
+
         builder.Services.AddControllersWithViews()
         .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
