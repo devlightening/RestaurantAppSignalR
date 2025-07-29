@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.BookingDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -20,56 +22,62 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult BookingList()
+        public async Task<IActionResult> BookingList()
         {
-            var values = _mapper.Map<List<ResultBookingDto>>(_bookingService.TGetListAll());
+            var values = _mapper.Map<List<ResultBookingDto>>(await _bookingService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpPost]
-        public IActionResult CreateBooking(CreateBookingDto createBookingDto)
+        public async Task<IActionResult> CreateBooking(CreateBookingDto createBookingDto)
         {
-          
-            _bookingService.TAdd(new Booking()
-            {
-                Name=createBookingDto.Name,
-                Mail = createBookingDto.Mail,
-                Phone = createBookingDto.Phone,
-                Date = createBookingDto.Date,
-                PersonCount = createBookingDto.PersonCount
-            });
-            return Ok("Rezervasyon Başarıyla Eklendi");
+            if (createBookingDto == null) return BadRequest("Rezervasyon verisi boş olamaz.");
+
+            var booking = _mapper.Map<Booking>(createBookingDto);
+            await _bookingService.TAddAsync(booking);
+
+            return CreatedAtAction(nameof(GetBooking), new { id = booking.BookingId }, booking);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteBooking(int id)
+        public async Task<IActionResult> DeleteBooking(int id)
         {
-            var value = _bookingService.TGetById(id);
-            _bookingService.TDelete(value);
+            var value = await _bookingService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile rezervasyon bulunamadı.");
+            }
+            await _bookingService.TDeleteAsync(value);
             return Ok("Rezervasyon Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateBooking(UpdateBookingDto updateBookingDto)
+        public async Task<IActionResult> UpdateBooking(UpdateBookingDto updateBookingDto)
         {
+            if (updateBookingDto == null) return BadRequest("Güncellenecek rezervasyon verisi boş olamaz.");
 
-            _bookingService.TUpdate(new Booking()
+            var existingBooking = await _bookingService.TGetByIdAsync(updateBookingDto.BookingId);
+            if (existingBooking == null)
             {
-                BookingId = updateBookingDto.BookingId,
-                Name = updateBookingDto.Name,
-                Mail = updateBookingDto.Mail,
-                Phone = updateBookingDto.Phone,
-                Date = updateBookingDto.Date,
-                PersonCount = updateBookingDto.PersonCount
-            });
+                return NotFound($"ID {updateBookingDto.BookingId} ile rezervasyon bulunamadı.");
+            }
+
+            _mapper.Map(updateBookingDto, existingBooking);
+            await _bookingService.TUpdateAsync(existingBooking);
+
             return Ok("Rezervasyon Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetBooking(int id)
+        public async Task<IActionResult> GetBooking(int id)
         {
-            var value = _bookingService.TGetById(id);
-            return Ok(value);
+            var value = await _bookingService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile rezervasyon bulunamadı.");
+            }
+            var result = _mapper.Map<ResultBookingDto>(value);
+            return Ok(result);
         }
     }
 }

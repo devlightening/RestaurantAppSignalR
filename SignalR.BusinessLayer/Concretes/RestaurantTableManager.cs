@@ -11,86 +11,84 @@ namespace SignalR.BusinessLayer.Concretes
 {
     public class RestaurantTableManager : IRestaurantTableService
     {
-        private readonly IRestaurantTableDal? _restaurantTableDal;
+        private readonly IRestaurantTableDal _restaurantTableDal;
 
-        public RestaurantTableManager(IRestaurantTableDal? restaurantTableDal)
+        public RestaurantTableManager(IRestaurantTableDal restaurantTableDal)
         {
             _restaurantTableDal = restaurantTableDal;
         }
 
-        public void TAdd(RestaurantTable entity)
+        public async Task TAddAsync(RestaurantTable entity)
         {
-            _restaurantTableDal.Add(entity);
-
+            await _restaurantTableDal.AddAsync(entity);
+            await _restaurantTableDal.SaveChangesAsync();
         }
 
-        public int TAvailableTableCount()
+        public async Task<int> TAvailableTableCount()
         {
-
-            return _restaurantTableDal.AvailableTableCount();
+            return await _restaurantTableDal.AvailableTableCount();
         }
 
-        public void TDelete(RestaurantTable entity)
+        public async Task TDeleteAsync(RestaurantTable entity)
         {
-
-            _restaurantTableDal.Delete(entity);
+            await _restaurantTableDal.DeleteAsync(entity);
+            await _restaurantTableDal.SaveChangesAsync();
         }
 
-        public List<RestaurantTable> TGetAvailableTables()
+        public async Task<List<RestaurantTable>> TGetAvailableTables()
         {
-            return _restaurantTableDal.GetAvailableTables();
+            return await _restaurantTableDal.GetAvailableTables();
         }
 
-        public RestaurantTable TGetById(int id)
+        public async Task<RestaurantTable> TGetByIdAsync(int id)
         {
-            return _restaurantTableDal.GetById(id);
+            return await _restaurantTableDal.GetByIdAsync(id);
         }
 
-        public RestaurantTable TGetByTableNo(int tableNo)
+        public async Task<RestaurantTable> TGetByTableNo(int tableNo)
         {
-            return _restaurantTableDal.GetByTableNo(tableNo);
-
+            return await _restaurantTableDal.GetByTableNo(tableNo);
         }
 
-        public List<RestaurantTable> TGetListAll()
+        public async Task<List<RestaurantTable>> TGetListAllAsync()
         {
-
-            return _restaurantTableDal.GetListAll();
+            return await _restaurantTableDal.GetListAllAsync();
         }
 
-        public List<RestaurantTable> TGetNotAvailableTables()
+        public async Task<List<RestaurantTable>> TGetNotAvailableTables()
         {
-            return _restaurantTableDal.GetNotAvailableTables();
-
+            return await _restaurantTableDal.GetNotAvailableTables();
         }
 
-        public List<RestaurantTable> TGetTablesByLocation(TableLocation location)
+        public async Task<List<RestaurantTable>> TGetTablesByLocation(TableLocation location)
         {
-            return _restaurantTableDal.GetTablesByLocation(location);
+            return await _restaurantTableDal.GetTablesByLocation(location);
         }
 
-        public List<RestaurantTable> TGetTablesByStatus(bool status)
+        public async Task<List<RestaurantTable>> TGetTablesByStatus(bool status)
         {
-            return _restaurantTableDal.GetTablesByStatus(status);
-
+            return await _restaurantTableDal.GetTablesByStatus(status);
         }
 
-        public int TNotAvailableTableCount() 
-        { 
-            return _restaurantTableDal.NotAvailableTableCount();
-
+        public async Task<int> TNotAvailableTableCount()
+        {
+            return await _restaurantTableDal.NotAvailableTableCount();
         }
 
-        public int TTotalTableCount()
+        public async Task TSaveChangesAsync()
         {
-            return _restaurantTableDal.TotalTableCount();
-
+            await _restaurantTableDal.SaveChangesAsync();
         }
 
-        public void TUpdate(RestaurantTable entity)
+        public async Task<int> TTotalTableCount()
         {
+            return await _restaurantTableDal.TotalTableCount();
+        }
 
-            _restaurantTableDal.Update(entity);
+        public async Task TUpdateAsync(RestaurantTable entity)
+        {
+            await _restaurantTableDal.UpdateAsync(entity);
+            await _restaurantTableDal.SaveChangesAsync();
         }
     }
 }

@@ -23,10 +23,9 @@ namespace SignalR.DataAccessLayer.EntityFramework
         public async Task<IEnumerable<AppUser>> GetUsersByDepartmentAsync(UserDepartment department)
         {
             return await _context.AppUsers
-                .Where(user => user.Department == department.ToString())
+                .Where(user => user.UserDepartment == department)
                 .ToListAsync();
         }
-
         public async Task<AppUser> GetUserByFullNameAsync(string name, string surname)
         {
             return await _context.AppUsers

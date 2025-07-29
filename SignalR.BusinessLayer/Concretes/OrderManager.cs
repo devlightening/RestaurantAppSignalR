@@ -1,11 +1,6 @@
 ﻿using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Abstracts;
 using SignalR.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Concretes
 {
@@ -18,58 +13,67 @@ namespace SignalR.BusinessLayer.Concretes
             _orderDal = orderDal;
         }
 
-        public int TActiveOrderNumber()
+        public async Task TAddAsync(Order entity)
         {
-            return _orderDal.ActiveOrderNumber();
+            await _orderDal.AddAsync(entity);
+            await _orderDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TAdd(Order entity)
+        public async Task TDeleteAsync(Order entity)
         {
-            
-            _orderDal.Add(entity);
+            await _orderDal.DeleteAsync(entity);
+            await _orderDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Order entity)
+        public async Task<Order> TGetByIdAsync(int id)
         {
-            _orderDal.Delete(entity);
-            
+            return await _orderDal.GetByIdAsync(id);
         }
 
-        public Order TGetById(int id)
+        public async Task<List<Order>> TGetListAllAsync()
         {
-            return _orderDal.GetById(id);
-            
+            return await _orderDal.GetListAllAsync();
         }
 
-        public List<Order> TGetListAll()
+        public async Task<List<Order>> TGetListWithOrderDetails()
         {
-            return _orderDal.GetListAll();
+           
+            return await _orderDal.GetListWithOrderDetails();
         }
 
-        public List<Order> TGetListWithOrderDetails()
+        public async Task<decimal> TLastOrderPrice()
         {
-            return _orderDal.GetListWithOrderDetails();
-
+         
+            return await _orderDal.LastOrderPrice();
         }
 
-        public decimal TLastOrderPrice()
+        public async Task TSaveChangesAsync()
         {
-            return _orderDal.LastOrderPrice();
+            await _orderDal.SaveChangesAsync();
         }
 
-        public decimal TTodayTotalPrice()
+        public async Task<decimal> TTodayTotalPrice()
         {
-            return _orderDal.TodayTotalPrice();
+          
+            return await _orderDal.TodayTotalPrice();
         }
 
-        public int TTotalOrderNumber()
+        public async Task<int> TTotalOrderNumber()
         {
-            return _orderDal.TotalOrderNumber();
+         
+            return await _orderDal.TotalOrderNumber();
         }
 
-        public void TUpdate(Order entity)
+        public async Task TUpdateAsync(Order entity)
         {
-            _orderDal.Update(entity);
+            await _orderDal.UpdateAsync(entity);
+            await _orderDal.SaveChangesAsync();
+        }
+
+   
+        public async Task<int> TActiveOrderNumber()
+        {
+            return await _orderDal.ActiveOrderNumber();
         }
     }
 }

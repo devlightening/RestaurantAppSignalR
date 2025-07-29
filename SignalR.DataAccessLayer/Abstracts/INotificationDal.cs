@@ -9,10 +9,10 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface INotificationDal : IGenericDal<Notification>
     {
-        int NotificationCountByStatusFalse();
-        List<Notification> GetAllNotificationByFalse();
-        void NotificationStatusFalse(int id);
-        void NotificationStatusTrue(int id);
+        Task<int> NotificationCountByStatusFalse();
+        Task<List<Notification>> GetAllNotificationByFalse();
+        Task NotificationStatusFalse(int id);
+        Task NotificationStatusTrue(int id);
     }
 }
 

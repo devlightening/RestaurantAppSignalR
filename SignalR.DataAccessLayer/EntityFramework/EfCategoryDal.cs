@@ -2,39 +2,39 @@
 using SignalR.DataAccessLayer.Concrete;
 using SignalR.DataAccessLayer.Repositories;
 using SignalR.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore; // CountAsync için gerekli
 
 namespace SignalR.DataAccessLayer.EntityFramework
 {
     public class EfCategoryDal : GenericRepository<Category>, ICategoryDal
     {
+        private readonly SignalRContext _context;
+
         public EfCategoryDal(SignalRContext context) : base(context)
         {
+            _context = context; // Enjekte edilen context'i kullanıyoruz
         }
 
-        public int ActiveCategoryCount()
+        // CategoryCountAsync metodu dolduruldu
+        public async Task<int> CategoryCountAsync()
         {
-            using var context = new SignalRContext();
-            return context.Categories.Where(c => c.CategoryStatus==true).Count();
+            // Tüm kategorilerin sayısını asenkron olarak döner
+            return await _context.Categories.CountAsync();
         }
 
-        public int PassiveCategoryCount()
+        // ActiveCategoryCountAsync metodu dolduruldu
+        public async Task<int> ActiveCategoryCountAsync()
         {
-            using var context = new SignalRContext();
-            return context.Categories.Where(c => c.CategoryStatus == false).Count(); ;
-
+            // Aktif (Status == true) kategorilerin sayısını asenkron olarak döner
+            return await _context.Categories.Where(c => c.CategoryStatus == true).CountAsync();
         }
 
-        public int CategoryCount()
+        // PassiveCategoryCountAsync metodu dolduruldu
+        public async Task<int> PassiveCategoryCountAsync()
         {
-            using var context = new SignalRContext();
-            return context.Categories.Count();
+            // Pasif (Status == false) kategorilerin sayısını asenkron olarak döner
+            return await _context.Categories.Where(c => c.CategoryStatus == false).CountAsync();
         }
-
-       
     }
 }

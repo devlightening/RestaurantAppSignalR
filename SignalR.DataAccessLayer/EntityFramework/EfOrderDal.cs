@@ -8,42 +8,53 @@ namespace SignalR.DataAccessLayer.EntityFramework
 {
     public class EfOrderDal : GenericRepository<Order>, IOrderDal
     {
+        private readonly SignalRContext _context;
+
         public EfOrderDal(SignalRContext context) : base(context)
         {
+            _context = context; // Dependency Injection ile gelen context'i kullanıyoruz
         }
 
-        public int ActiveOrderNumber()
+        // Aktif sipariş sayısını asenkron olarak döndürür
+        public async Task<int> ActiveOrderNumber()
         {
-            using var context = new SignalRContext();
-            return context.Orders.Where(x=>x.Description== "Müşteri Masada").Count();
+            // Eski mantığa göre "Müşteri Masada" durumundaki siparişleri sayar
+            return await _context.Orders.Where(x => x.Description == "Müşteri Masada").CountAsync();
         }
 
-        public List<Order> GetListWithOrderDetails()
+        // Sipariş detayları ile birlikte sipariş listesini asenkron olarak döndürür
+        public async Task<List<Order>> GetListWithOrderDetails()
         {
-            using var context = new SignalRContext();
-            return context.Orders.Include(x => x.OrderDetails).ToList();
-
+            // Siparişleri OrderDetails navigation property'si ile birlikte yükler
+            return await _context.Orders.Include(x => x.OrderDetails).ToListAsync();
         }
 
-        public decimal LastOrderPrice()
+        // Son siparişin fiyatını asenkron olarak döndürür
+        public async Task<decimal> LastOrderPrice()
         {
-            using var context = new SignalRContext();
-            return context.Orders.OrderByDescending(x => x.OrderId).Take(1).Select(y => y.TotalOrderPrice).FirstOrDefault();
+            // En son siparişin (OrderId'ye göre azalan) toplam fiyatını alır
+            // FirstOrDefaultAsync, Take(1) yerine daha uygun bir asenkron alternatiftir
+            return await _context.Orders
+                                 .OrderByDescending(x => x.OrderId)
+                                 .Select(y => y.TotalOrderPrice)
+                                 .FirstOrDefaultAsync();
         }
 
-        public decimal TodayTotalPrice()
+        // Bugünün toplam sipariş fiyatını asenkron olarak döndürür
+        public async Task<decimal> TodayTotalPrice()
         {
-            using var context = new SignalRContext();
-            DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-            return context.Orders.Where(x => x.OrderDate == NowDate && x.Description == "Hesap Kapatıldı").Sum(y => y.TotalOrderPrice);
+            // Sadece bugüne ait ve "Hesap Kapatıldı" durumundaki siparişlerin toplam fiyatını hesaplar
+            DateTime today = DateTime.Now.Date; // Sadece tarih kısmını alır
+            return await _context.Orders
+                                 .Where(x => x.OrderDate.Date == today && x.Description == "Hesap Kapatıldı")
+                                 .SumAsync(y => y.TotalOrderPrice);
         }
 
-        public int TotalOrderNumber()
+        // Toplam sipariş sayısını asenkron olarak döndürür
+        public async Task<int> TotalOrderNumber()
         {
-           using var context = new SignalRContext();
-            return context.Orders.Count();
+            // Tüm siparişlerin sayısını asenkron olarak döner
+            return await _context.Orders.CountAsync();
         }
-
-
     }
 }

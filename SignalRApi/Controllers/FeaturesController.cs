@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.FeatureDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -20,59 +21,62 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult FeatureList()
+        public async Task<IActionResult> FeatureList()
         {
-            var values = _mapper.Map<List<ResultFeatureDto>>(_featureService.TGetListAll());
+            var values = _mapper.Map<List<ResultFeatureDto>>(await _featureService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpPost]
-        public IActionResult CreateFeature(CreateFeatureDto createFeatureDto)
+        public async Task<IActionResult> CreateFeature(CreateFeatureDto createFeatureDto)
         {
-           
-            _featureService.TAdd(new Feature()
-            {
-                Title1 = createFeatureDto.Title1,
-                Description1 = createFeatureDto.Description1,
-                Title2 = createFeatureDto.Title2,
-                Description2 = createFeatureDto.Description2,
-                Title3 = createFeatureDto.Title3,
-                Description3 = createFeatureDto.Description3
-            });
-            return Ok("Özellik Başarıyla Eklendi");
+            if (createFeatureDto == null) return BadRequest("Özellik verisi boş olamaz.");
+
+            var feature = _mapper.Map<Feature>(createFeatureDto);
+            await _featureService.TAddAsync(feature);
+
+            return CreatedAtAction(nameof(GetFeature), new { id = feature.FeatureId }, feature);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteFeature(int id)
+        public async Task<IActionResult> DeleteFeature(int id)
         {
-            var value = _featureService.TGetById(id);
-            _featureService.TDelete(value);
+            var value = await _featureService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile özellik bulunamadı.");
+            }
+            await _featureService.TDeleteAsync(value);
             return Ok("Özellik Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateFeature(UpdateFeatureDto updateFeatureDto)
+        public async Task<IActionResult> UpdateFeature(UpdateFeatureDto updateFeatureDto)
         {
-            
-            _featureService.TUpdate(new Feature()
+            if (updateFeatureDto == null) return BadRequest("Güncellenecek özellik verisi boş olamaz.");
+
+            var existingFeature = await _featureService.TGetByIdAsync(updateFeatureDto.FeatureId);
+            if (existingFeature == null)
             {
-                FeatureId = updateFeatureDto.FeatureId,
-                Title1 = updateFeatureDto.Title1,
-                Description1 = updateFeatureDto.Description1,
-                Title2 = updateFeatureDto.Title2,
-                Description2 = updateFeatureDto.Description2,
-                Title3 = updateFeatureDto.Title3,
-                Description3 = updateFeatureDto.Description3
-            });
+                return NotFound($"ID {updateFeatureDto.FeatureId} ile özellik bulunamadı.");
+            }
+
+            _mapper.Map(updateFeatureDto, existingFeature);
+            await _featureService.TUpdateAsync(existingFeature);
+
             return Ok("Özellik Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetFeature(int id)
+        public async Task<IActionResult> GetFeature(int id)
         {
-            var value = _featureService.TGetById(id);
-            return Ok(value);
-        }  
-        
+            var value = await _featureService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile özellik bulunamadı.");
+            }
+            var result = _mapper.Map<ResultFeatureDto>(value);
+            return Ok(result);
+        }
     }
 }

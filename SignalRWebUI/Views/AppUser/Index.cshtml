@@ -1,0 +1,329 @@
+﻿@model List<ResultAppUserDto>
+@{
+    ViewData["Title"] = "Kullanıcı Listesi";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css" />
+    <style>
+        :root {
+            --primary-blue: #4A90E2;
+            --secondary-green: #50E3C2;
+            --accent-red: #FF6B6B;
+            --text-dark: #333;
+            --text-medium: #666;
+            --text-light: #999;
+            --bg-light: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --border-light: #E0E0E0;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2.5rem 2.5rem 0 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .add-user-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(45deg, var(--primary-blue), #6BCBFF);
+            border: none;
+            border-radius: 30px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .add-user-btn:hover {
+                background: linear-gradient(45deg, #3A7BBF, #57B0E0);
+                transform: translateY(-3px) scale(1.03);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-light);
+        }
+
+            .user-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 15px 45px var(--shadow-medium);
+            }
+
+        .user-avatar {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            background: linear-gradient(45deg, #e9ecef, #dee2e6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+            .user-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+            .user-avatar:hover img {
+                transform: scale(1.1);
+            }
+
+        .default-avatar {
+            font-size: 5rem;
+            color: #b0c4de; /* Softer blue-gray for default */
+            opacity: 0.8;
+        }
+
+        .status-dot {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 16px;
+            height: 16px;
+            background: var(--secondary-green); /* Vibrant green for online */
+            border: 3px solid var(--card-bg);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(80, 227, 194, 0.5); /* Glow effect */
+        }
+
+        .user-info {
+            padding: 1.5rem;
+            text-align: center;
+            flex-grow: 1; /* Allows info section to expand */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .user-info h4 {
+                margin: 0 0 0.5rem 0;
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: var(--text-dark);
+                letter-spacing: -0.02em;
+            }
+
+            .user-info .department {
+                font-size: 1rem;
+                color: var(--text-medium);
+                margin: 0 0 1rem 0;
+                font-weight: 500;
+            }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: var(--bg-light); /* Lighter background for badge */
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+            .status-badge i {
+                color: var(--primary-blue); /* Icon color for status */
+            }
+
+        .user-card.online .status-badge i {
+            color: var(--secondary-green);
+        }
+
+        .user-card.offline .status-badge i {
+            color: var(--text-light);
+        }
+
+
+        .user-info .created-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 1rem; /* Space from status badge */
+            padding-top: 0.8rem;
+            border-top: 1px dashed var(--border-light); /* Subtle separator */
+            width: 80%; /* Constrain width for better look */
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.8rem;
+            padding: 1.5rem;
+            justify-content: center;
+            background: linear-gradient(to top, #fcfcfc, #f9f9f9);
+            border-top: 1px solid var(--border-light);
+        }
+
+            .user-actions a,
+            .user-actions button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.8rem 1.5rem;
+                font-size: 0.95rem;
+                font-weight: 600;
+                border: none;
+                border-radius: 30px;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.3s ease-in-out;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+        .btn-edit {
+            background: linear-gradient(45deg, #4A90E2, #6BCBFF); /* Primary blue gradient */
+            color: white;
+        }
+
+            .btn-edit:hover {
+                background: linear-gradient(45deg, #3A7BBF, #57B0E0);
+                transform: translateY(-3px) scale(1.03);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E); /* Accent red gradient */
+            color: white;
+        }
+
+            .btn-delete:hover {
+                background: linear-gradient(45deg, #E05A5A, #E07A7A);
+                transform: translateY(-3px) scale(1.03);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .page-header
+
+        {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem 1.5rem 0 1.5rem;
+        }
+
+        .page-header h2 {
+            margin-bottom: 1rem;
+        }
+
+        .users-grid {
+            grid-template-columns: 1fr; /* Single column on smaller screens */
+            padding: 1.5rem;
+        }
+
+        .user-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .user-info h4 {
+            font-size: 1.2rem;
+        }
+
+        .user-actions {
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: center;
+        }
+
+            .user-actions a,
+            .user-actions button {
+                width: 90%; /* Make buttons wider */
+                max-width: 250px;
+            }
+
+        }
+    </style>
+</head>
+
+<div class="page-header">
+    <h2>Kullanıcı Listesi</h2>
+    <a href="/AppUser/CreateAppUser" class="add-user-btn">
+        <i class="la la-plus-circle me-1"></i> Yeni Kullanıcı Ekle
+    </a>
+</div>
+
+<div class="users-grid">
+    @foreach (var user in Model)
+    {
+        <div class="user-card @(user.IsOnline ? "online" : "offline")">
+            <div class="user-avatar">
+                @if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                {
+                    <img src="@user.ProfileImageUrl" alt="@user.FullName" onerror="this.onerror=null;this.src='';this.parentNode.querySelector('.default-avatar').style.display='flex';" />
+                }
+                else
+                {
+                    <div class="default-avatar" style="display:flex;"><i class="la la-user"></i></div>
+                }
+
+                @if (user.IsOnline)
+                {
+                    <div class="status-dot"></div>
+                }
+            </div>
+            <div class="user-info">
+                <h4>@user.FullName</h4>
+                <p class="department">@user.UserDepartment.ToString()</p>
+                <div class="status-badge">
+                    <i class="la @(user.IsOnline ? "la-signal" : "la-power-off")"></i>
+                    <span>@(user.IsOnline ? "Çevrimiçi" : "Çevrimdışı")</span>
+                </div>
+                <p class="created-date">Oluşturulma: @user.CreatedDate.ToString("dd.MM.yyyy HH:mm")</p>
+            </div>
+            <div class="user-actions">
+                <a href="/AppUser/UpdateAppUser/@user.AppUserId" class="btn-edit">
+                    <i class="la la-edit me-1"></i> Düzenle
+                </a>
+                <form asp-action="DeleteAppUser" asp-controller="AppUser" asp-route-id="@user.AppUserId" method="post"
+                      onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
+                    <button type="submit" class="btn-delete">
+                        <i class="la la-trash me-1"></i> Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

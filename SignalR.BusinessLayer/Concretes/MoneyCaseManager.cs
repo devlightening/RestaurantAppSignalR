@@ -18,34 +18,49 @@ namespace SignalR.BusinessLayer.Concretes
             _moneyCaseDal = moneyCaseDal;
         }
 
-        public void TAdd(MoneyCase entity)
+        // Asenkron ekleme metodu
+        public async Task TAddAsync(MoneyCase entity)
         {
-            _moneyCaseDal.Add(entity);
+            await _moneyCaseDal.AddAsync(entity);
+            await _moneyCaseDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(MoneyCase entity)
+        // Asenkron silme metodu
+        public async Task TDeleteAsync(MoneyCase entity)
         {
-            _moneyCaseDal.Delete(entity);
+            await _moneyCaseDal.DeleteAsync(entity);
+            await _moneyCaseDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public MoneyCase TGetById(int id)
+        // ID'ye göre asenkron getirme metodu
+        public async Task<MoneyCase> TGetByIdAsync(int id)
         {
-          return _moneyCaseDal.GetById(id);
+            return await _moneyCaseDal.GetByIdAsync(id);
         }
 
-        public List<MoneyCase> TGetListAll()
+        // Tüm listeyi asenkron getirme metodu
+        public async Task<List<MoneyCase>> TGetListAllAsync()
         {
-            return _moneyCaseDal.GetListAll();
+            return await _moneyCaseDal.GetListAllAsync();
         }
 
-        public decimal TTotalMoneyCaseAmount()
+        // Değişiklikleri asenkron kaydetme metodu
+        public async Task TSaveChangesAsync()
         {
-            return _moneyCaseDal.TotalMoneyCaseAmount();
+            await _moneyCaseDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
         }
 
-        public void TUpdate(MoneyCase entity)
+        // Toplam kasa miktarını asenkron getirme metodu
+        public async Task<decimal> TTotalMoneyCaseAmountAsync()
         {
-            _moneyCaseDal.Update(entity);
+            return await _moneyCaseDal.TotalMoneyCaseAmountAsync();
+        }
+
+        // Asenkron güncelleme metodu
+        public async Task TUpdateAsync(MoneyCase entity)
+        {
+            await _moneyCaseDal.UpdateAsync(entity);
+            await _moneyCaseDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

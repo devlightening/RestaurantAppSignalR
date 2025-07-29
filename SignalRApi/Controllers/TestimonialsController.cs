@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.TestimonialDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -18,55 +19,64 @@ namespace SignalRApi.Controllers
             _testimonialService = testimonialService;
             _mapper = mapper;
         }
-        
+
         [HttpGet]
-        public IActionResult TestimonialList()
+        public async Task<IActionResult> TestimonialList()
         {
-            var values =_mapper.Map<List<ResultTestimonialDto>>(_testimonialService.TGetListAll());
+            var values = _mapper.Map<List<ResultTestimonialDto>>(await _testimonialService.TGetListAllAsync());
             return Ok(values);
         }
+
         [HttpPost]
-        public IActionResult CreateTestimonial(CreateTestimonialDto createTestimonialDto)
+        public async Task<IActionResult> CreateTestimonial(CreateTestimonialDto createTestimonialDto)
         {
-            _testimonialService.TAdd(new Testimonial()
-            {
-                Name = createTestimonialDto.Name,
-                Comment = createTestimonialDto.Comment,
-                ImageUrl = createTestimonialDto.ImageUrl,
-                Title = createTestimonialDto.Title,
-                Status = createTestimonialDto.Status
-            });
-            return Ok("Testimonial Başarıyla Eklendi");
+            if (createTestimonialDto == null) return BadRequest("Referans verisi boş olamaz.");
+
+            var testimonial = _mapper.Map<Testimonial>(createTestimonialDto);
+            await _testimonialService.TAddAsync(testimonial);
+
+            return CreatedAtAction(nameof(GetTestimonial), new { id = testimonial.TestimonialId }, testimonial);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTestimonial(int id)
+        public async Task<IActionResult> DeleteTestimonial(int id)
         {
-            var value = _testimonialService.TGetById(id);
-            _testimonialService.TDelete(value);
-            return Ok("Testimonial Başarıyla Silindi");
+            var value = await _testimonialService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile referans bulunamadı.");
+            }
+            await _testimonialService.TDeleteAsync(value);
+            return Ok("Referans Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateTestimonial(UpdateTestimonialDto updateTestimonialDto)
+        public async Task<IActionResult> UpdateTestimonial(UpdateTestimonialDto updateTestimonialDto)
         {
-            _testimonialService.TUpdate(new Testimonial()
+            if (updateTestimonialDto == null) return BadRequest("Güncellenecek referans verisi boş olamaz.");
+
+            var existingTestimonial = await _testimonialService.TGetByIdAsync(updateTestimonialDto.TestimonialId);
+            if (existingTestimonial == null)
             {
-                TestimonialId = updateTestimonialDto.TestimonialId,
-                Name = updateTestimonialDto.Name,
-                Comment = updateTestimonialDto.Comment,
-                ImageUrl = updateTestimonialDto.ImageUrl,
-                Title = updateTestimonialDto.Title,
-                Status = updateTestimonialDto.Status
-            });
-            return Ok("Testimonial Başarıyla Güncellendi");
+                return NotFound($"ID {updateTestimonialDto.TestimonialId} ile referans bulunamadı.");
+            }
+
+            _mapper.Map(updateTestimonialDto, existingTestimonial);
+            await _testimonialService.TUpdateAsync(existingTestimonial);
+
+            return Ok("Referans Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTestimonial(int id)
+        public async Task<IActionResult> GetTestimonial(int id)
         {
-            var value = _testimonialService.TGetById(id);
-            return Ok(value);
+            var value = await _testimonialService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile referans bulunamadı.");
+            }
+            var result = _mapper.Map<ResultTestimonialDto>(value);
+            return Ok(result);
         }
     }
 }

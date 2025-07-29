@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.CategoryDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -20,73 +22,81 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult CategoryList()
+        public async Task<IActionResult> CategoryList()
         {
-            var values = _mapper.Map<List<ResultCategoryDto>>(_categoryService.TGetListAll());
+            var values = _mapper.Map<List<ResultCategoryDto>>(await _categoryService.TGetListAllAsync());
             return Ok(values);
         }
 
 
         [HttpPost]
-        public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
+        public async Task<IActionResult> CreateCategory(CreateCategoryDto createCategoryDto)
         {
-           
-            _categoryService.TAdd(new Category()
-            {
-                CategoryName = createCategoryDto.CategoryName,
-                CategoryStatus = createCategoryDto.CategoryStatus
-            });
-            return Ok("Kategori Başarıyla Eklendi");
+            if (createCategoryDto == null) return BadRequest("Kategori verisi boş olamaz.");
+
+            var category = _mapper.Map<Category>(createCategoryDto);
+            await _categoryService.TAddAsync(category);
+
+            return CreatedAtAction(nameof(GetCategory), new { id = category.CategoryId }, category);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            var value = _categoryService.TGetById(id);
-            _categoryService.TDelete(value);
+            var value = await _categoryService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile kategori bulunamadı.");
+            }
+            await _categoryService.TDeleteAsync(value);
             return Ok("Kategori Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateCategory(UpdateCategoryDto updateCategoryDto)
+        public async Task<IActionResult> UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
-            
-            _categoryService.TUpdate(new Category()
+            if (updateCategoryDto == null) return BadRequest("Güncellenecek kategori verisi boş olamaz.");
+
+            var existingCategory = await _categoryService.TGetByIdAsync(updateCategoryDto.CategoryId);
+            if (existingCategory == null)
             {
-                CategoryId = updateCategoryDto.CategoryId,
-                CategoryName = updateCategoryDto.CategoryName,
-                CategoryStatus = updateCategoryDto.CategoryStatus
-            });
+                return NotFound($"ID {updateCategoryDto.CategoryId} ile kategori bulunamadı.");
+            }
+
+            _mapper.Map(updateCategoryDto, existingCategory);
+            await _categoryService.TUpdateAsync(existingCategory);
+
             return Ok("Kategori Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCategory(int id)
+        public async Task<IActionResult> GetCategory(int id)
         {
-            var value = _categoryService.TGetById(id);
-            return Ok(value);
+            var value = await _categoryService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile kategori bulunamadı.");
+            }
+            var result = _mapper.Map<ResultCategoryDto>(value);
+            return Ok(result);
         }
 
-
-
-
         [HttpGet("CategoryCount")]
-        public IActionResult CategoryCount()
+        public async Task<IActionResult> CategoryCount()
         {
-            return Ok(_categoryService.TCategoryCount());
+            return Ok(await _categoryService.TCategoryCountAsync());
         }
 
         [HttpGet("ActiveCategoryCount")]
-        public IActionResult ActiveCategoryCount()
+        public async Task<IActionResult> ActiveCategoryCount()
         {
-            return Ok(_categoryService.TActiveCategoryCount());
+            return Ok(await _categoryService.TActiveCategoryCountAsync());
         }
 
         [HttpGet("PassiveCategoryCount")]
-        public IActionResult PassiveCategoryCount()
+        public async Task<IActionResult> PassiveCategoryCount()
         {
-            return Ok(_categoryService.TPassiveCategoryCount());
+            return Ok(await _categoryService.TPassiveCategoryCountAsync());
         }
     }
-
 }

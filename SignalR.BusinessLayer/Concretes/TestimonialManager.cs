@@ -16,29 +16,44 @@ namespace SignalR.BusinessLayer.Concretes
         {
             _testimonialDal = testimonialDal;
         }
-        public void TAdd(Testimonial entity)
+
+        // Asenkron ekleme metodu
+        public async Task TAddAsync(Testimonial entity)
         {
-            _testimonialDal.Add(entity);
+            await _testimonialDal.AddAsync(entity);
+            await _testimonialDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Testimonial entity)
+        // Asenkron silme metodu
+        public async Task TDeleteAsync(Testimonial entity)
         {
-            _testimonialDal.Delete(entity);
+            await _testimonialDal.DeleteAsync(entity);
+            await _testimonialDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public Testimonial TGetById(int id)
+        // ID'ye göre asenkron getirme metodu
+        public async Task<Testimonial> TGetByIdAsync(int id)
         {
-            return _testimonialDal.GetById(id);
+            return await _testimonialDal.GetByIdAsync(id);
         }
 
-        public List<Testimonial> TGetListAll()
+        // Tüm listeyi asenkron getirme metodu
+        public async Task<List<Testimonial>> TGetListAllAsync()
         {
-            return _testimonialDal.GetListAll();
+            return await _testimonialDal.GetListAllAsync();
         }
 
-        public void TUpdate(Testimonial entity)
+        // Asenkron güncelleme metodu
+        public async Task TUpdateAsync(Testimonial entity)
         {
-            _testimonialDal.Update(entity);
+            await _testimonialDal.UpdateAsync(entity);
+            await _testimonialDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
+        }
+
+        // Değişiklikleri asenkron kaydetme metodu
+        public async Task TSaveChangesAsync()
+        {
+            await _testimonialDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
         }
     }
 }

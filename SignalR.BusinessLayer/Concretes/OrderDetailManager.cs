@@ -18,33 +18,37 @@ namespace SignalR.BusinessLayer.Concretes
             _orderDetailDal = orderDetailDal;
         }
 
-        public void TAdd(OrderDetail entity)
+        public async Task TAddAsync(OrderDetail entity)
         {
-            _orderDetailDal.Add(entity);
+            await _orderDetailDal.AddAsync(entity);
+            await _orderDetailDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(OrderDetail entity)
+        public async Task TDeleteAsync(OrderDetail entity)
         {
-            _orderDetailDal.Delete(entity);
-             
+            await _orderDetailDal.DeleteAsync(entity);
+            await _orderDetailDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public OrderDetail TGetById(int id)
+        public async Task<OrderDetail> TGetByIdAsync(int id)
         {
-           
-            return _orderDetailDal.GetById(id);
+            return await _orderDetailDal.GetByIdAsync(id);
         }
 
-        public List<OrderDetail> TGetListAll()
+        public async Task<List<OrderDetail>> TGetListAllAsync()
         {
-           
-            return _orderDetailDal.GetListAll();
+            return await _orderDetailDal.GetListAllAsync();
         }
 
-        public void TUpdate(OrderDetail entity)
+        public async Task TSaveChangesAsync()
         {
-            
-            _orderDetailDal.Update(entity);
+            await _orderDetailDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        public async Task TUpdateAsync(OrderDetail entity)
+        {
+            await _orderDetailDal.UpdateAsync(entity);
+            await _orderDetailDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

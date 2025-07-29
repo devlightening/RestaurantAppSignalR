@@ -16,29 +16,38 @@ namespace SignalR.BusinessLayer.Concretes
         {
             _contactDal = contactDal;
         }
-        public void TAdd(Contact entity)
+
+        public async Task TAddAsync(Contact entity)
         {
-            _contactDal.Add(entity);
+            await _contactDal.AddAsync(entity);
+            await _contactDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Contact entity)
+        public async Task TDeleteAsync(Contact entity)
         {
-           _contactDal.Delete(entity);
+            await _contactDal.DeleteAsync(entity);
+            await _contactDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public Contact TGetById(int id)
+        public async Task<Contact> TGetByIdAsync(int id)
         {
-            return _contactDal.GetById(id);
+            return await _contactDal.GetByIdAsync(id);
         }
 
-        public List<Contact> TGetListAll()
+        public async Task<List<Contact>> TGetListAllAsync()
         {
-            return _contactDal.GetListAll();
+            return await _contactDal.GetListAllAsync();
         }
 
-        public void TUpdate(Contact entity)
+        public async Task TSaveChangesAsync()
         {
-            _contactDal.Update(entity);
+            await _contactDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        public async Task TUpdateAsync(Contact entity)
+        {
+            await _contactDal.UpdateAsync(entity);
+            await _contactDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

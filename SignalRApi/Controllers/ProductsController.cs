@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SignalR.BusinessLayer.Abstracts;
-using SignalR.DataAccessLayer.Concrete;
-using SignalR.DtoLayer.CategoryDto;
+using SignalR.DtoLayer.CategoryDto; // ResultCategoryDto için
 using SignalR.DtoLayer.ProductDto;
-using SignalR.DtoLayer.RestaurantTableDto;
 using SignalR.EntityLayer.Entities;
-
+using System.Collections.Generic;
+using System.Linq; // Select için
+using System.Threading.Tasks; // async/await için
 
 namespace SignalRApi.Controllers
 {
@@ -24,131 +23,120 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductList()
+        public async Task<IActionResult> ProductList()
         {
-            var values = _mapper.Map<List<ResultProductDto>>(_productService.TGetListAll());
+            var values = _mapper.Map<List<ResultProductDto>>(await _productService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpGet("ProductCount")]
-        public IActionResult ProductCount()
+        public async Task<IActionResult> ProductCount()
         {
-            var count = _productService.TProductCount();
+            var count = await _productService.TProductCount();
             return Ok(count);
         }
 
         [HttpGet("ProductCountByHamburger")]
-        public IActionResult ProductCountByCategoryNameHamburger()
+        public async Task<IActionResult> ProductCountByCategoryNameHamburger()
         {
-            var count = _productService.TProductCountByCategoryNameHamburger();
+            var count = await _productService.TProductCountByCategoryNameHamburger();
             return Ok(count);
         }
 
         [HttpGet("AvarageHamburgerPrice")]
-        public IActionResult AvarageHamburgerPrice()
+        public async Task<IActionResult> AvarageHamburgerPrice()
         {
-            var count = _productService.TAvarageHamburgerPrice();
+            var count = await _productService.TAvarageHamburgerPrice();
             return Ok(count);
         }
 
         [HttpGet("ProductCountByDrink")]
-        public IActionResult ProductCountByCategoryNameDrink()
+        public async Task<IActionResult> ProductCountByCategoryNameDrink()
         {
-            var count = _productService.TProductCountByCategoryNameDrink();
+            var count = await _productService.TProductCountByCategoryNameDrink();
             return Ok(count);
         }
 
-
         [HttpGet("AvarageProductPrice")]
-        public IActionResult AvarageProductPrice()
+        public async Task<IActionResult> AvarageProductPrice()
         {
-            var count = _productService.TAvarageProductPrice();
+            var count = await _productService.TAvarageProductPrice();
             return Ok(count);
         }
 
         [HttpGet("HighestPricedProduct")]
-        public IActionResult HighestPricedProduct()
+        public async Task<IActionResult> HighestPricedProduct()
         {
-            var name = _productService.THighestPricedProduct();
+            var name = await _productService.THighestPricedProduct();
             return Ok(name);
         }
 
         [HttpGet("LowesPricedProduct")]
-        public IActionResult LowesPricedProduct()
+        public async Task<IActionResult> LowesPricedProduct()
         {
-            var count = _productService.TLowestPricedProduct();
+            var count = await _productService.TLowestPricedProduct();
             return Ok(count);
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(CreateProductDto createProductDto)
+        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
         {
-            _productService.TAdd(new Product()
-            {
-                ProductName = createProductDto.ProductName,
-                Price = createProductDto.Price,
-                Description = createProductDto.Description,
-                ProductStatus = createProductDto.ProductStatus,
-                ImageUrl = createProductDto.ImageUrl,
-                CategoryId = createProductDto.CategoryId
-            });
-            return Ok("Ürün Başarıyla Eklendi");
+            if (createProductDto == null) return BadRequest("Ürün verisi boş olamaz.");
+
+            var product = _mapper.Map<Product>(createProductDto);
+            await _productService.TAddAsync(product);
+
+            return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId }, product);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            var value = _productService.TGetById(id);
-            _productService.TDelete(value);
+            var value = await _productService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile ürün bulunamadı.");
+            }
+            await _productService.TDeleteAsync(value);
             return Ok("Ürün Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateProduct(UpdateProductDto updateProductDto)
+        public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
         {
-            _productService.TUpdate(new Product()
+            if (updateProductDto == null) return BadRequest("Güncellenecek ürün verisi boş olamaz.");
+
+            var existingProduct = await _productService.TGetByIdAsync(updateProductDto.ProductId);
+            if (existingProduct == null)
             {
-                ProductId = updateProductDto.ProductId,
-                ProductName = updateProductDto.ProductName,
-                Price = updateProductDto.Price,
-                Description = updateProductDto.Description,
-                ProductStatus = updateProductDto.ProductStatus,
-                ImageUrl = updateProductDto.ImageUrl,
-                CategoryId = updateProductDto.CategoryId
-            });
+                return NotFound($"ID {updateProductDto.ProductId} ile ürün bulunamadı.");
+            }
+
+            _mapper.Map(updateProductDto, existingProduct);
+            await _productService.TUpdateAsync(existingProduct);
+
             return Ok("Ürün Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct(int id)
+        public async Task<IActionResult> GetProduct(int id)
         {
-            var value = _productService.TGetById(id);
-            return Ok(value);
+            var value = await _productService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile ürün bulunamadı.");
+            }
+            var result = _mapper.Map<ResultProductDto>(value);
+            return Ok(result);
         }
 
         [HttpGet("ProductsListWithCategory")]
-        public IActionResult ProductsListWithCategory()
+        public async Task<IActionResult> ProductsListWithCategory()
         {
-            var context = new SignalRContext();
-            var values = context.Products
-                .Include(p => p.Category)
-                .Select(y => new ResultProductWithCategory
-                {
-                    Description = y.Description,
-                    ImageUrl = y.ImageUrl,
-                    Price = y.Price,
-                    ProductId = y.ProductId,
-                    ProductName = y.ProductName,
-                    ProductStatus = y.ProductStatus,
-                    Category = new ResultCategoryDto()
-                    {
-                        CategoryId = y.Category.CategoryId,
-                        CategoryName = y.Category.CategoryName,
-                        CategoryStatus = y.Category.CategoryStatus
-                    }
-                }).ToList();
-
-            return Ok(values);
+            // TGetProductsWithCategory metodu zaten ProductManager'da Include ile kategori getiriyor olmalı
+            var values = await _productService.TGetProductsWithCategory();
+            var result = _mapper.Map<List<ResultProductWithCategory>>(values);
+            return Ok(result);
         }
     }
 }

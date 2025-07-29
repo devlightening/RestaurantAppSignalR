@@ -8,10 +8,11 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface IGenericDal<T> where T : class
     {
-        void Add(T entity);
-        void Update(T entity);
-        void Delete(T entity);
-        T GetById(int id);
-        List<T> GetListAll();
+        Task AddAsync(T entity); // Asenkron ekleme
+        Task DeleteAsync(T entity); // Asenkron silme
+        Task UpdateAsync(T entity); // Asenkron güncelleme
+        Task<T> GetByIdAsync(int id); // Asenkron ID'ye göre getirme
+        Task<List<T>> GetListAllAsync(); // Asenkron tüm listeyi getirme
+        Task SaveChangesAsync(); // Değişiklikleri asenkron kaydetme
     }
 }

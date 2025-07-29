@@ -16,29 +16,44 @@ namespace SignalR.BusinessLayer.Concretes
         {
             _featureDal = featureDal;
         }
-        public void TAdd(Feature entity)
+
+        // Asenkron ekleme metodu
+        public async Task TAddAsync(Feature entity)
         {
-            _featureDal.Add(entity);
+            await _featureDal.AddAsync(entity);
+            await _featureDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Feature entity)
+        // Asenkron silme metodu
+        public async Task TDeleteAsync(Feature entity)
         {
-            _featureDal.Delete(entity);
+            await _featureDal.DeleteAsync(entity);
+            await _featureDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public Feature TGetById(int id)
+        // ID'ye göre asenkron getirme metodu
+        public async Task<Feature> TGetByIdAsync(int id)
         {
-            return _featureDal.GetById(id);
+            return await _featureDal.GetByIdAsync(id);
         }
 
-        public List<Feature> TGetListAll()
+        // Tüm listeyi asenkron getirme metodu
+        public async Task<List<Feature>> TGetListAllAsync()
         {
-            return _featureDal.GetListAll();
+            return await _featureDal.GetListAllAsync();
         }
 
-        public void TUpdate(Feature entity)
+        // Asenkron güncelleme metodu
+        public async Task TUpdateAsync(Feature entity)
         {
-            _featureDal.Update(entity);
+            await _featureDal.UpdateAsync(entity);
+            await _featureDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
+        }
+
+        // Değişiklikleri asenkron kaydetme metodu
+        public async Task TSaveChangesAsync()
+        {
+            await _featureDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
         }
     }
 }

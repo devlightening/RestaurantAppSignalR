@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.RestaurantTableDto;
 using SignalR.EntityLayer.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -20,122 +23,117 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult RestaurantTableList()
+        public async Task<IActionResult> RestaurantTableList()
         {
-            var values = _mapper.Map<List<ResultRestaurantTableDto>>(_restaurantTableService.TGetListAll());
+            var values = _mapper.Map<List<ResultRestaurantTableDto>>(await _restaurantTableService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpPost]
-        public IActionResult CreateRestaurantTable(CreateRestaurantTableDto createRestaurantTableDto)
+        public async Task<IActionResult> CreateRestaurantTable(CreateRestaurantTableDto createRestaurantTableDto)
         {
-            // Enum.IsDefined ile kontrol yapabilirsin ama bu genelde gerekmez, model binding başarısızsa zaten hata döner.
             if (!Enum.IsDefined(typeof(TableLocation), createRestaurantTableDto.Location))
             {
                 return BadRequest("Geçersiz veya eksik masa konumu bilgisi.");
             }
+            if (createRestaurantTableDto == null) return BadRequest("Masa verisi boş olamaz.");
 
-            var newTable = new RestaurantTable()
-            {
-                TableNo = createRestaurantTableDto.TableNo,
-                Status = createRestaurantTableDto.Status,
-                Location = createRestaurantTableDto.Location
-            };
+            var newTable = _mapper.Map<RestaurantTable>(createRestaurantTableDto);
+            await _restaurantTableService.TAddAsync(newTable);
 
-            _restaurantTableService.TAdd(newTable);
-
-            return Ok("Masa Başarıyla Eklendi");
+            return CreatedAtAction(nameof(GetRestaurantTable), new { id = newTable.RestaurantTableId }, newTable);
         }
 
-
-
         [HttpDelete("{id}")]
-        public IActionResult DeleteRestaurantTable(int id)
+        public async Task<IActionResult> DeleteRestaurantTable(int id)
         {
-            var table = _restaurantTableService.TGetById(id);
+            var table = await _restaurantTableService.TGetByIdAsync(id);
             if (table == null)
                 return NotFound("Masa bulunamadı.");
 
-            _restaurantTableService.TDelete(table);
+            await _restaurantTableService.TDeleteAsync(table);
             return Ok("Masa başarıyla silindi.");
         }
 
         [HttpPut]
-        public IActionResult UpdateRestaurantTable(UpdateRestaurantTableDto updateRestaurantTableDto)
+        public async Task<IActionResult> UpdateRestaurantTable(UpdateRestaurantTableDto updateRestaurantTableDto)
         {
-            _restaurantTableService.TUpdate(new RestaurantTable()
+            if (updateRestaurantTableDto == null) return BadRequest("Güncellenecek masa verisi boş olamaz.");
+
+            var existingTable = await _restaurantTableService.TGetByIdAsync(updateRestaurantTableDto.RestaurantTableId);
+            if (existingTable == null)
             {
-                RestaurantTableId = updateRestaurantTableDto.RestaurantTableId,
-                TableNo = updateRestaurantTableDto.TableNo,
-                Status = updateRestaurantTableDto.Status
-            });
+                return NotFound($"ID {updateRestaurantTableDto.RestaurantTableId} ile masa bulunamadı.");
+            }
+
+            _mapper.Map(updateRestaurantTableDto, existingTable);
+            await _restaurantTableService.TUpdateAsync(existingTable);
             return Ok("Masa Başarıyla Güncellendi");
         }
 
-
         [HttpGet("TotalTableCount")]
-        public IActionResult TotalTableCount()
+        public async Task<IActionResult> TotalTableCount()
         {
-            var count = _restaurantTableService.TTotalTableCount();
+            var count = await _restaurantTableService.TTotalTableCount();
             return Ok(count);
         }
 
         [HttpGet("AvailableTableCount")]
-        public IActionResult AvailableTableCount()
+        public async Task<IActionResult> AvailableTableCount()
         {
-            var count = _restaurantTableService.TAvailableTableCount();
+            var count = await _restaurantTableService.TAvailableTableCount();
             return Ok(count);
         }
 
         [HttpGet("NotAvailableTableCount")]
-        public IActionResult NotAvailableTableCount()
+        public async Task<IActionResult> NotAvailableTableCount()
         {
-            var count = _restaurantTableService.TNotAvailableTableCount();
+            var count = await _restaurantTableService.TNotAvailableTableCount();
             return Ok(count);
         }
 
         [HttpGet("GetByTableNo")]
-        public IActionResult GetByTableNo(int tableNo)
+        public async Task<IActionResult> GetByTableNo(int tableNo)
         {
-            var table = _restaurantTableService.TGetByTableNo(tableNo);
+            var table = await _restaurantTableService.TGetByTableNo(tableNo);
             if (table == null) return NotFound();
             return Ok(table);
         }
 
         [HttpGet("AvailableTables")]
-        public IActionResult AvailableTables()
+        public async Task<IActionResult> AvailableTables()
         {
-            var tables = _restaurantTableService.TGetAvailableTables();
+            var tables = await _restaurantTableService.TGetAvailableTables();
             return Ok(tables);
         }
 
         [HttpGet("NotAvailableTables")]
-        public IActionResult NotAvailableTables()
+        public async Task<IActionResult> NotAvailableTables()
         {
-            var tables = _restaurantTableService.TGetNotAvailableTables();
+            var tables = await _restaurantTableService.TGetNotAvailableTables();
             return Ok(tables);
         }
 
         [HttpGet("TablesByStatus")]
-        public IActionResult TablesByStatus(bool status)
+        public async Task<IActionResult> TablesByStatus(bool status)
         {
-            var tables = _restaurantTableService.TGetTablesByStatus(status);
+            var tables = await _restaurantTableService.TGetTablesByStatus(status);
             return Ok(tables);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetRestaurantTable(int id)
+        public async Task<IActionResult> GetRestaurantTable(int id)
         {
-            var table = _restaurantTableService.TGetById(id);
+            var table = await _restaurantTableService.TGetByIdAsync(id);
             if (table == null) return NotFound("Masa bulunamadı.");
             var result = _mapper.Map<ResultRestaurantTableDto>(table);
             return Ok(result);
         }
 
         [HttpGet("TablesByLocation")]
-        public IActionResult TablesByLocation(TableLocation location)
+        public async Task<IActionResult> TablesByLocation(TableLocation location)
         {
-            var tables = _restaurantTableService.TGetTablesByLocation(location);
+            var tables = await _restaurantTableService.TGetTablesByLocation(location);
             if (tables == null || tables.Count == 0) return NotFound("Konuma göre masa bulunamadı.");
             return Ok(tables);
         }

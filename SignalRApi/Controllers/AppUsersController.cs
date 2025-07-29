@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.AppUserDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -19,68 +21,61 @@ namespace SignalRApi.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/AppUsers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await Task.Run(() => _appUserService.TGetListAll());
+            var users = await _appUserService.TGetListAllAsync();
             var result = _mapper.Map<List<ResultAppUserDto>>(users);
             return Ok(result);
         }
 
-        // GET: api/AppUsers/5
         [HttpGet("{id:int}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var user = _appUserService.TGetById(id);
+            var user = await _appUserService.TGetByIdAsync(id);
             if (user == null) return NotFound($"ID {id} ile kullanıcı bulunamadı.");
 
             var result = _mapper.Map<ResultAppUserDto>(user);
             return Ok(result);
         }
 
-        // POST: api/AppUsers
         [HttpPost]
-        public IActionResult Create([FromBody] CreateAppUserDto createDto)
+        public async Task<IActionResult> CreateAppUser([FromBody] CreateAppUserDto createDto)
         {
             if (createDto == null) return BadRequest("Kullanıcı verisi boş olamaz.");
 
             var user = _mapper.Map<AppUser>(createDto);
-            _appUserService.TAdd(user);
+            await _appUserService.TAddAsync(user);
 
             var result = _mapper.Map<ResultAppUserDto>(user);
             return CreatedAtAction(nameof(GetById), new { id = user.AppUserId }, result);
         }
 
-        // PUT: api/AppUsers/5
         [HttpPut("{id:int}")]
-        public IActionResult Update(int id, [FromBody] CreateAppUserDto updateDto)
+        public async Task<IActionResult> UpdateAppUser(int id, [FromBody] UpdateAppUserDto updateDto)
         {
             if (updateDto == null) return BadRequest("Güncellenecek kullanıcı verisi boş olamaz.");
+            if (id != updateDto.AppUserId) return BadRequest("ID uyuşmazlığı.");
 
-            var existingUser = _appUserService.TGetById(id);
+            var existingUser = await _appUserService.TGetByIdAsync(id);
             if (existingUser == null) return NotFound($"ID {id} ile kullanıcı bulunamadı.");
 
-            var updatedUser = _mapper.Map<AppUser>(updateDto);
-            updatedUser.AppUserId = id;
+            _mapper.Map(updateDto, existingUser);
 
-            _appUserService.TUpdate(updatedUser);
+            await _appUserService.TUpdateAsync(existingUser);
             return NoContent();
         }
 
-        // DELETE: api/AppUsers/5
         [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAppUser(int id)
         {
-            var user = _appUserService.TGetById(id);
+            var user = await _appUserService.TGetByIdAsync(id);
             if (user == null) return NotFound($"ID {id} ile kullanıcı bulunamadı.");
 
-            _appUserService.TDelete(user);
+            await _appUserService.TDeleteAsync(user);
             return NoContent();
         }
 
-        // Ekstra: Online kullanıcıları listele
-        // GET: api/AppUsers/online
         [HttpGet("online")]
         public async Task<IActionResult> GetOnlineUsers()
         {
@@ -89,8 +84,6 @@ namespace SignalRApi.Controllers
             return Ok(result);
         }
 
-        // Ekstra: Departmana göre kullanıcıları listele
-        // GET: api/AppUsers/department/{department}
         [HttpGet("department/{department}")]
         public async Task<IActionResult> GetUsersByDepartment(UserDepartment department)
         {

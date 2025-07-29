@@ -228,40 +228,34 @@
 
     /* Responsive */
     @@media (max-width: 768px) {
-        .page-title
+        .page-title {
+            font-size: 2rem;
+        }
 
-    {
-        font-size: 2rem;
-    }
+        .section-title {
+            font-size: 1.25rem;
+        }
 
-    .section-title {
-        font-size: 1.25rem;
-    }
+        .card-body {
+            padding: 1.5rem;
+        }
 
-    .card-body {
-        padding: 1.5rem;
-    }
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
 
-    .card-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.25rem;
-    }
+        .card-title {
+            font-size: 1.5rem;
+        }
 
-    .card-title {
-        font-size: 1.5rem;
-    }
-
-    .icon-big {
-        font-size: 1.5rem;
-        height: 50px;
-    }
-
+        .icon-big {
+            font-size: 1.5rem;
+            height: 50px;
+        }
     }
 </style>
-
-
-
 
 <div class="content">
     <div class="container-fluid">
@@ -272,9 +266,7 @@
                 Gerçek Zamanlı Analiz Paneli
             </h1>
         </div>
-
         <script src="~/js/Statistic.js"></script>
-
         <!-- ========================= KATEGORİ GRUBU ========================= -->
         <div class="section-group">
             <h3 class="section-title">
@@ -404,103 +396,79 @@
             </div>
         </div>
 
-
-
-            <!-- ========================= ÜRÜN GRUBU ========================= -->
-            <div class="section-group">
-                <h3 class="section-title">
-                    <i class="fas fa-box me-2"></i>
-                    Ürün Analizi
-                </h3>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="card card-stats card-success">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-4">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-cube"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-8">
-                                        <p class="card-category">Ürün Sayısı</p>
-                                        <h4 class="card-title" id="productcount">0</h4>
+        <!-- ========================= ÜRÜN GRUBU ========================= -->
+        <div class="section-group">
+            <h3 class="section-title">
+                <i class="fas fa-box me-2"></i>
+                Ürün Analizi
+            </h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card card-stats card-success">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-cube"></i>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card card-stats card-danger">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-4">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-hamburger"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-8">
-                                        <p class="card-category">Hamburger Ortalama</p>
-                                        <h4 class="card-title" id="hamburgeraverage">0 ₺</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card card-stats card-warning">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-4">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-balance-scale"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-8">
-                                        <p class="card-category">Ortalama Ürün Fiyatı</p>
-                                        <h4 class="card-title" id="averageproduct">0 ₺</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card card-stats card-secondary">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-4">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-arrow-down"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-8">
-                                        <p class="card-category">En Ucuz Ürün</p>
-                                        <h4 class="card-title" id="lowestproduct">-</h4>
-                                    </div>
+                                <div class="col-8">
+                                    <p class="card-category">Ürün Sayısı</p>
+                                    <h4 class="card-title" id="productcount">0</h4>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- En Pahalı Ürün Kartı -->
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="card card-stats card-primary">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-4">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-arrow-up"></i>
-                                        </div>
+                <div class="col-md-3">
+                    <div class="card card-stats card-danger">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-hamburger"></i>
                                     </div>
-                                    <div class="col-8">
-                                        <p class="card-category">En Pahalı Ürün</p>
-                                        <h4 class="card-title" id="highestproduct">-</h4>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Hamburger Ortalama</p>
+                                    <h4 class="card-title" id="hamburgeraverage">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card card-stats card-warning">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-balance-scale"></i>
                                     </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">Ortalama Ürün Fiyatı</p>
+                                    <h4 class="card-title" id="averageproduct">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card card-stats card-secondary">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <p class="card-category">En Ucuz Ürün</p>
+                                    <h4 class="card-title" id="lowestproduct">-</h4>
                                 </div>
                             </div>
                         </div>
@@ -508,124 +476,147 @@
                 </div>
             </div>
 
-            <!-- ========================= KASA & SATIŞ GRUBU ========================= -->
-            <div class="section-group">
-                <h3 class="section-title">
-                    <i class="fas fa-chart-bar me-2"></i>
-                    Finansal Analiz
-                </h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card card-stats card-warning">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-3">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-wallet"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-9">
-                                        <p class="card-category">Kasadaki Para</p>
-                                        <h4 class="card-title" id="moneycase">0 ₺</h4>
+            <!-- En Pahalı Ürün Kartı -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card card-stats card-primary">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-arrow-up"></i>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="card card-stats card-success">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-3">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-calendar-check"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-9">
-                                        <p class="card-category">Bugünkü Toplam Satış</p>
-                                        <h4 class="card-title" id="todaytotal">0 ₺</h4>
-                                    </div>
+                                <div class="col-8">
+                                    <p class="card-category">En Pahalı Ürün</p>
+                                    <h4 class="card-title" id="highestproduct">-</h4>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- ========================= SİPARİŞ GRUBU ========================= -->
-            <div class="section-group">
-                <h3 class="section-title">
-                    <i class="fas fa-shopping-cart me-2"></i>
-                    Sipariş Yönetimi
-                </h3>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card card-stats card-danger">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-3">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-9">
-                                        <p class="card-category">Sipariş Sayısı</p>
-                                        <h4 class="card-title" id="ordercount">0</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card card-stats card-info">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-3">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-hourglass-half"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-9">
-                                        <p class="card-category">Aktif Siparişler</p>
-                                        <h4 class="card-title" id="activeorders">0</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card card-stats card-dark">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-3">
-                                        <div class="card-icon mx-auto">
-                                            <i class="fas fa-credit-card"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-9">
-                                        <p class="card-category">Son Sipariş Tutarı</p>
-                                        <h4 class="card-title" id="lastorder">0 ₺</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========================= BAĞLANTI DURUMU ========================= -->
-            <div class="connection-status">
-                <h5 class="mb-3">
-                    <i class="fas fa-wifi me-2"></i>
-                    Sistem Durumu
-                </h5>
-                <span class="badge badge-info pulse">
-                    <i class="fas fa-circle me-2"></i>
-                    Bağlantı Durumu: <strong id="connstatus">Bekleniyor...</strong>
-                </span>
             </div>
         </div>
+
+        <!-- ========================= KASA & SATIŞ GRUBU ========================= -->
+        <div class="section-group">
+            <h3 class="section-title">
+                <i class="fas fa-chart-bar me-2"></i>
+                Finansal Analiz
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-stats card-warning">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-wallet"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <p class="card-category">Kasadaki Para</p>
+                                    <h4 class="card-title" id="moneycase">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-stats card-success">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <p class="card-category">Bugünkü Toplam Satış</p>
+                                    <h4 class="card-title" id="todaytotal">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================= SİPARİŞ GRUBU ========================= -->
+        <div class="section-group">
+            <h3 class="section-title">
+                <i class="fas fa-shopping-cart me-2"></i>
+                Sipariş Yönetimi
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card card-stats card-danger">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <p class="card-category">Sipariş Sayısı</p>
+                                    <h4 class="card-title" id="ordercount">0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-stats card-info">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-hourglass-half"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <p class="card-category">Aktif Siparişler</p>
+                                    <h4 class="card-title" id="activeorders">0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-stats card-dark">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="card-icon mx-auto">
+                                        <i class="fas fa-credit-card"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <p class="card-category">Son Sipariş Tutarı</p>
+                                    <h4 class="card-title" id="lastorder">0 ₺</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================= BAĞLANTI DURUMU ========================= -->
+        <div class="connection-status">
+            <h5 class="mb-3">
+                <i class="fas fa-wifi me-2"></i>
+                Sistem Durumu
+            </h5>
+            <span class="badge badge-info pulse">
+                <i class="fas fa-circle me-2"></i>
+                Bağlantı Durumu: <strong id="connstatus">Bekleniyor...</strong>
+            </span>
+        </div>
     </div>
+</div>
+

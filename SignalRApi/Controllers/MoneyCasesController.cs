@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 
@@ -19,13 +18,10 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet("TotalMoneyCaseAmount")]
-        public IActionResult TotalMoneyCaseAmount()
+        public async Task<IActionResult> TotalMoneyCaseAmount()
         {
-           var count= _moneyCaseService.TTotalMoneyCaseAmount();
+            var count = await _moneyCaseService.TTotalMoneyCaseAmountAsync();
             return Ok(count);
         }
-
-
-       
     }
 }

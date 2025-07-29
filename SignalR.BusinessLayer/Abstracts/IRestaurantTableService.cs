@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Abstracts
 {
-    public interface IRestaurantTableService :IGenericService<RestaurantTable>
+    public interface IRestaurantTableService : IGenericService<RestaurantTable>
     {
-        public int TTotalTableCount(); // Toplam masa sayısı
-        public int TAvailableTableCount(); // Boş masa sayısı
-        public int TNotAvailableTableCount(); // Dolu masa sayısı
-        public RestaurantTable TGetByTableNo(int tableNo); // Belirli ada sahip masayı getirme
-        public List<RestaurantTable> TGetAvailableTables(); // Boş masaları listeleme
-        public List<RestaurantTable> TGetNotAvailableTables(); // Dolu masaları listeleme
-        public List<RestaurantTable> TGetTablesByStatus(bool status); // Duruma göre masaları listeleme
-        public List<RestaurantTable> TGetTablesByLocation(TableLocation location); // Konuma göre masaları listeleme
+        Task<int> TTotalTableCount(); // Toplam masa sayısı
+        Task<int> TAvailableTableCount(); // Boş masa sayısı
+        Task<int> TNotAvailableTableCount(); // Dolu masa sayısı
+        Task<RestaurantTable> TGetByTableNo(int tableNo); // Belirli ada sahip masayı getirme
+        Task<List<RestaurantTable>> TGetAvailableTables(); // Boş masaları listeleme
+        Task<List<RestaurantTable>> TGetNotAvailableTables(); // Dolu masaları listeleme
+        Task<List<RestaurantTable>> TGetTablesByStatus(bool status); // Duruma göre masaları listeleme
+        Task<List<RestaurantTable>> TGetTablesByLocation(TableLocation location); // Konuma göre masaları listeleme
     }
 }

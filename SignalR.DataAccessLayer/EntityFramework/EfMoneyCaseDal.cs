@@ -1,4 +1,5 @@
-﻿using SignalR.DataAccessLayer.Abstracts;
+﻿using Microsoft.EntityFrameworkCore;
+using SignalR.DataAccessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
 using SignalR.DataAccessLayer.Repositories;
 using SignalR.EntityLayer.Entities;
@@ -12,14 +13,17 @@ namespace SignalR.DataAccessLayer.EntityFramework
 {
     public class EfMoneyCaseDal : GenericRepository<MoneyCase>, IMoneyCaseDal
     {
+        private readonly SignalRContext _context;
         public EfMoneyCaseDal(SignalRContext context) : base(context)
         {
+            _context = context;
         }
 
-        public decimal TotalMoneyCaseAmount()
+       
+        public async Task<decimal> TotalMoneyCaseAmountAsync()
         {
-            using var context = new SignalRContext();
-            return context.MoneyCases.Select(x=>x.TotalAmount).FirstOrDefault();
+           
+            return await _context.MoneyCases.SumAsync(x => x.TotalAmount);
         }
     }
 }

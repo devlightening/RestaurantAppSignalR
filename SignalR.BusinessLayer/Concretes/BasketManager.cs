@@ -1,6 +1,8 @@
 ﻿using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Abstracts;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Concretes
 {
@@ -13,39 +15,49 @@ namespace SignalR.BusinessLayer.Concretes
             _basketDal = basketDal;
         }
 
-        public void TAdd(Basket entity)
+        public async Task TAddAsync(Basket entity)
         {
-            _basketDal.Add(entity);
+            await _basketDal.AddAsync(entity);
+            await _basketDal.SaveChangesAsync();
         }
 
-        public decimal TBasketCount()
+        // Metot adı ve çağrısı asenkron hale getirildi
+        public async Task<decimal> TotalBasketAmountAsync() // IBasketService'deki TotalBasketAmountAsync'e uygun
         {
-            return _basketDal.TBasketCount();
+            return await _basketDal.TotalBasketAmountAsync(); // IBasketDal'daki TotalBasketAmountAsync'i çağır
         }
 
-        public void TDelete(Basket entity)
+        public async Task TDeleteAsync(Basket entity)
         {
-            _basketDal.Delete(entity);
+            await _basketDal.DeleteAsync(entity);
+            await _basketDal.SaveChangesAsync();
         }
 
-        public List<Basket> TGetBasketsByRestaurantTableNumber(int id)
+        public async Task<Basket> TGetByIdAsync(int id)
         {
-            return _basketDal.GetBasketsByRestaurantTableNumber(id);
+            return await _basketDal.GetByIdAsync(id);
         }
 
-        public Basket TGetById(int id)
+        public async Task<List<Basket>> TGetListAllAsync()
         {
-            return _basketDal.GetById(id);
+            return await _basketDal.GetListAllAsync();
         }
 
-        public List<Basket> TGetListAll()
+        public async Task TSaveChangesAsync()
         {
-            return _basketDal.GetListAll();
+            await _basketDal.SaveChangesAsync();
         }
 
-        public void TUpdate(Basket entity)
+        public async Task TUpdateAsync(Basket entity)
         {
-            _basketDal.Update(entity);
+            await _basketDal.UpdateAsync(entity);
+            await _basketDal.SaveChangesAsync();
+        }
+
+        // Metot adı ve çağrısı asenkron hale getirildi
+        public async Task<List<Basket>> TGetBasketsByRestaurantTableNumberAsync(int id) // IBasketService'deki Async versiyona uygun
+        {
+            return await _basketDal.GetBasketsByRestaurantTableNumberAsync(id); // IBasketDal'daki Async versiyonu çağır
         }
     }
 }

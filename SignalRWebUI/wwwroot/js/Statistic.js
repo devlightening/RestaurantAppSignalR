@@ -1,32 +1,78 @@
-﻿
-$(document).ready(() => {
-    var connection = new signalR.HubConnectionBuilder()
+﻿$(document).ready(() => {
+    let connection = new signalR.HubConnectionBuilder()
         .withUrl("https://localhost:7000/signalrhub")
+        .withAutomaticReconnect({
+            nextRetryDelayInMilliseconds: retryContext => {
+                if (retryContext.elapsedMilliseconds < 60000) {
+                    // Retry after 0, 2, 10, and 30 seconds
+                    return [0, 2000, 10000, 30000][retryContext.previousRetryCount];
+                }
+                // Retry after 30 seconds for all further attempts
+                return 30000;
+            }
+        })
         .build();
 
-    $("#connstatus").text(connection.state);
+    let statisticInterval; // setInterval referansını tutmak için
 
-    connection.start().then(() => {
-        $("#connstatus").text(connection.state);
+    const startConnection = async () => {
+        try {
+            $("#connstatus").text(connection.state); // Bağlantı durumu güncelleniyor
+            await connection.start();
+            $("#connstatus").text(connection.state);
+            $("#connstatus").removeClass("pulse");
 
-        // Bağlantı başarılı olduğunda pulse efektini kaldır
-        $("#connstatus").removeClass("pulse");
+            // Bağlantı başarılı olduğunda istatistikleri gönderme intervalini başlat
+            if (statisticInterval) clearInterval(statisticInterval); // Önceki intervali temizle
+            statisticInterval = setInterval(async () => {
+                try {
+                    if (connection.state === signalR.HubConnectionState.Connected) {
+                        await connection.invoke("SendStatistic");
+                    } else {
+                        console.warn("SignalR bağlantısı bağlı değil, SendStatistic çağrısı atlandı.");
+                    }
+                } catch (err) {
+                    console.error("SignalR invoke error:", err);
+                    $("#connstatus").addClass("pulse");
+                }
+            }, 1000);
 
-        setInterval(async () => {
-            try {
-                await connection.invoke("SendStatistic");
-            } catch (err) {
-                console.error("SignalR error:", err);
-                $("#connstatus").addClass("pulse");
-            }
-        }, 1000);
-    }).catch(err => {
-        console.error("SignalR connection error:", err);
-        $("#connstatus").text("Bağlantı Hatası");
+        } catch (err) {
+            console.error("SignalR connection error:", err);
+            $("#connstatus").text("Bağlantı Hatası");
+            $("#connstatus").addClass("pulse");
+            // Bağlantı hatası durumunda intervali temizle
+            if (statisticInterval) clearInterval(statisticInterval);
+        }
+    };
+
+    // Bağlantı durum değişikliklerini dinle
+    connection.onreconnecting(error => {
+        console.warn("SignalR yeniden bağlanıyor...", error);
+        $("#connstatus").text("Yeniden Bağlanıyor");
         $("#connstatus").addClass("pulse");
+        if (statisticInterval) clearInterval(statisticInterval); // Yeniden bağlanırken intervali durdur
     });
 
-    // SignalR event handlers with animation
+    connection.onreconnected(connectionId => {
+        console.log("SignalR yeniden bağlandı. Connection ID:", connectionId);
+        $("#connstatus").text(connection.state);
+        $("#connstatus").removeClass("pulse");
+        // Yeniden bağlandıktan sonra intervali tekrar başlat
+        startConnection();
+    });
+
+    connection.onclose(error => {
+        console.error("SignalR bağlantısı kesildi.", error);
+        $("#connstatus").text("Bağlantı Kesildi");
+        $("#connstatus").addClass("pulse");
+        if (statisticInterval) clearInterval(statisticInterval); // Bağlantı kesildiğinde intervali durdur
+        // Otomatik yeniden bağlanma zaten HubConnectionBuilder'da yapılandırıldı
+    });
+
+    // İlk bağlantıyı başlat
+    startConnection();
+
     connection.on("ReceiveCategoryCount", value => {
         $("#categorycount").text(value);
         animateCard("#categorycount");
@@ -95,8 +141,6 @@ $(document).ready(() => {
         animateCard("#notactivetable");
     });
 
-
-    // Animasyon fonksiyonu
     function animateCard(selector) {
         $(selector).closest('.card').addClass("pulse");
         setTimeout(() => {

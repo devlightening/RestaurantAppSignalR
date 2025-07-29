@@ -10,6 +10,6 @@ namespace SignalR.BusinessLayer.Abstracts
 {
     public interface IMoneyCaseService : IGenericService<MoneyCase>
     {
-        public decimal TTotalMoneyCaseAmount();
+        Task<decimal> TTotalMoneyCaseAmountAsync();
     }
 }

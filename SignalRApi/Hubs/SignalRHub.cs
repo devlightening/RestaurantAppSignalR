@@ -38,61 +38,63 @@ public class SignalRHub : Hub
 
     public async Task SendStatistic()
     {
-        var value = _categoryService.TCategoryCount();
-        await Clients.All.SendAsync("ReceiveCategoryCount", value);
+        // Kategori İstatistikleri
+        var categoryCount = await _categoryService.TCategoryCountAsync();
+        await Clients.All.SendAsync("ReceiveCategoryCount", categoryCount);
 
-        var value2 = _productService.TProductCount();
-        await Clients.All.SendAsync("ReceiveProductCount", value2);
+        var activeCategoryCount = await _categoryService.TActiveCategoryCountAsync();
+        await Clients.All.SendAsync("ReceiveActiveCategoryCount", activeCategoryCount);
 
-        var value3 = _moneyCaseService.TTotalMoneyCaseAmount();
-        await Clients.All.SendAsync("ReceiveMoneyCase", value3);
+        var passiveCategoryCount = await _categoryService.TPassiveCategoryCountAsync();
+        await Clients.All.SendAsync("ReceivePassiveCategoryCount", passiveCategoryCount);
 
-        var value4 = _orderService.TTotalOrderNumber();
-        await Clients.All.SendAsync("ReceiveOrderCount", value4);
+        // Ürün İstatistikleri
+        var productCount = await _productService.TProductCount();
+        await Clients.All.SendAsync("ReceiveProductCount", productCount);
 
-        var value5 = _categoryService.TActiveCategoryCount();
-        await Clients.All.SendAsync("ReceiveActiveCategoryCount", value5);
+        var lowestPricedProduct = await _productService.TLowestPricedProduct();
+        await Clients.All.SendAsync("ReceiveLowestPricedProduct", lowestPricedProduct);
 
-        var value6 = _categoryService.TPassiveCategoryCount();
-        await Clients.All.SendAsync("ReceivePassiveCategoryCount", value6);
+        var highestPricedProduct = await _productService.THighestPricedProduct();
+        await Clients.All.SendAsync("ReceiveHighestPricedProduct", highestPricedProduct);
 
-        var value7 = _orderService.TActiveOrderNumber();
-        await Clients.All.SendAsync("ReceiveActiveOrderCount", value7);
+        var avarageProductPrice = await _productService.TAvarageProductPrice();
+        await Clients.All.SendAsync("ReceiveAvarageProductPrice", avarageProductPrice);
 
-        var value8 = _orderService.TLastOrderPrice();
-        await Clients.All.SendAsync("ReceiveLastOrderPrice", value8);
+        var avarageHamburgerPrice = await _productService.TAvarageHamburgerPrice();
+        await Clients.All.SendAsync("ReceiveAvarageHamburgerPrice", avarageHamburgerPrice);
 
-        var value9 = _orderService.TTodayTotalPrice();
-        await Clients.All.SendAsync("ReceiveTodayTotalPrice", value9);
+        // Finansal İstatistikler
+        var totalMoneyCaseAmount = await _moneyCaseService.TTotalMoneyCaseAmountAsync();
+        await Clients.All.SendAsync("ReceiveMoneyCase", totalMoneyCaseAmount);
 
-        var value10 = _productService.TAvarageProductPrice();
-        await Clients.All.SendAsync("ReceiveAvarageProductPrice", value10);
+        var todayTotalPrice = await _orderService.TTodayTotalPrice();
+        await Clients.All.SendAsync("ReceiveTodayTotalPrice", todayTotalPrice);
 
-        var value11 = _productService.TLowestPricedProduct();
-        await Clients.All.SendAsync("ReceiveLowestPricedProduct", value11);
+        // Sipariş İstatistikleri
+        var totalOrderNumber = await _orderService.TTotalOrderNumber();
+        await Clients.All.SendAsync("ReceiveOrderCount", totalOrderNumber);
 
-        var value12 = _productService.THighestPricedProduct();
-        await Clients.All.SendAsync("ReceiveHighestPricedProduct", value12);
+        var activeOrderNumber = await _orderService.TActiveOrderNumber();
+        await Clients.All.SendAsync("ReceiveActiveOrderCount", activeOrderNumber);
 
-        var value13 = _productService.TAvarageHamburgerPrice();
-        await Clients.All.SendAsync("ReceiveAvarageHamburgerPrice", value13);
+        var lastOrderPrice = await _orderService.TLastOrderPrice();
+        await Clients.All.SendAsync("ReceiveLastOrderPrice", lastOrderPrice);
 
-        var value14 = _restaurantTableService.TTotalTableCount();
-        await Clients.All.SendAsync("ReceiveTotalTableCount", value14);
+        // Masa İstatistikleri
+        var totalTableCount = await _restaurantTableService.TTotalTableCount();
+        await Clients.All.SendAsync("ReceiveTotalTableCount", totalTableCount);
 
-        var value15 = _restaurantTableService.TAvailableTableCount();
-        await Clients.All.SendAsync("ReceiveActiveTableCount", value15);
+        var availableTableCount = await _restaurantTableService.TAvailableTableCount();
+        await Clients.All.SendAsync("ReceiveActiveTableCount", availableTableCount); // İstemcideki ID'ye göre eşleşti
 
-        var value16 = _restaurantTableService.TNotAvailableTableCount();
-        await Clients.All.SendAsync("ReceiveNotActiveTableCount", value16);
-
-
+        var notAvailableTableCount = await _restaurantTableService.TNotAvailableTableCount();
+        await Clients.All.SendAsync("ReceiveNotActiveTableCount", notAvailableTableCount); // İstemcideki ID'ye göre eşleşti
     }
-
     public async Task SendProgress()
     {
 
-        var value = _moneyCaseService.TTotalMoneyCaseAmount();
+        var value = _moneyCaseService.TTotalMoneyCaseAmountAsync;
         await Clients.All.SendAsync("ReceiveMoneyCase", value);
 
         var value2 = _restaurantTableService.TNotAvailableTableCount();
@@ -111,13 +113,13 @@ public class SignalRHub : Hub
     }
     public async Task SendNotifyBasketUpdated()
     {
-        var value = _basketService.TBasketCount();
+        var value = _basketService.TotalBasketAmountAsync();
         await Clients.All.SendAsync("ReceiveBasketUpdate",value);
     }
 
     public async Task GetBookingList()
     {
-        var value = _bookingService.TGetListAll();
+        var value = _bookingService.TGetListAllAsync();
         await Clients.All.SendAsync("ReceiveGetBookingList", value);
     }
     public async Task SendNotification()

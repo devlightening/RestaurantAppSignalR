@@ -9,13 +9,13 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface IProductDal : IGenericDal<Product>
     {
-        List<Product> GetProductsWithCategory();
-        public int ProductCount();
-        public int ProductCountByCategoryNameHamburger();
-        public int ProductCountByCategoryNameDrink();
-        public decimal AvarageProductPrice();
-        public string LowesPricedProduct();
-        public string HighestPricedProduct();
-        public decimal AvarageHamburgerPrice();
+        Task<List<Product>> GetProductsWithCategory();
+        Task<int> ProductCount();
+        Task<int> ProductCountByCategoryNameHamburger();
+        Task<int> ProductCountByCategoryNameDrink();
+        Task<decimal> AvarageProductPrice();
+        Task<string> LowesPricedProduct();
+        Task<string> HighestPricedProduct();
+        Task<decimal> AvarageHamburgerPrice();
     }
 }

@@ -8,10 +8,10 @@ namespace SignalRApi.Mapping
     {
         public AppUserMapping()
         {
-            // CreateAppUserDto => AppUser (create işlemi için)
-            CreateMap<CreateAppUserDto, AppUser>().ReverseMap();
-            // AppUser => ResultAppUserDto (response için)
+            CreateMap<AppUser, CreateAppUserDto>().ReverseMap();
             CreateMap<AppUser, ResultAppUserDto>().ReverseMap();
+            CreateMap<AppUser, UpdateAppUserDto>().ReverseMap();
+
         }
     }
 }

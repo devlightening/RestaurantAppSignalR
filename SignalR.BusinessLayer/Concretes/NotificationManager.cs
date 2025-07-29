@@ -18,50 +18,76 @@ namespace SignalR.BusinessLayer.Concretes
             _notificationDal = notificationDal;
         }
 
-        public void TAdd(Notification entity)
+        public async Task TAddAsync(Notification entity)
         {
-            _notificationDal.Add(entity);
+            await _notificationDal.AddAsync(entity);
+            await _notificationDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Notification entity)
+        public async Task TDeleteAsync(Notification entity)
         {
-           _notificationDal.Delete(entity);
+            await _notificationDal.DeleteAsync(entity);
+            await _notificationDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public List<Notification> TGetAllNotificationByFalse()
+        public async Task<List<Notification>> TGetAllNotificationByFalse()
         {
-            return _notificationDal.GetAllNotificationByFalse();
+            // Bu metot için INotificationDal'da GetAllNotificationByFalseAsync() olduğunu varsayıyorum.
+            // Eğer yoksa, _notificationDal.GetListAllAsync() çağrılıp filtreleme yapılabilir.
+            return await _notificationDal.GetAllNotificationByFalse();
         }
 
-        public Notification TGetById(int id)
+        public async Task<Notification> TGetByIdAsync(int id)
         {
-            return _notificationDal.GetById(id);
-           
+            return await _notificationDal.GetByIdAsync(id);
         }
 
-        public List<Notification> TGetListAll()
+        public async Task<List<Notification>> TGetListAllAsync()
         {
-           return _notificationDal.GetListAll();
+            return await _notificationDal.GetListAllAsync();
         }
 
-        public int TNotificationCountByStatusFalse()
+        public async Task<int> TNotificationCountByStatusFalse()
         {
-            return _notificationDal.NotificationCountByStatusFalse();
+            // Bu metot için INotificationDal'da NotificationCountByStatusFalseAsync() olduğunu varsayıyorum.
+            return await _notificationDal.NotificationCountByStatusFalse();
         }
 
-        public void TNotificationStatusFalse(int id)
+        public async Task TNotificationStatusFalse(int id)
         {
-            _notificationDal.NotificationStatusFalse(id);
+            // ID'ye göre bildirimi bul
+            var notification = await _notificationDal.GetByIdAsync(id);
+            if (notification != null)
+            {
+                notification.Status = false; // Durumu pasif yap
+                await _notificationDal.UpdateAsync(notification); // Güncelle
+                await _notificationDal.SaveChangesAsync(); // Değişiklikleri kaydet
+            }
+            // Hata yönetimi eklenebilir (örn: bildirim bulunamazsa loglama)
         }
 
-        public void TNotificationStatusTrue(int id)
+        public async Task TNotificationStatusTrue(int id)
         {
-             _notificationDal.NotificationStatusTrue(id); 
+            // ID'ye göre bildirimi bul
+            var notification = await _notificationDal.GetByIdAsync(id);
+            if (notification != null)
+            {
+                notification.Status = true; // Durumu aktif yap
+                await _notificationDal.UpdateAsync(notification); // Güncelle
+                await _notificationDal.SaveChangesAsync(); // Değişiklikleri kaydet
+            }
+            // Hata yönetimi eklenebilir
         }
 
-        public void TUpdate(Notification entity)
+        public async Task TSaveChangesAsync()
         {
-           _notificationDal.Update(entity);
+            await _notificationDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        public async Task TUpdateAsync(Notification entity)
+        {
+            await _notificationDal.UpdateAsync(entity);
+            await _notificationDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SignalR.BusinessLayer.Abstracts
 {
     public interface IBasketService : IGenericService<Basket>
     {
-        List<Basket> TGetBasketsByRestaurantTableNumber(int id);
-        public decimal TBasketCount();
+        Task<List<Basket>> TGetBasketsByRestaurantTableNumberAsync(int id);
+         Task<decimal> TotalBasketAmountAsync();
     }
 }

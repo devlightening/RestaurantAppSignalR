@@ -1,11 +1,6 @@
 ﻿using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Abstracts;
 using SignalR.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Concretes
 {
@@ -16,29 +11,38 @@ namespace SignalR.BusinessLayer.Concretes
         {
             _socialMediaDal = socialMediaDal;
         }
-        public void TAdd(SocialMedia entity)
+
+        public async Task TAddAsync(SocialMedia entity)
         {
-            _socialMediaDal.Add(entity);
+            await _socialMediaDal.AddAsync(entity);
+            await _socialMediaDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(SocialMedia entity)
+        public async Task TDeleteAsync(SocialMedia entity)
         {
-            _socialMediaDal.Delete(entity);
+            await _socialMediaDal.DeleteAsync(entity);
+            await _socialMediaDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public SocialMedia TGetById(int id)
+        public async Task<SocialMedia> TGetByIdAsync(int id)
         {
-            return _socialMediaDal.GetById(id);
+            return await _socialMediaDal.GetByIdAsync(id);
         }
 
-        public List<SocialMedia> TGetListAll()
+        public async Task<List<SocialMedia>> TGetListAllAsync()
         {
-            return _socialMediaDal.GetListAll();
+            return await _socialMediaDal.GetListAllAsync();
         }
 
-        public void TUpdate(SocialMedia entity)
+        public async Task TSaveChangesAsync()
         {
-            _socialMediaDal.Update(entity);
+            await _socialMediaDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        public async Task TUpdateAsync(SocialMedia entity)
+        {
+            await _socialMediaDal.UpdateAsync(entity);
+            await _socialMediaDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

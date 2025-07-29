@@ -18,44 +18,61 @@ namespace SignalR.BusinessLayer.Concretes
             _categoryDal = categoryDal;
         }
 
-        public int TActiveCategoryCount()
+        // Kategori sayısını asenkron olarak döner
+        public async Task<int> TCategoryCountAsync()
         {
-            return _categoryDal.ActiveCategoryCount();
+            return await _categoryDal.CategoryCountAsync();
         }
 
-        public int TPassiveCategoryCount()
+        // Aktif kategori sayısını asenkron olarak döner
+        public async Task<int> TActiveCategoryCountAsync()
         {
-            return _categoryDal.PassiveCategoryCount();
+            return await _categoryDal.ActiveCategoryCountAsync();
         }
 
-        public void TAdd(Category entity)
+        // Yeni kategori ekler ve değişiklikleri kaydeder
+        public async Task TAddAsync(Category entity)
         {
-           _categoryDal.Add(entity);
+            await _categoryDal.AddAsync(entity);
+            await _categoryDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public int TCategoryCount()
+        // Kategoriyi siler ve değişiklikleri kaydeder
+        public async Task TDeleteAsync(Category entity)
         {
-            return _categoryDal.CategoryCount();
+            await _categoryDal.DeleteAsync(entity);
+            await _categoryDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Category entity)
+        // ID'ye göre kategoriyi asenkron olarak getirir
+        public async Task<Category> TGetByIdAsync(int id)
         {
-            _categoryDal.Delete(entity);
+            return await _categoryDal.GetByIdAsync(id);
         }
 
-        public Category TGetById(int id)
+        // Tüm kategorilerin listesini asenkron olarak getirir
+        public async Task<List<Category>> TGetListAllAsync()
         {
-            return _categoryDal.GetById(id);
+            return await _categoryDal.GetListAllAsync();
         }
 
-        public List<Category> TGetListAll()
+        // Pasif kategori sayısını asenkron olarak döner
+        public async Task<int> TPassiveCategoryCountAsync()
         {
-            return _categoryDal.GetListAll();
+            return await _categoryDal.PassiveCategoryCountAsync();
         }
-  
-        public void TUpdate(Category entity)
+
+        // Değişiklikleri asenkron olarak kaydeder
+        public async Task TSaveChangesAsync()
         {
-            _categoryDal.Update(entity);
+            await _categoryDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        // Kategoriyi günceller ve değişiklikleri kaydeder
+        public async Task TUpdateAsync(Category entity)
+        {
+            await _categoryDal.UpdateAsync(entity);
+            await _categoryDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

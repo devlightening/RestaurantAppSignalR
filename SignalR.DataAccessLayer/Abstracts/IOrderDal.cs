@@ -4,10 +4,10 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface IOrderDal : IGenericDal<Order>
     {
-        public int TotalOrderNumber();
-        public int ActiveOrderNumber();
-        public decimal LastOrderPrice();
-        public decimal TodayTotalPrice();
-        public List<Order> GetListWithOrderDetails();
+         Task<int> TotalOrderNumber();
+         Task<int> ActiveOrderNumber();
+         Task<decimal> LastOrderPrice();
+         Task<decimal> TodayTotalPrice();
+         Task<List<Order>> GetListWithOrderDetails();
     }
 }

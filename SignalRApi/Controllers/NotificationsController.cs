@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.SignalR;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.NotificationDto;
 using SignalR.EntityLayer.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -24,69 +27,88 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult NotificationList()
+        public async Task<IActionResult> NotificationList()
         {
-            var values = _notificationService.TGetListAll();
+            var values = await _notificationService.TGetListAllAsync();
             return Ok(_mapper.Map<List<ResultNotificationDto>>(values));
         }
 
         [HttpGet("NotificationCountByStatusFalseCount")]
-        public async  Task<IActionResult> NotificationCountByStatusFalseCount()
+        public async Task<IActionResult> NotificationCountByStatusFalseCount()
         {
-            var values = _notificationService.TNotificationCountByStatusFalse();
+            var values = await _notificationService.TNotificationCountByStatusFalse();
             return Ok(values);
         }
 
         [HttpGet("GetAllNotificationByFalse")]
-        public IActionResult GetAllNotificationByFalse()
+        public async Task<IActionResult> GetAllNotificationByFalse()
         {
-            return Ok(_notificationService.TGetAllNotificationByFalse());
+            return Ok(await _notificationService.TGetAllNotificationByFalse());
         }
 
         [HttpGet("NotificationStatusTrue/{id}")]
-        public IActionResult NotificationStatusTrue(int id)
+        public async Task<IActionResult> NotificationStatusTrue(int id)
         {
-            _notificationService.TNotificationStatusTrue(id);
+            await _notificationService.TNotificationStatusTrue(id);
             return Ok("Bildirim durumu başarıyla değiştirildi");
         }
 
         [HttpGet("NotificationStatusFalse/{id}")]
-        public IActionResult NotificationStatusFalse(int id)
+        public async Task<IActionResult> NotificationStatusFalse(int id)
         {
-            _notificationService.TNotificationStatusFalse(id);
+            await _notificationService.TNotificationStatusFalse(id);
             return Ok("Bildirim durumu başarıyla değiştirildi");
         }
 
         [HttpPost]
-        public IActionResult CreateNotification(CreateNotificationDto createNotificationDto)
+        public async Task<IActionResult> CreateNotification(CreateNotificationDto createNotificationDto)
         {
+            if (createNotificationDto == null) return BadRequest("Bildirim verisi boş olamaz.");
+
             createNotificationDto.Status = false;
-            createNotificationDto.Date = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+            createNotificationDto.Date = DateTime.Now; // ToShortDateString() yerine doğrudan DateTime.Now kullanıldı
             var value = _mapper.Map<Notification>(createNotificationDto);
-            _notificationService.TAdd(value);
-            return Ok("Ekleme işlemi başarıyla yapıldı");
+            await _notificationService.TAddAsync(value);
+            return CreatedAtAction(nameof(GetNotification), new { id = value.NotificationId }, value);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteNotification(int id)
+        public async Task<IActionResult> DeleteNotification(int id)
         {
-            var value = _notificationService.TGetById(id);
-            _notificationService.TDelete(value);
+            var value = await _notificationService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile bildirim bulunamadı.");
+            }
+            await _notificationService.TDeleteAsync(value);
             return Ok("Bildirim Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateNotification(UpdateNotificationDto updateNotificationDto)
+        public async Task<IActionResult> UpdateNotification(UpdateNotificationDto updateNotificationDto)
         {
-            var value = _mapper.Map<Notification>(updateNotificationDto);
-            _notificationService.TUpdate(value);
+            if (updateNotificationDto == null) return BadRequest("Güncellenecek bildirim verisi boş olamaz.");
+
+            var existingNotification = await _notificationService.TGetByIdAsync(updateNotificationDto.NotificationID);
+            if (existingNotification == null)
+            {
+                return NotFound($"ID {updateNotificationDto.NotificationID} ile bildirim bulunamadı.");
+            }
+
+            // AutoMapper ile mevcut nesneye map'leme
+            _mapper.Map(updateNotificationDto, existingNotification);
+            await _notificationService.TUpdateAsync(existingNotification);
             return Ok("Güncelleme işlemi başarıyla yapıldı");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetNotification(int id)
+        public async Task<IActionResult> GetNotification(int id)
         {
-            var value = _notificationService.TGetById(id);
+            var value = await _notificationService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile bildirim bulunamadı.");
+            }
             return Ok(_mapper.Map<GetNotificationDto>(value));
         }
     }

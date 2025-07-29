@@ -8,77 +8,107 @@ namespace SignalR.DataAccessLayer.EntityFramework
 {
     public class EfProductDal : GenericRepository<Product>, IProductDal
     {
+        private readonly SignalRContext _context;
+
         public EfProductDal(SignalRContext context) : base(context)
         {
+            _context = context; // Dependency Injection ile gelen context'i kullanıyoruz
         }
 
-        public decimal AvarageHamburgerPrice()
+        // Ortalama Hamburger Fiyatını asenkron olarak döndürür
+        public async Task<decimal> AvarageHamburgerPrice()
         {
-            using var context = new SignalRContext();
-            return context.Products.Where(z => z.CategoryId == (context.Categories.Where(y => y.CategoryName == "Hamburger").
-            Select(x => x.CategoryId).FirstOrDefault())).Average(a=>a.Price);
+            // Hamburger kategorisinin ID'sini bulur ve o kategorideki ürünlerin ortalama fiyatını hesaplar
+            var hamburgerCategoryId = await _context.Categories
+                                                    .Where(y => y.CategoryName == "Hamburger")
+                                                    .Select(x => x.CategoryId)
+                                                    .FirstOrDefaultAsync();
 
+            if (hamburgerCategoryId == 0) // Eğer "Hamburger" kategorisi bulunamazsa
+            {
+                return 0; // Veya başka bir varsayılan değer
+            }
+
+            return await _context.Products
+                                 .Where(z => z.CategoryId == hamburgerCategoryId)
+                                 .AverageAsync(a => a.Price);
         }
 
-        public decimal AvarageProductPrice()
+        // Ortalama Ürün Fiyatını asenkron olarak döndürür
+        public async Task<decimal> AvarageProductPrice()
         {
-            using var context = new SignalRContext();
-            return context.Products.Average(x=>x.Price);
+            // Tüm ürünlerin ortalama fiyatını hesaplar
+            return await _context.Products.AverageAsync(x => x.Price);
         }
 
-        public List<Product> GetProductsWithCategory()
+        // Kategorileri ile birlikte ürün listesini asenkron olarak döndürür
+        public async Task<List<Product>> GetProductsWithCategory()
         {
-            var context = new SignalRContext();
-            var values= context.Products.Include(p => p.Category).ToList();
-            return values;
-
+            // Ürünleri Category navigation property'si ile birlikte yükler
+            return await _context.Products.Include(p => p.Category).ToListAsync();
         }
 
-        public string HighestPricedProduct()
+        // En pahalı ürünün adını asenkron olarak döndürür
+        public async Task<string> HighestPricedProduct()
         {
-            using var context = new SignalRContext();
-            return context.Products.Where(x => x.Price == (context.Products.Max(y => y.Price))).Select(z=>z.ProductName).FirstOrDefault();
+            // En yüksek fiyatlı ürünü bulur ve adını döndürür
+            var maxPrice = await _context.Products.MaxAsync(y => y.Price);
+            return await _context.Products
+                                 .Where(x => x.Price == maxPrice)
+                                 .Select(z => z.ProductName)
+                                 .FirstOrDefaultAsync();
         }
 
-        public string LowesPricedProduct()
+        // En ucuz ürünün adını asenkron olarak döndürür
+        public async Task<string> LowesPricedProduct()
         {
-            using var context = new SignalRContext();
-            return context.Products.Where(x => x.Price == (context.Products.Min(y => y.Price))).Select(z => z.ProductName).FirstOrDefault();
-
-
+            // En düşük fiyatlı ürünü bulur ve adını döndürür
+            var minPrice = await _context.Products.MinAsync(y => y.Price);
+            return await _context.Products
+                                 .Where(x => x.Price == minPrice)
+                                 .Select(z => z.ProductName)
+                                 .FirstOrDefaultAsync();
         }
 
-        public int ProductCount()
+        // Toplam ürün sayısını asenkron olarak döndürür
+        public async Task<int> ProductCount()
         {
-            using var context = new SignalRContext();
-            return context.Products.Count();
+            // Tüm ürünlerin sayısını döner
+            return await _context.Products.CountAsync();
         }
 
-        public int ProductCountByCategoryNameDrink()
+        // İçecek kategorisindeki ürün sayısını asenkron olarak döndürür
+        public async Task<int> ProductCountByCategoryNameDrink()
         {
-            using var context = new SignalRContext();
-
-            return context.Products
-                .Where(p => p.CategoryId == context.Categories
-                    .Where(y => y.CategoryName == "İçecek")
-                    .Select(z => z.CategoryId)
-                    .FirstOrDefault())
-                .Count();
-
+            // "İçecek" kategorisinin ID'sini bulur ve o kategorideki ürünlerin sayısını hesaplar
+            var drinkCategoryId = await _context.Categories
+                                                .Where(y => y.CategoryName == "İçecek")
+                                                .Select(z => z.CategoryId)
+                                                .FirstOrDefaultAsync();
+            if (drinkCategoryId == 0)
+            {
+                return 0;
+            }
+            return await _context.Products
+                                 .Where(p => p.CategoryId == drinkCategoryId)
+                                 .CountAsync();
         }
 
-        public int ProductCountByCategoryNameHamburger()
+        // Hamburger kategorisindeki ürün sayısını asenkron olarak döndürür
+        public async Task<int> ProductCountByCategoryNameHamburger()
         {
-            using var context = new SignalRContext();
-
-            return context.Products
-                .Where(p => p.CategoryId == context.Categories
-                    .Where(y => y.CategoryName == "Hamburger")
-                    .Select(z => z.CategoryId)
-                    .FirstOrDefault())
-                .Count();
+            // "Hamburger" kategorisinin ID'sini bulur ve o kategorideki ürünlerin sayısını hesaplar
+            var hamburgerCategoryId = await _context.Categories
+                                                    .Where(y => y.CategoryName == "Hamburger")
+                                                    .Select(z => z.CategoryId)
+                                                    .FirstOrDefaultAsync();
+            if (hamburgerCategoryId == 0)
+            {
+                return 0;
+            }
+            return await _context.Products
+                                 .Where(p => p.CategoryId == hamburgerCategoryId)
+                                 .CountAsync();
         }
-
-    
     }
 }

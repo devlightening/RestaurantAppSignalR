@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.AboutDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -21,54 +23,52 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult AboutList()
+        public async Task<IActionResult> AboutList()
         {
-            var values =_mapper.Map<List<ResultAboutDto>>( _aboutService.TGetListAll());
+            var values = _mapper.Map<List<ResultAboutDto>>(await _aboutService.TGetListAllAsync());
             return Ok(values);
-
         }
 
         [HttpPost]
-        public IActionResult CreateAbout(CreateAboutDto createAboutDto)
+        public async Task<IActionResult> CreateAbout(CreateAboutDto createAboutDto)
         {
-          
-            _aboutService.TAdd(new About()
-            {
-                Title = createAboutDto.Title,
-                Description = createAboutDto.Description,
-                ImageUrl = createAboutDto.ImageUrl
-            });
-            return Ok("Hakkında Kısmı Başarıyla Eklendi");
+            var about = _mapper.Map<About>(createAboutDto);
+            await _aboutService.TAddAsync(about);
+
+            return CreatedAtAction(nameof(GetAbout), new { id = about.AboutId }, about);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteAbout(int id)
+        public async Task<IActionResult> DeleteAbout(int id)
         {
-            var value = _aboutService.TGetById(id);
-            _aboutService.TDelete(value);
+            var value = await _aboutService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile 'Hakkında' bilgisi bulunamadı.");
+            }
+            await _aboutService.TDeleteAsync(value);
             return Ok("Hakkında Kısmı Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateAbout(UpdateAboutDto updateAboutDto)
+        public async Task<IActionResult> UpdateAbout(UpdateAboutDto updateAboutDto)
         {
-            _aboutService.TUpdate(new About()
-            {
-                AboutId = updateAboutDto.AboutId,
-                Title = updateAboutDto.Title,
-                Description = updateAboutDto.Description,
-                ImageUrl = updateAboutDto.ImageUrl
-            });
+            var about = _mapper.Map<About>(updateAboutDto);
+            await _aboutService.TUpdateAsync(about);
 
             return Ok("Hakkında Kısmı Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetAbout(int id)
+        public async Task<IActionResult> GetAbout(int id)
         {
-            var value = _aboutService.TGetById(id);
-            return Ok(value);
-
+            var value = await _aboutService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile 'Hakkında' bilgisi bulunamadı.");
+            }
+            var result = _mapper.Map<ResultAboutDto>(value);
+            return Ok(result);
         }
     }
 }

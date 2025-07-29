@@ -9,8 +9,8 @@ namespace SignalR.BusinessLayer.Abstracts
 {
     public interface ICategoryService : IGenericService<Category>
     {
-        public int TCategoryCount();
-        public int TActiveCategoryCount();
-        public int TPassiveCategoryCount();
+        Task<int> TCategoryCountAsync();
+        Task<int> TActiveCategoryCountAsync();
+        Task<int> TPassiveCategoryCountAsync();
     }
 }

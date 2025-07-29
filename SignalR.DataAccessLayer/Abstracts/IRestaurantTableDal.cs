@@ -9,14 +9,14 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface IRestaurantTableDal : IGenericDal<RestaurantTable>
     {
-        public int TotalTableCount();
-        public int AvailableTableCount(); // Boş masa sayısı
-        public int NotAvailableTableCount(); //Dolu masa sayısı
-        public RestaurantTable GetByTableNo(int tableNo); // Belirli ada sahip masayı getirme
-        public List<RestaurantTable> GetAvailableTables(); // Boş masaları listeleme
-        public List<RestaurantTable> GetNotAvailableTables(); //Dolu masaları listeleme
-        public List<RestaurantTable> GetTablesByStatus(bool status); // Duruma göre masaları listeleme
-        public List<RestaurantTable> GetTablesByLocation(TableLocation location); // Duruma göre masaları listeleme
+        Task<int> TotalTableCount();
+        Task<int> AvailableTableCount(); // Boş masa sayısı
+        Task<int> NotAvailableTableCount(); //Dolu masa sayısı
+         Task<RestaurantTable> GetByTableNo(int tableNo); // Belirli ada sahip masayı getirme
+        Task<List<RestaurantTable>> GetAvailableTables(); // Boş masaları listeleme
+        Task<List<RestaurantTable>> GetNotAvailableTables(); //Dolu masaları listeleme
+        Task<List<RestaurantTable>> GetTablesByStatus(bool status); // Duruma göre masaları listeleme
+        Task<List<RestaurantTable>> GetTablesByLocation(TableLocation location); // Duruma göre masaları listeleme
 
     }
 }

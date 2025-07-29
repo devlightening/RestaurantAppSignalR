@@ -1,0 +1,311 @@
+﻿@model UpdateAppUserDto
+@{
+    ViewData["Title"] = "UpdateAppUser";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Değişkenleri */
+        :root {
+            --primary-color: #6A057F; /* Derin Mor */
+            --secondary-color: #8E2DE2; /* Canlı Mor */
+            --accent-green: #28a745; /* Çevrimiçi için yeşil */
+            --accent-red: #dc3545; /* Hata/Silme için kırmızı */
+            --text-dark: #2c3e50; /* Koyu gri metin */
+            --text-medium: #7f8c8d; /* Orta gri metin */
+            --bg-light: #ecf0f1; /* Açık gri arka plan */
+            --card-bg: #FFFFFF; /* Kart arka planı */
+            --border-light: #bdc3c7; /* Açık gri kenarlık */
+            --shadow-light: rgba(44, 62, 80, 0.1); /* Hafif gölge */
+            --shadow-medium: rgba(44, 62, 80, 0.2); /* Orta gölge */
+        }
+
+        /* Temel HTML ve Body Stilleri */
+        html, body {
+            height: 100%; /* Tam yüksekliği kapla */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Yatay kaydırmayı engelle */
+            box-sizing: border-box; /* Padding ve border'ı genişliğe dahil et */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex; /* Flexbox kullanarak içeriği ortala */
+            justify-content: center; /* Yatayda ortala */
+            align-items: center; /* Dikeyde ortala */
+            min-height: 100vh; /* En az viewport yüksekliği kadar yer kapla */
+            padding: 20px; /* Kenarlardan biraz boşluk bırak */
+        }
+
+        /* Form Kapsayıcısı */
+        .form-container {
+            max-width: 900px; /* Genişletilmiş maksimum genişlik */
+            width: 100%; /* Responsive genişlik */
+            margin: auto; /* Otomatik marj ile ortala */
+            padding: 3.5rem; /* Biraz daha fazla iç boşluk */
+            background: var(--card-bg);
+            border-radius: 25px;
+            box-shadow: 0 15px 40px var(--shadow-light);
+            border: 1px solid var(--border-light);
+            transition: all 0.4s ease;
+            box-sizing: border-box; /* Padding'i genişliğe dahil et */
+        }
+
+            .form-container:hover {
+                box-shadow: 0 20px 50px var(--shadow-medium);
+            }
+
+            .form-container h2 {
+                text-align: center;
+                margin-bottom: 2.8rem; /* Başlık altındaki boşluk artırıldı */
+                color: var(--primary-color);
+                font-weight: 800;
+                font-size: 2.4rem; /* Başlık boyutu biraz büyütüldü */
+                letter-spacing: -0.05em;
+            }
+
+        /* Form Grupları */
+        .form-group {
+            margin-bottom: 2rem; /* Daha fazla boşluk */
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.8rem; /* Etiket altındaki boşluk artırıldı */
+                font-weight: 700;
+                color: var(--text-dark);
+                font-size: 1.1rem; /* Etiket boyutu biraz büyütüldü */
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group select {
+                width: 100%;
+                padding: 1.1rem 1.4rem; /* Daha büyük padding */
+                border: 2px solid var(--border-light);
+                border-radius: 12px;
+                font-size: 1.1rem; /* Input font boyutu büyütüldü */
+                box-sizing: border-box;
+                transition: all 0.3s ease;
+                background-color: var(--bg-light);
+                color: var(--text-dark);
+            }
+
+                .form-group input:focus,
+                .form-group select:focus {
+                    border-color: var(--primary-color);
+                    box-shadow: 0 0 0 4px rgba(106, 5, 127, 0.2);
+                    outline: none;
+                    background-color: var(--card-bg);
+                }
+
+        /* Toggle Switch Styling */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-light);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+
+        input:checked + .slider {
+            background-color: var(--accent-green);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--accent-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .form-group .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem; /* Boşluk artırıldı */
+            margin-top: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.05rem; /* Çevrimiçi durumu etiketi boyutu */
+        }
+
+        /* Butonlar */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 1.3rem; /* Daha büyük buton */
+            font-size: 1.3rem; /* Buton font boyutu büyütüldü */
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 35px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            margin-top: 3rem; /* Buton üst boşluğu artırıldı */
+            letter-spacing: 0.02em;
+        }
+
+            .btn-submit:hover {
+                background: linear-gradient(45deg, #5A046F, #7B1DE0);
+                transform: translateY(-5px) scale(1.01);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            }
+
+        .btn-back {
+            display: block;
+            width: 100%;
+            padding: 1.1rem; /* Daha büyük buton */
+            font-size: 1.1rem; /* Buton font boyutu büyütüldü */
+            font-weight: 600;
+            color: var(--primary-color);
+            background: none;
+            border: 2px solid var(--primary-color);
+            border-radius: 35px;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 1.5rem; /* Buton üst boşluğu artırıldı */
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+            .btn-back:hover {
+                background-color: rgba(106, 5, 127, 0.1);
+                transform: translateY(-3px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 992px) { /* Tabletler için */
+            .form-container
+
+        {
+            max-width: 700px;
+            padding: 2.5rem;
+        }
+
+        }
+
+        @@media (max-width: 768px) {
+            body
+
+        {
+            padding: 15px;
+        }
+
+        .form-container {
+            margin: 1.5rem auto;
+            padding: 1.8rem;
+        }
+
+            .form-container h2 {
+                font-size: 1.8rem;
+                margin-bottom: 2rem;
+            }
+
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select {
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-submit {
+            padding: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .btn-back {
+            padding: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        }
+    </style>
+</head>
+
+<div class="form-container">
+    <h2>Kullanıcı Güncelle</h2>
+    <form asp-action="UpdateAppUser" asp-controller="AppUser" method="post">
+        <input type="hidden" asp-for="AppUserId" /> @* Kullanıcı Id'si için gizli alan *@
+
+        <div class="form-group">
+            <label for="Name">Adı</label>
+            <input type="text" id="Name" name="Name" asp-for="Name" required />
+        </div>
+        <div class="form-group">
+            <label for="Surname">Soyadı</label>
+            <input type="text" id="Surname" name="Surname" asp-for="Surname" required />
+        </div>
+        <div class="form-group">
+            <label for="UserDepartment">Departman (Seçim)</label>
+            <select id="UserDepartment" name="UserDepartment" asp-for="UserDepartment">
+                <option value="">Lütfen Seçiniz</option>
+                <option value="Garson">Garson</option>
+                <option value="Mutfak">Mutfak</option>
+                <option value="Bar">Bar</option>
+                <option value="Yonetici">Yönetici</option>
+                <option value="Temizlik">Temizlik</option>
+                <option value="Kasa">Kasa</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ProfileImageUrl">Profil Resim URL'si</label>
+            <input type="text" id="ProfileImageUrl" name="ProfileImageUrl" asp-for="ProfileImageUrl" />
+        </div>
+        <div class="form-group">
+            <label>Çevrimiçi Durumu</label>
+            <div class="checkbox-container">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="IsOnline" name="IsOnline" asp-for="IsOnline" />
+                    <span class="slider"></span>
+                </label>
+                <label for="IsOnline">Kullanıcı Çevrimiçi</label>
+            </div>
+        </div>
+        <button type="submit" class="btn-submit">Güncelle</button>
+        <a href="/AppUser/Index" class="btn-back">Listeye Geri Dön</a>
+    </form>
+</div>

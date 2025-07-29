@@ -18,29 +18,37 @@ namespace SignalR.BusinessLayer.Concretes
             _bookingDal = bookingDal;
         }
 
-        public void TAdd(Booking entity)
+        public async Task TAddAsync(Booking entity)
         {
-            _bookingDal.Add(entity);
+            await _bookingDal.AddAsync(entity);
+            await _bookingDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Booking entity)
+        public async Task TDeleteAsync(Booking entity)
         {
-            _bookingDal.Delete(entity);
+            await _bookingDal.DeleteAsync(entity);
+            await _bookingDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public Booking TGetById(int id)
+        public async Task<Booking> TGetByIdAsync(int id)
         {
-            return _bookingDal.GetById(id);
+            return await _bookingDal.GetByIdAsync(id);
         }
 
-        public List<Booking> TGetListAll()
+        public async Task<List<Booking>> TGetListAllAsync()
         {
-            return _bookingDal.GetListAll();
+            return await _bookingDal.GetListAllAsync();
         }
 
-        public void TUpdate(Booking entity)
+        public async Task TSaveChangesAsync()
         {
-           _bookingDal.Update(entity);
+            await _bookingDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        public async Task TUpdateAsync(Booking entity)
+        {
+            await _bookingDal.UpdateAsync(entity);
+            await _bookingDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }

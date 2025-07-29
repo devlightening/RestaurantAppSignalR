@@ -18,46 +18,54 @@ namespace SignalR.BusinessLayer.Concretes
             _appUserDal = appUserDal;
         }
 
-        public void TAdd(AppUser entity)
+        public async Task TAddAsync(AppUser entity)
         {
-            _appUserDal.Add(entity);
+            await _appUserDal.AddAsync(entity);
+            await _appUserDal.SaveChangesAsync(); // DÜZELTİLDİ: await eklendi
         }
 
-        public void TDelete(AppUser entity)
+        public async Task TDeleteAsync(AppUser entity)
         {
-           _appUserDal.Delete(entity);
+            await _appUserDal.DeleteAsync(entity);
+            await _appUserDal.SaveChangesAsync();
         }
 
-        public AppUser TGetById(int id)
+        public async Task<AppUser> TGetByIdAsync(int id)
         {
-            return _appUserDal.GetById(id);
+            return await _appUserDal.GetByIdAsync(id);
         }
 
-        public List<AppUser> TGetListAll()
+        public Task<List<AppUser>> TGetListAllAsync()
         {
-           return _appUserDal.GetListAll();
+            return _appUserDal.GetListAllAsync();
         }
 
-        public Task<IEnumerable<AppUser>> TGetOnlineUsersAsync()
+        public async Task<IEnumerable<AppUser>> TGetOnlineUsersAsync()
         {
-            return _appUserDal.GetOnlineUsersAsync();
+            return await _appUserDal.GetOnlineUsersAsync();
+           
         }
 
-        public Task<AppUser> TGetUserByFullNameAsync(string name, string surname)
+        public async Task<AppUser> TGetUserByFullNameAsync(string name, string surname)
         {
-            return _appUserDal.GetUserByFullNameAsync(name, surname);
+            return await _appUserDal.GetUserByFullNameAsync(name, surname);
         }
 
-        public Task<IEnumerable<AppUser>> TGetUsersByDepartmentAsync(UserDepartment department)
+        public async Task<IEnumerable<AppUser>> TGetUsersByDepartmentAsync(UserDepartment department)
         {
-           return _appUserDal.GetUsersByDepartmentAsync(department);
+            return await _appUserDal.GetUsersByDepartmentAsync(department);
+            
         }
 
-        public void TUpdate(AppUser entity)
+        public async Task TSaveChangesAsync()
         {
-           _appUserDal.Update(entity);
+            await _appUserDal.SaveChangesAsync();
         }
 
-      
+        public async Task TUpdateAsync(AppUser entity)
+        {
+            await _appUserDal.UpdateAsync(entity);
+            await _appUserDal.SaveChangesAsync();
+        }
     }
 }

@@ -1,6 +1,11 @@
 ﻿using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Abstracts;
 using SignalR.EntityLayer.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Concretes
 {
@@ -12,57 +17,73 @@ namespace SignalR.BusinessLayer.Concretes
             _messageDal = messageDal;
         }
 
-        public void TAdd(Message entity)
+        // Asenkron ekleme metodu
+        public async Task TAddAsync(Message entity)
         {
-            _messageDal.Add(entity);
-           
+            await _messageDal.AddAsync(entity);
+            await _messageDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TDelete(Message entity)
+        // Asenkron silme metodu
+        public async Task TDeleteAsync(Message entity)
         {
-            _messageDal.Delete(entity);
+            await _messageDal.DeleteAsync(entity);
+            await _messageDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public  async Task<IEnumerable<Message>> TGetAllMessages()
+        // Tüm mesajları asenkron getirme metodu
+        public async Task<IEnumerable<Message>> TGetAllMessagesAsync() // Metot adı Async ile güncellendi
         {
-           return await _messageDal.GetAllMessages();
+            return await _messageDal.GetAllMessages(); // Eğer DAL'da GetAllMessagesAsync varsa onu çağırın
         }
 
-        public Message TGetById(int id)
+        // ID'ye göre asenkron getirme metodu
+        public async Task<Message> TGetByIdAsync(int id)
         {
-            return _messageDal.GetById(id);
+            return await _messageDal.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Message>> TGetConversation(int userId1, int userId2)
+        // Kullanıcılar arası konuşmayı asenkron getirme metodu
+        public async Task<IEnumerable<Message>> TGetConversationAsync(int userId1, int userId2) // Metot adı Async ile güncellendi
         {
-            return await _messageDal.GetConversation(userId1, userId2);
+            return await _messageDal.GetConversation(userId1, userId2); // Eğer DAL'da GetConversationAsync varsa onu çağırın
         }
 
-        public List<Message> TGetListAll()
+        // Tüm mesajların listesini asenkron getirme metodu
+        public async Task<List<Message>> TGetListAllAsync()
         {
-            return _messageDal.GetListAll();
-
+            return await _messageDal.GetListAllAsync();
         }
 
-        public async Task<Message> TGetMessageById(int messageId)
+        // Belirli ID'ye sahip mesajı asenkron getirme metodu
+        public async Task<Message> TGetMessageByIdAsync(int messageId) // Metot adı Async ile güncellendi
         {
-           return await _messageDal.GetMessageById(messageId);
+            return await _messageDal.GetMessageByIdAsync(messageId); // Eğer DAL'da GetMessageByIdAsync varsa onu çağırın
         }
 
-        public async Task<IEnumerable<Message>> TGetMessagesByDateRange(DateTime startDate, DateTime endDate)
+        // Tarih aralığına göre mesajları asenkron getirme metodu
+        public async Task<IEnumerable<Message>> TGetMessagesByDateRangeAsync(DateTime startDate, DateTime endDate) // Metot adı Async ile güncellendi
         {
-            return await _messageDal.GetMessagesByDateRange(startDate, endDate);
+            return await _messageDal.GetMessagesByDateRange(startDate, endDate); // Eğer DAL'da GetMessagesByDateRangeAsync varsa onu çağırın
         }
 
-        public async Task<IEnumerable<Message>> TGetMessagesByUserId(int userId)
+        // Kullanıcı ID'sine göre mesajları asenkron getirme metodu
+        public async Task<IEnumerable<Message>> TGetMessagesByUserIdAsync(int userId) // Metot adı Async ile güncellendi
         {
-            return await _messageDal.GetMessagesByUserId(userId);
-
+            return await _messageDal.GetMessagesByUserId(userId); // Eğer DAL'da GetMessagesByUserIdAsync varsa onu çağırın
         }
 
-        public void TUpdate(Message entity)
+        // Asenkron güncelleme metodu
+        public async Task TUpdateAsync(Message entity)
         {
-            _messageDal.Update(entity);
+            await _messageDal.UpdateAsync(entity);
+            await _messageDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
+        }
+
+        // Değişiklikleri asenkron kaydetme metodu
+        public async Task TSaveChangesAsync()
+        {
+            await _messageDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
         }
     }
 }

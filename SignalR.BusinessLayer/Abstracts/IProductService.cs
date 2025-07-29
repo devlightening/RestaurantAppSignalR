@@ -4,13 +4,13 @@ namespace SignalR.BusinessLayer.Abstracts
 {
     public interface IProductService : IGenericService<Product>
     {
-        List<Product> TGetProductsWithCategory();
-        public int TProductCount();
-        public int TProductCountByCategoryNameHamburger();
-        public int TProductCountByCategoryNameDrink();
-        public decimal TAvarageProductPrice();
-        public string TLowestPricedProduct();
-        public string THighestPricedProduct();
-        public decimal TAvarageHamburgerPrice();
+        Task<List<Product>> TGetProductsWithCategory();
+        Task<int> TProductCount();
+        Task<int> TProductCountByCategoryNameHamburger();
+        Task<int> TProductCountByCategoryNameDrink();
+        Task<decimal> TAvarageProductPrice();
+        Task<string> TLowestPricedProduct();
+        Task<string> THighestPricedProduct();
+        Task<decimal> TAvarageHamburgerPrice();
     }
 }

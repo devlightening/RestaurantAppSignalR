@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SignalR.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SignalR.DataAccessLayer.Concrete
 {
@@ -18,7 +13,13 @@ namespace SignalR.DataAccessLayer.Concrete
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AppUser>()
+             .Property(u => u.UserDepartment)
+             .HasConversion<string>();
 
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.SenderUser)
@@ -38,16 +39,16 @@ namespace SignalR.DataAccessLayer.Concrete
         public DbSet<SocialMedia> SocialMedias { get; set; }
         public DbSet<Testimonial> Testimonials { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        public DbSet<Category> Categories{ get; set; }
-        public DbSet<Discount> Discounts{ get; set; }
-        public DbSet<Feature> Features{ get; set; }
-        public DbSet<Product> Products{ get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<Feature> Features { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<MoneyCase> MoneyCases { get; set; }
         public DbSet<RestaurantTable> RestaurantTables { get; set; }
         public DbSet<Slider> Sliders { get; set; }
-        public DbSet<Basket> Baskets { get; set; } 
+        public DbSet<Basket> Baskets { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Message> Messages { get; set; }

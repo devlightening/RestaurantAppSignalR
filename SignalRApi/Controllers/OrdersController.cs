@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.OrderDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -20,98 +22,97 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult OrdersList()
+        public async Task<IActionResult> OrdersList()
         {
-            var values = _mapper.Map<List<ResultOrderDto>>(_orderService.TGetListAll());
+            var values = _mapper.Map<List<ResultOrderDto>>(await _orderService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpPost]
-        public IActionResult CreateOrder(CreateOrderDto createOrderDto)
+        public async Task<IActionResult> CreateOrder(CreateOrderDto createOrderDto)
         {
-            _orderService.TAdd(new Order()
-            {
-                TableNumber = createOrderDto.TableNumber,
-                Description = createOrderDto.Description,
-                OrderDate = createOrderDto.OrderDate,
-                TotalOrderPrice = createOrderDto.TotalOrderPrice
+            if (createOrderDto == null) return BadRequest("Sipariş verisi boş olamaz.");
 
-            });
-            return Ok("Sipariş Başarıyla Eklendi");
+            var order = _mapper.Map<Order>(createOrderDto);
+            await _orderService.TAddAsync(order);
+
+            return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderId }, order);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteOrder(int id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
-            var value = _orderService.TGetById(id);
-            _orderService.TDelete(value);
+            var value = await _orderService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile sipariş bulunamadı.");
+            }
+            await _orderService.TDeleteAsync(value);
             return Ok("Sipariş Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateOrder(UpdateOrderDto updateOrderDto)
+        public async Task<IActionResult> UpdateOrder(UpdateOrderDto updateOrderDto)
         {
-            _orderService.TUpdate(new Order()
+            if (updateOrderDto == null) return BadRequest("Güncellenecek sipariş verisi boş olamaz.");
+
+            var existingOrder = await _orderService.TGetByIdAsync(updateOrderDto.OrderId);
+            if (existingOrder == null)
             {
-                OrderId = updateOrderDto.OrderId,
-                TableNumber = updateOrderDto.TableNumber,
-                Description = updateOrderDto.Description,
-                OrderDate = updateOrderDto.OrderDate,
-                TotalOrderPrice = updateOrderDto.TotalOrderPrice
-            });
+                return NotFound($"ID {updateOrderDto.OrderId} ile sipariş bulunamadı.");
+            }
+
+            _mapper.Map(updateOrderDto, existingOrder);
+            await _orderService.TUpdateAsync(existingOrder);
+
             return Ok("Sipariş Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetOrderById(int id)
+        public async Task<IActionResult> GetOrderById(int id)
         {
-            var value = _orderService.TGetById(id);
+            var value = await _orderService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile sipariş bulunamadı.");
+            }
             var result = _mapper.Map<ResultOrderDto>(value);
             return Ok(result);
         }
 
         [HttpGet("OrdersListWithOrderDetails")]
-        public IActionResult OrdersListWithOrderDetails()
+        public async Task<IActionResult> OrdersListWithOrderDetails()
         {
-            var values = _mapper.Map<List<ResultOrderDto>>(_orderService.TGetListWithOrderDetails());
+            var values = _mapper.Map<List<ResultOrderDto>>(await _orderService.TGetListWithOrderDetails());
             return Ok(values);
         }
 
-
-
-
-
-
         [HttpGet("TotalOrderNumber")]
-        public IActionResult TotalOrderNumber()
+        public async Task<IActionResult> TotalOrderNumber()
         {
-            var count = _orderService.TTotalOrderNumber();
+            var count = await _orderService.TTotalOrderNumber();
             return Ok(count);
-
         }
 
         [HttpGet("ActiveOrderNumber")]
-        public IActionResult ActiveOrderNumber()
+        public async Task<IActionResult> ActiveOrderNumber()
         {
-            var count = _orderService.TActiveOrderNumber();
+            var count = await _orderService.TActiveOrderNumber();
             return Ok(count);
-
         }
 
         [HttpGet("LastOrderPrice")]
-        public IActionResult LastOrderPrice()
+        public async Task<IActionResult> LastOrderPrice()
         {
-            var count = _orderService.TLastOrderPrice();
+            var count = await _orderService.TLastOrderPrice();
             return Ok(count);
-
         }
 
         [HttpGet("TodayTotalPrice")]
-        public IActionResult TodayTotalPrice()
+        public async Task<IActionResult> TodayTotalPrice()
         {
-            var count = _orderService.TTodayTotalPrice();
+            var count = await _orderService.TTodayTotalPrice();
             return Ok(count);
-
         }
     }
 }

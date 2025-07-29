@@ -9,6 +9,6 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface IMoneyCaseDal : IGenericDal<MoneyCase>
     {
-        public decimal TotalMoneyCaseAmount();
+         Task<decimal> TotalMoneyCaseAmountAsync();
     }
 }

@@ -8,10 +8,11 @@ namespace SignalR.BusinessLayer.Abstracts
 {
     public interface IGenericService<T> where T : class
     {
-        void TAdd(T entity);
-        void TUpdate(T entity);
-        void TDelete(T entity);
-        T TGetById(int id);
-        List<T> TGetListAll();
+        Task TAddAsync(T entity); // Asenkron ekleme
+        Task TDeleteAsync(T entity); // Asenkron silme
+        Task TUpdateAsync(T entity); // Asenkron güncelleme
+        Task<T> TGetByIdAsync(int id); // Asenkron ID'ye göre getirme
+        Task<List<T>> TGetListAllAsync(); // Asenkron tüm listeyi getirme
+        Task TSaveChangesAsync(); // Değişiklikleri asenkron kaydetme
     }
 }

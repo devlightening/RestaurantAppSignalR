@@ -1,6 +1,11 @@
 ﻿using SignalR.BusinessLayer.Abstracts;
 using SignalR.DataAccessLayer.Abstracts;
 using SignalR.EntityLayer.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SignalR.BusinessLayer.Concretes
 {
@@ -13,30 +18,37 @@ namespace SignalR.BusinessLayer.Concretes
             _sliderDal = sliderDal;
         }
 
-        public void TAdd(Slider entity)
+        public async Task TAddAsync(Slider entity)
         {
-            _sliderDal.Add(entity);
-     
+            await _sliderDal.AddAsync(entity);
+            await _sliderDal.SaveChangesAsync();
         }
 
-        public void TDelete(Slider entity)
+        public async Task TDeleteAsync(Slider entity)
         {
-            _sliderDal.Delete(entity);
+            await _sliderDal.DeleteAsync(entity);
+            await _sliderDal.SaveChangesAsync();
         }
 
-        public Slider TGetById(int id)
+        public async Task<Slider> TGetByIdAsync(int id)
         {
-            return _sliderDal.GetById(id);
+            return await _sliderDal.GetByIdAsync(id);
         }
 
-        public List<Slider> TGetListAll()
+        public async Task<List<Slider>> TGetListAllAsync()
         {
-            return _sliderDal.GetListAll();
+            return await _sliderDal.GetListAllAsync();
         }
 
-        public void TUpdate(Slider entity)
+        public async Task TUpdateAsync(Slider entity)
         {
-            _sliderDal.Update(entity);
+            await _sliderDal.UpdateAsync(entity);
+            await _sliderDal.SaveChangesAsync();
+        }
+
+        public async Task TSaveChangesAsync()
+        {
+            await _sliderDal.SaveChangesAsync();
         }
     }
 }

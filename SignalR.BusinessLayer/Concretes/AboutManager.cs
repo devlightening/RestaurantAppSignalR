@@ -18,29 +18,36 @@ namespace SignalR.BusinessLayer.Concretes
             _aboutDal = aboutDal;
         }
 
-        public void TAdd(About entity)
+        public async Task TAddAsync(About entity)
         {
-            _aboutDal.Add(entity);
+            await _aboutDal.AddAsync(entity);
+            await _aboutDal.SaveChangesAsync();
         }
 
-        public void TDelete(About entity)
+        public async Task TDeleteAsync(About entity)
         {
-            _aboutDal.Delete(entity);
+           await _aboutDal.DeleteAsync(entity);
+        }
+        public async Task<List<About>> TGetListAllAsync()
+        {
+            return await _aboutDal.GetListAllAsync();
         }
 
-        public About TGetById(int id)
+        public Task TSaveChangesAsync()
         {
-           return _aboutDal.GetById(id);
+            return _aboutDal.SaveChangesAsync();
         }
 
-        public List<About> TGetListAll()
+        public async Task TUpdateAsync(About entity)
         {
-            return _aboutDal.GetListAll();
+            await _aboutDal.AddAsync(entity);
+            await _aboutDal.SaveChangesAsync();
         }
 
-        public void TUpdate(About entity)
+        Task<About> IGenericService<About>.TGetByIdAsync(int id)
         {
-            _aboutDal.Update(entity);
+            return _aboutDal.GetByIdAsync(id);
+
         }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.SliderDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -20,59 +22,62 @@ namespace SignalRApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult SliderList()
+        public async Task<IActionResult> SliderList()
         {
-            var values = _mapper.Map<List<ResultSliderDto>>(_sliderService.TGetListAll());
+            var values = _mapper.Map<List<ResultSliderDto>>(await _sliderService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSlider(int id)
+        public async Task<IActionResult> GetSlider(int id)
         {
-            var value = _sliderService.TGetById(id);
-            var mappedValue = _mapper.Map<UpdateSliderDto>(value);
+            var value = await _sliderService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile slider bulunamadı.");
+            }
+            var mappedValue = _mapper.Map<ResultSliderDto>(value); // Genellikle Result DTO'ya maplenir
             return Ok(mappedValue);
         }
 
         [HttpPost]
-        public IActionResult CreateSlider(CreateSliderDto createSliderDto)
+        public async Task<IActionResult> CreateSlider(CreateSliderDto createSliderDto)
         {
-            _sliderService.TAdd(new Slider()
-            {
-                Title1 = createSliderDto.Title1,
-                Title2 = createSliderDto.Title2,
-                Title3 = createSliderDto.Title3,
-                Description1 = createSliderDto.Description1,
-                Description2 = createSliderDto.Description2,
-                Description3 = createSliderDto.Description3
-            });
-            return Ok("Slider Başarıyla Eklendi");
+            if (createSliderDto == null) return BadRequest("Slider verisi boş olamaz.");
+
+            var newSlider = _mapper.Map<Slider>(createSliderDto);
+            await _sliderService.TAddAsync(newSlider);
+
+            return CreatedAtAction(nameof(GetSlider), new { id = newSlider.SliderId }, newSlider);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteSlider(int id)
+        public async Task<IActionResult> DeleteSlider(int id)
         {
-            var value = _sliderService.TGetById(id);
-            _sliderService.TDelete(value);
+            var value = await _sliderService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile slider bulunamadı.");
+            }
+            await _sliderService.TDeleteAsync(value);
             return Ok("Slider Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateSlider(UpdateSliderDto updateSliderDto)
+        public async Task<IActionResult> UpdateSlider(UpdateSliderDto updateSliderDto)
         {
-            _sliderService.TUpdate(new Slider()
-            {
-                SliderId = updateSliderDto.SliderId,
-                Title1 = updateSliderDto.Title1,
-                Title2 = updateSliderDto.Title2,
-                Title3 = updateSliderDto.Title3,
-                Description1 = updateSliderDto.Description1,
-                Description2 = updateSliderDto.Description2,
-                Description3 = updateSliderDto.Description3
+            if (updateSliderDto == null) return BadRequest("Güncellenecek slider verisi boş olamaz.");
 
-            });
+            var existingSlider = await _sliderService.TGetByIdAsync(updateSliderDto.SliderId);
+            if (existingSlider == null)
+            {
+                return NotFound($"ID {updateSliderDto.SliderId} ile slider bulunamadı.");
+            }
+
+            _mapper.Map(updateSliderDto, existingSlider);
+            await _sliderService.TUpdateAsync(existingSlider);
+
             return Ok("Slider Başarıyla Güncellendi");
-          
-        }    
+        }
     }
 }

@@ -16,69 +16,78 @@ namespace SignalR.BusinessLayer.Concretes
         {
             _productDal = productDal;
         }
-        public void TAdd(Product entity)
+
+        public async Task TAddAsync(Product entity)
         {
-            _productDal.Add(entity);
+            await _productDal.AddAsync(entity);
+            await _productDal.SaveChangesAsync();
         }
 
-        public decimal TAvarageHamburgerPrice()
+        public async Task<decimal> TAvarageHamburgerPrice()
         {
-            return _productDal.AvarageHamburgerPrice();
+            return await _productDal.AvarageHamburgerPrice();
         }
 
-        public decimal TAvarageProductPrice()
+        public async Task<decimal> TAvarageProductPrice()
         {
-            return _productDal.AvarageProductPrice();
+            return await _productDal.AvarageProductPrice();
         }
 
-        public void TDelete(Product entity)
+        public async Task TDeleteAsync(Product entity)
         {
-            _productDal.Delete(entity);
+            await _productDal.DeleteAsync(entity);
+            await _productDal.SaveChangesAsync();
         }
 
-        public Product TGetById(int id)
+        public async Task<Product> TGetByIdAsync(int id)
         {
-            return _productDal.GetById(id);
+            return await _productDal.GetByIdAsync(id);
         }
 
-        public List<Product> TGetListAll()
+        public async Task<List<Product>> TGetListAllAsync()
         {
-            return _productDal.GetListAll();
+            return await _productDal.GetListAllAsync();
         }
 
-        public List<Product> TGetProductsWithCategory()
+        public async Task<List<Product>> TGetProductsWithCategory()
         {
-            return _productDal.GetProductsWithCategory();
+            return await _productDal.GetProductsWithCategory();
         }
 
-        public string THighestPricedProduct()
+        public async Task<string> THighestPricedProduct()
         {
-            return _productDal.HighestPricedProduct();
+            return await _productDal.HighestPricedProduct();
         }
 
-        public string TLowestPricedProduct()
+        public async Task<string> TLowestPricedProduct()
         {
-            return _productDal.LowesPricedProduct();
+            return await _productDal.LowesPricedProduct();
         }
 
-        public int TProductCount()
+        public async Task<int> TProductCount()
         {
-            return _productDal.ProductCount();
+            return await _productDal.ProductCount();
         }
 
-        public int TProductCountByCategoryNameDrink()
+        public async Task<int> TProductCountByCategoryNameDrink()
         {
-            return _productDal.ProductCountByCategoryNameDrink();
+            return await _productDal.ProductCountByCategoryNameDrink();
         }
 
-        public int TProductCountByCategoryNameHamburger()
+        public async Task<int> TProductCountByCategoryNameHamburger()
         {
-            return _productDal.ProductCountByCategoryNameHamburger();
+            return await _productDal.ProductCountByCategoryNameHamburger();
         }
 
-        public void TUpdate(Product entity)
+        public async Task TSaveChangesAsync()
         {
-            _productDal.Update(entity);
+            await _productDal.SaveChangesAsync();
+        }
+
+        public async Task TUpdateAsync(Product entity)
+        {
+            await _productDal.UpdateAsync(entity);
+            await _productDal.SaveChangesAsync();
         }
     }
 }

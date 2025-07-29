@@ -1,68 +1,61 @@
-﻿using SignalR.DataAccessLayer.Abstracts;
+﻿using Microsoft.EntityFrameworkCore;
+using SignalR.DataAccessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
 using SignalR.DataAccessLayer.Repositories;
 using SignalR.EntityLayer.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SignalR.DataAccessLayer.EntityFramework
 {
     public class EfRestaurantTable : GenericRepository<RestaurantTable>, IRestaurantTableDal
     {
+        private readonly SignalRContext _context;
+
         public EfRestaurantTable(SignalRContext context) : base(context)
         {
+            _context = context;
         }
 
-        public int AvailableTableCount()
+        public async Task<int> AvailableTableCount()
         {
-            using var context = new SignalRContext();
-            return context.RestaurantTables.Count(t => t.Status == false);
+            return await _context.RestaurantTables.CountAsync(t => t.Status == false);
         }
 
-
-        public List<RestaurantTable> GetAvailableTables()
+        public async Task<List<RestaurantTable>> GetAvailableTables()
         {
-           using var context = new SignalRContext();
-            return context.RestaurantTables.Where(t => t.Status == false).ToList();
+            return await _context.RestaurantTables.Where(t => t.Status == false).ToListAsync();
         }
 
-        public RestaurantTable GetByTableNo(int tableNo)
+        public async Task<RestaurantTable> GetByTableNo(int tableNo)
         {
-            using var context = new SignalRContext();
-            return context.RestaurantTables.FirstOrDefault(t => t.TableNo == tableNo);
+            return await _context.RestaurantTables.FirstOrDefaultAsync(t => t.TableNo == tableNo);
         }
 
-        public List<RestaurantTable> GetNotAvailableTables()
+        public async Task<List<RestaurantTable>> GetNotAvailableTables()
         {
-            using var context = new SignalRContext();
-            return context.RestaurantTables.Where(t => t.Status == true).ToList();
+            return await _context.RestaurantTables.Where(t => t.Status == true).ToListAsync();
         }
 
-         public List<RestaurantTable> GetTablesByLocation(TableLocation location)
-         {
-             using var context = new SignalRContext();
-             return context.RestaurantTables.Where(t => t.Location == location).ToList();
-         }
-
-        public List<RestaurantTable> GetTablesByStatus(bool status)
+        public async Task<List<RestaurantTable>> GetTablesByLocation(TableLocation location)
         {
-            using var context = new SignalRContext();
-            return context.RestaurantTables.Where(t => t.Status == status).ToList();
+            return await _context.RestaurantTables.Where(t => t.Location == location).ToListAsync();
         }
 
-        public int NotAvailableTableCount()
+        public async Task<List<RestaurantTable>> GetTablesByStatus(bool status)
         {
-            using var context = new SignalRContext();
-            return context.RestaurantTables.Count(t => t.Status == true); // ✔️ Dolu masaları sayar
+            return await _context.RestaurantTables.Where(t => t.Status == status).ToListAsync();
         }
 
-        public int TotalTableCount()
+        public async Task<int> NotAvailableTableCount()
         {
-            using var context = new SignalRContext();
-            return context.RestaurantTables.Count();
+            return await _context.RestaurantTables.CountAsync(t => t.Status == true);
+        }
+
+        public async Task<int> TotalTableCount()
+        {
+            return await _context.RestaurantTables.CountAsync();
         }
     }
 }

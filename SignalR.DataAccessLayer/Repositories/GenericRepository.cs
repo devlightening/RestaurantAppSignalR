@@ -1,5 +1,9 @@
-﻿using SignalR.DataAccessLayer.Abstracts;
+﻿using Microsoft.EntityFrameworkCore;
+using SignalR.DataAccessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SignalR.DataAccessLayer.Repositories
 {
@@ -12,32 +16,37 @@ namespace SignalR.DataAccessLayer.Repositories
             _context = context;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _context.Add(entity);
-            _context.SaveChanges();
+            await _context.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public T GetById(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
-            return _context.Set<T>().Find(id);
+            return await _context.Set<T>().FindAsync(id);
         }
 
-        public List<T> GetListAll()
+        public async Task<List<T>> GetListAllAsync()
         {
-           return _context.Set<T>().ToList();
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public void Update(T entity)
+        public async Task UpdateAsync(T entity)
         {
-           _context.Update(entity);
-            _context.SaveChanges();
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

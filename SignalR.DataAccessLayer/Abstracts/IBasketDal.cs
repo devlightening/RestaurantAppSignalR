@@ -10,7 +10,7 @@ namespace SignalR.DataAccessLayer.Abstracts
 {
     public interface IBasketDal : IGenericDal<Basket>
     {
-        List<Basket> GetBasketsByRestaurantTableNumber(int id);
-        public decimal TBasketCount();
+        Task<List<Basket>> GetBasketsByRestaurantTableNumberAsync(int id);
+        Task<decimal> TotalBasketAmountAsync();
     }
 }

@@ -11,14 +11,13 @@ namespace SignalR.EntityLayer.Entities
         public int AppUserId { get; set; }
 
         public string Name { get; set; } = null!;          // Kullanıcı adı
-        public string Surname { get; set; } = null!;          // Tam adı
-        public string Department { get; set; } = null!;        // Bölüm: Garson, Mutfak, Bar, Yönetici
+        public string Surname { get; set; } = null!;          // Tam adı      /
         public string? ProfileImageUrl { get; set; }           // (İsteğe bağlı) Profil resmi
 
         public bool IsOnline { get; set; } = false;            // (Opsiyonel) Anlık çevrimiçi durumu
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public UserDepartment userDepartment { get; set; }
+        public UserDepartment UserDepartment { get; set; }
 
         // Navigation
         public ICollection<Message> SentMessages { get; set; } = new HashSet<Message>();

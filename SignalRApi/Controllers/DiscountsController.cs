@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SignalR.BusinessLayer.Abstracts;
 using SignalR.DtoLayer.DiscountDto;
 using SignalR.EntityLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignalRApi.Controllers
 {
@@ -21,71 +22,76 @@ namespace SignalRApi.Controllers
 
 
         [HttpGet]
-        public IActionResult DiscountList()
+        public async Task<IActionResult> DiscountList()
         {
-            var values = _mapper.Map<List<ResultDiscountDto>>(_discountService.TGetListAll());
+            var values = _mapper.Map<List<ResultDiscountDto>>(await _discountService.TGetListAllAsync());
             return Ok(values);
         }
 
         [HttpPost]
-        public IActionResult CreateDiscount(CreateDiscountDto createDiscountDto)
+        public async Task<IActionResult> CreateDiscount(CreateDiscountDto createDiscountDto)
         {
+            if (createDiscountDto == null) return BadRequest("İndirim verisi boş olamaz.");
 
-            _discountService.TAdd(new Discount()
-            {
-                Title = createDiscountDto.Title,
-                Amount = createDiscountDto.Amount,
-                Description = createDiscountDto.Description,
-                ImageUrl = createDiscountDto.ImageUrl,
-                Status = createDiscountDto.Status
-            });
-            return Ok("İndirim Başarıyla Eklendi");
+            var discount = _mapper.Map<Discount>(createDiscountDto);
+            await _discountService.TAddAsync(discount);
+
+            return CreatedAtAction(nameof(GetDiscount), new { id = discount.DiscountId }, discount);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteDiscount(int id)
+        public async Task<IActionResult> DeleteDiscount(int id)
         {
-            var value = _discountService.TGetById(id);
-            _discountService.TDelete(value);
+            var value = await _discountService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile indirim bulunamadı.");
+            }
+            await _discountService.TDeleteAsync(value);
             return Ok("İndirim Başarıyla Silindi");
         }
 
         [HttpPut]
-        public IActionResult UpdateDiscount(UpdateDiscountDto updateDiscountDto)
+        public async Task<IActionResult> UpdateDiscount(UpdateDiscountDto updateDiscountDto)
         {
+            if (updateDiscountDto == null) return BadRequest("Güncellenecek indirim verisi boş olamaz.");
 
-            _discountService.TUpdate(new Discount()
+            var existingDiscount = await _discountService.TGetByIdAsync(updateDiscountDto.DiscountId);
+            if (existingDiscount == null)
             {
-                DiscountId = updateDiscountDto.DiscountId,
-                Title = updateDiscountDto.Title,
-                Amount = updateDiscountDto.Amount,
-                Description = updateDiscountDto.Description,
-                ImageUrl = updateDiscountDto.ImageUrl,
-                Status = updateDiscountDto.Status
-            });
+                return NotFound($"ID {updateDiscountDto.DiscountId} ile indirim bulunamadı.");
+            }
+
+            _mapper.Map(updateDiscountDto, existingDiscount);
+            await _discountService.TUpdateAsync(existingDiscount);
+
             return Ok("İndirim Başarıyla Güncellendi");
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetDiscount(int id)
+        public async Task<IActionResult> GetDiscount(int id)
         {
-            var value = _discountService.TGetById(id);
-            return Ok(value);
+            var value = await _discountService.TGetByIdAsync(id);
+            if (value == null)
+            {
+                return NotFound($"ID {id} ile indirim bulunamadı.");
+            }
+            var result = _mapper.Map<ResultDiscountDto>(value);
+            return Ok(result);
         }
 
         [HttpGet("ChangeStatusToTrue/{id}")]
-        public IActionResult ChangeStatusToTrue(int id)
+        public async Task<IActionResult> ChangeStatusToTrue(int id)
         {
-            _discountService.TChangeStatusToTrue(id);
+            await _discountService.TChangeStatusToTrueAsync(id);
             return Ok();
         }
 
         [HttpGet("ChangeStatusToFalse/{id}")]
-        public IActionResult ChangeStatusToFalse(int id)
+        public async Task<IActionResult> ChangeStatusToFalse(int id)
         {
-            _discountService.TChangeStatusToFalse(id);
+            await _discountService.TChangeStatusToFalseAsync(id);
             return Ok();
         }
-
     }
 }

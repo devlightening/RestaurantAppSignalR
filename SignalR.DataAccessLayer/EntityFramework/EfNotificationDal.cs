@@ -1,47 +1,51 @@
-﻿using SignalR.DataAccessLayer.Abstracts;
+﻿using Microsoft.EntityFrameworkCore;
+using SignalR.DataAccessLayer.Abstracts;
 using SignalR.DataAccessLayer.Concrete;
 using SignalR.DataAccessLayer.Repositories;
 using SignalR.EntityLayer.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SignalR.DataAccessLayer.EntityFramework
 {
     public class EfNotificationDal : GenericRepository<Notification>, INotificationDal
     {
+        private readonly SignalRContext _context;
+
         public EfNotificationDal(SignalRContext context) : base(context)
         {
+            _context = context;
         }
 
-        public List<Notification> GetAllNotificationByFalse()
+        public async Task<List<Notification>> GetAllNotificationByFalse()
         {
-           using var context = new SignalRContext();
-           return context.Notifications.Where(a => a.Status == false).ToList();
+            return await _context.Notifications.Where(x => x.Status == false).ToListAsync();
         }
 
-        public int NotificationCountByStatusFalse()
+        public async Task<int> NotificationCountByStatusFalse()
         {
-            using var context = new SignalRContext();
-            return context.Notifications.Count(a => a.Status == false);
+            return await _context.Notifications.CountAsync(x => x.Status == false);
         }
 
-        public void NotificationStatusFalse(int id)
+        public async Task NotificationStatusFalse(int id)
         {
-            using var context = new SignalRContext();
-            var notification = context.Notifications.Where(a=>a.NotificationId == id).FirstOrDefault();
-            notification.Status = false;
-            context.SaveChanges();
+            var notification = await _context.Notifications.FindAsync(id);
+            if (notification != null)
+            {
+                notification.Status = false;
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public void NotificationStatusTrue(int id)
+        public async Task NotificationStatusTrue(int id)
         {
-            using var context = new SignalRContext();
-            var notification = context.Notifications.Where(a => a.NotificationId == id).FirstOrDefault();
-            notification.Status = true;
-            context.SaveChanges();
+            var notification = await _context.Notifications.FindAsync(id);
+            if (notification != null)
+            {
+                notification.Status = true;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

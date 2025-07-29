@@ -16,49 +16,64 @@ namespace SignalR.BusinessLayer.Concretes
         {
             _discountDal = discountDal;
         }
-        public void TAdd(Discount entity)
+
+        public async Task TAddAsync(Discount entity)
         {
-            _discountDal.Add(entity);
+            await _discountDal.AddAsync(entity);
+            await _discountDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public void TChangeStatusToTrue(int id)
+        public async Task TChangeStatusToFalseAsync(int id)
         {
-            var discount = _discountDal.GetById(id);
+            // ID'ye göre indirimi bul
+            var discount = await _discountDal.GetByIdAsync(id);
             if (discount != null)
             {
-                discount.Status = true;
-                _discountDal.Update(discount);
+                discount.Status = false; // Durumu pasif yap
+                await _discountDal.UpdateAsync(discount); // Güncelle
+                await _discountDal.SaveChangesAsync(); // Değişiklikleri kaydet
             }
+            // Hata yönetimi eklenebilir (örn: indirim bulunamazsa loglama)
         }
 
-        public void TChangeStatusToFalse(int id)
+        public async Task TChangeStatusToTrueAsync(int id)
         {
-            var discount = _discountDal.GetById(id);
+            // ID'ye göre indirimi bul
+            var discount = await _discountDal.GetByIdAsync(id);
             if (discount != null)
             {
-                discount.Status = false;
-                _discountDal.Update(discount);
+                discount.Status = true; // Durumu aktif yap
+                await _discountDal.UpdateAsync(discount); // Güncelle
+                await _discountDal.SaveChangesAsync(); // Değişiklikleri kaydet
             }
+            // Hata yönetimi eklenebilir
         }
 
-        public void TDelete(Discount entity)
+        public async Task TDeleteAsync(Discount entity)
         {
-            _discountDal.Delete(entity);
+            await _discountDal.DeleteAsync(entity);
+            await _discountDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
 
-        public Discount TGetById(int id)
+        public async Task<Discount> TGetByIdAsync(int id)
         {
-            return _discountDal.GetById(id);
+            return await _discountDal.GetByIdAsync(id);
         }
 
-        public List<Discount> TGetListAll()
+        public async Task<List<Discount>> TGetListAllAsync()
         {
-            return _discountDal.GetListAll();
+            return await _discountDal.GetListAllAsync();
         }
 
-        public void TUpdate(Discount entity)
+        public async Task TSaveChangesAsync()
         {
-            _discountDal.Update(entity);
+            await _discountDal.SaveChangesAsync(); // DAL katmanındaki SaveChangesAsync'i çağır
+        }
+
+        public async Task TUpdateAsync(Discount entity)
+        {
+            await _discountDal.UpdateAsync(entity);
+            await _discountDal.SaveChangesAsync(); // Değişiklikleri veritabanına kaydet
         }
     }
 }
