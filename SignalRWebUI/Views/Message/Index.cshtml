@@ -1,8 +1,270 @@
-﻿@model List<ResultMessageDto>
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
+﻿@{
+    Layout = null; // Layout'unuzu burada belirtin, eğer AdminLayout ise ona göre ayarlayın
 }
 
-<h1>Index</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ana Sayfa - Anlık Mesajlaşma</title>
+    @await Component.InvokeAsync("_UILayoutHeaderComponentPartial")
+    <!-- Bootstrap CSS, eğer _UILayoutHeadComponentPartial içinde yoksa buraya eklenmeli -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5; /* Hafif gri arka plan */
+            font-family: 'Poppins', sans-serif; /* Modern bir font */
+            color: #333;
+        }
 
+        .food_section {
+            padding: 80px 0; /* Daha fazla dikey boşluk */
+            min-height: calc(100vh - 200px); /* Footer ve Navbar'a göre ayarlandı */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-container {
+            max-width: 800px; /* Daha geniş sohbet alanı */
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 20px; /* Daha yuvarlak köşeler */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Daha belirgin gölge */
+            padding: 40px; /* Daha fazla iç boşluk */
+            margin: 0 auto;
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-bottom: 35px;
+            color: #2c3e50; /* Koyu başlık rengi */
+            font-weight: 700;
+            font-size: 2.2rem; /* Daha büyük başlık */
+        }
+
+        .messages-display {
+            border: 1px solid #e9ecef;
+            border-radius: 15px; /* Daha yuvarlak köşeler */
+            padding: 20px;
+            max-height: 450px; /* Daha uzun mesaj geçmişi */
+            overflow-y: auto;
+            margin-bottom: 25px;
+            background-color: #eef1f5; /* Hafif gri mesaj alanı */
+            display: flex; /* Mesajları alta sabitlemek için */
+            flex-direction: column; /* Mesajları dikey sırala */
+        }
+
+        .message-item {
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            border-radius: 12px; /* Daha yuvarlak mesaj baloncukları */
+            background-color: #d1ecf1; /* Bilgi rengi */
+            word-wrap: break-word;
+            font-size: 1.05rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+            .message-item.my-message { /* Kendi mesajlarınız için farklı stil */
+                background-color: #cce5ff; /* Daha açık mavi */
+                align-self: flex-end; /* Sağa hizala */
+            }
+
+            .message-item strong {
+                color: #007bff; /* Mavi kullanıcı adı */
+                margin-right: 8px;
+            }
+
+            .message-item .receiver-name { /* Alıcı adı için stil */
+                color: #6f42c1; /* Mor */
+                font-weight: 600;
+            }
+
+            .message-item .timestamp {
+                font-size: 0.85em;
+                color: #6c757d;
+                float: right;
+                margin-left: 15px;
+            }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 18px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+            }
+
+        textarea.form-control {
+            resize: vertical; /* Sadece dikey yeniden boyutlandırma */
+            min-height: 80px;
+        }
+
+        .btn-send {
+            background: linear-gradient(45deg, #28a745, #218838); /* Yeşil gradient */
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+            .btn-send:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+                background: linear-gradient(45deg, #218838, #1e7e34);
+            }
+
+            .btn-send:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+                box-shadow: none;
+                transform: none;
+            }
+
+        .connection-status {
+            margin-top: 30px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+            .connection-status.alert-info {
+                background-color: #d1ecf1;
+                border-color: #bee5eb;
+                color: #0c5460;
+            }
+
+            .connection-status.alert-success {
+                background-color: #d4edda;
+                border-color: #c3e6cb;
+                color: #155724;
+            }
+
+            .connection-status.alert-danger {
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
+                color: #721c24;
+            }
+
+            .connection-status.alert-warning {
+                background-color: #fff3cd;
+                border-color: #ffeeba;
+                color: #856404;
+            }
+
+        /* Animasyon */
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
+</head>
+
+<body class="sub_page">
+
+    @await Component.InvokeAsync("_UILayoutNavbarComponentPartial")
+
+    <section class="food_section layout_padding">
+        <div class="container">
+            <div class="chat-container">
+                <h3 class="chat-header">SignalR Restoran Anlık Mesajlaşma</h3>
+
+                <!-- Gizli alan: Mevcut kullanıcının ID'si (test amaçlı) -->
+                <input type="hidden" id="currentUserId" value="1" />
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="senderUserSelect" class="form-label">Gönderen:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <select id="senderUserSelect" class="form-select">
+                            <!-- Kullanıcılar JS ile buraya yüklenecek -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="receiverUserSelect" class="form-label">Alıcı:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <select id="receiverUserSelect" class="form-select">
+                            <option value="0">Genel Sohbet (Tüm Kullanıcılar)</option>
+                            <!-- Kullanıcılar JS ile buraya yüklenecek -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="messageinput" class="form-label">Mesajınız:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <textarea id="messageinput" class="form-control" placeholder="Mesajınızı yazın..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12 text-center">
+                        <button type="button" id="sendbutton" class="btn btn-send">Mesaj Gönder</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <hr />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div id="messagesList" class="messages-display list-group">
+                            <!-- Mesajlar buraya eklenecek -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bağlantı Durumu -->
+                <div id="connectionStatus" class="connection-status alert alert-info">
+                    Durum: Bekleniyor...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @await Component.InvokeAsync("_UILayoutFooterComponentPartial")
+    @await Component.InvokeAsync("_UILayoutScriptComponentPartial")
+
+    <!-- jQuery'yi buraya ekleyin, Chat.js'den önce! -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- SignalR ve Özel Chat Scripti -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
+    <script src="~/js/Chat.js"></script>
+    <!-- Bootstrap JS, eğer _UILayoutScriptComponentPartial içinde yoksa buraya eklenmeli -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>

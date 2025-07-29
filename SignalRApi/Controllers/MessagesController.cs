@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SignalR.BusinessLayer.Abstracts;
+using SignalR.DataAccessLayer.Concrete;
 using SignalR.DtoLayer.MessageDto;
 using SignalR.EntityLayer.Entities;
 using System.Collections.Generic;
@@ -14,18 +16,33 @@ namespace SignalRApi.Controllers
     {
         private readonly IMessageService _messageService;
         private readonly IMapper _mapper;
-
-        public MessagesController(IMessageService messageService, IMapper mapper)
+        private readonly SignalRContext _context; 
+        public MessagesController(IMessageService messageService, IMapper mapper, SignalRContext context)
         {
             _messageService = messageService;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet("GetAllMessages")]
         public async Task<IActionResult> GetAllMessages()
         {
-            var messages = await _messageService.TGetAllMessagesAsync();
-            var result = _mapper.Map<List<ResultMessageDto>>(messages);
+          
+            var messages = await _context.Messages
+                                         .Include(m => m.SenderUser)
+                                         .Include(m => m.ReceiverUser) // ReceiverUser'ı da include et
+                                         .OrderByDescending(m => m.Timestamp) // En yeni mesajlar en altta görünsün
+                                         .ToListAsync();
+
+            var result = messages.Select(m => new ResultMessageDto
+            {
+                MessageId = m.MessageId,
+                Content = m.Content, // Mesaj içeriği
+                Timestamp = m.Timestamp, // Zaman damgası
+                SenderFullName = m.SenderUser != null ? $"{m.SenderUser.Name} {m.SenderUser.Surname}" : "Bilinmeyen Kullanıcı", // Tam Adı
+                ReceiverFullName = m.ReceiverUser != null ? $"{m.ReceiverUser.Name} {m.ReceiverUser.Surname}" : "Genel Sohbet" // Tam Adı
+            }).ToList();
+
             return Ok(result);
         }
 

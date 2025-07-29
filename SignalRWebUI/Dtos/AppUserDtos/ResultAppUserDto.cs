@@ -1,16 +1,14 @@
 ﻿using SignalR.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace SignalRWebUI.Dtos.AppUserDtos
 {
     public class ResultAppUserDto
     {
         public int AppUserId { get; set; }
-        public string FullName => Name + " " + Surname;  // İstersen okunabilir tam ad alanı
+
+        [JsonPropertyName("fullName")]
+        public string FullName => Name + " " + Surname;
         public string Name { get; set; } = null!;
         public string Surname { get; set; } = null!;
         public string Department { get; set; } = null!;

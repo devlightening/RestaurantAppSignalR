@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SignalR.BusinessLayer.Abstracts;
+using SignalR.EntityLayer.Entities;
 
 public class SignalRHub : Hub
 {
@@ -12,6 +13,8 @@ public class SignalRHub : Hub
     private readonly IBookingService _bookingService;
     private readonly IBasketService _basketService;
     private readonly INotificationService _notificationService;
+    private readonly IMessageService _messageService;
+    private readonly IAppUserService _appUserService; 
 
     public SignalRHub(ICategoryService categoryService, 
         IProductService productService,
@@ -21,7 +24,9 @@ public class SignalRHub : Hub
         IRestaurantTableService restaurantTableService, 
         IBookingService bookingService,
         IBasketService basketService,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        IMessageService messageService,
+        IAppUserService appUserService)
 
     {
         _categoryService = categoryService;
@@ -33,6 +38,8 @@ public class SignalRHub : Hub
         _bookingService = bookingService;
         _basketService = basketService;
         _notificationService = notificationService;
+        _messageService = messageService;
+        _appUserService = appUserService;
 
     }
 
@@ -140,8 +147,65 @@ public class SignalRHub : Hub
         await Clients.All.SendAsync("ReceiveRestaurantTableByAvailable", value);
     }
 
-    public async Task SendMessage(string user,string message)
+    public async Task SendMessage(int senderUserId, int receiverUserId, string messageContent)
     {
-        await Clients.All.SendAsync("ReceiveMessage", user, message); 
+        try
+        {
+            // 1. Gönderen kullanıcının bilgilerini veritabanından çek
+            var senderUser = await _appUserService.TGetByIdAsync(senderUserId);
+            if (senderUser == null)
+            {
+                await Clients.Caller.SendAsync("ReceiveError", $"Hata: Gönderen kullanıcı ID {senderUserId} bulunamadı. Lütfen geçerli bir ID girin.");
+                Console.WriteLine($"Hata: Gönderen kullanıcı ID {senderUserId} bulunamadı. Mesaj gönderilmedi.");
+                return;
+            }
+
+            // Gönderen kullanıcının tam adını oluştur
+            string senderFullName = $"{senderUser.Name} {senderUser.Surname}";
+
+            // 2. Alıcı kullanıcının bilgilerini veritabanından çek (genel sohbet değilse)
+            string receiverFullName = "Genel Sohbet"; // Varsayılan değer
+            if (receiverUserId != 0) // Eğer alıcı ID'si 0 değilse (yani özel bir alıcı varsa)
+            {
+                var receiverUser = await _appUserService.TGetByIdAsync(receiverUserId);
+                if (receiverUser == null)
+                {
+                    await Clients.Caller.SendAsync("ReceiveError", $"Hata: Alıcı kullanıcı ID {receiverUserId} bulunamadı. Lütfen geçerli bir ID girin.");
+                    Console.WriteLine($"Hata: Alıcı kullanıcı ID {receiverUserId} bulunamadı. Mesaj gönderilmedi.");
+                    return;
+                }
+                receiverFullName = $"{receiverUser.Name} {receiverUser.Surname}"; // Alıcının tam adını al
+            }
+
+            // 3. Mesaj entity'sini oluştur ve veritabanına kaydet
+            var message = new Message
+            {
+                SenderUserId = senderUserId,
+                ReceiverUserId = receiverUserId,
+                Content = messageContent,
+                Timestamp = DateTime.Now // Mesajın gönderildiği anın zaman damgası
+            };
+
+            await _messageService.TAddAsync(message); // Mesajı veritabanına asenkron olarak ekle
+
+            // 4. Mesajı tüm bağlı istemcilere yayınla
+            // İstemcilere gönderirken, tam adları ve zaman damgasını iletiyoruz.
+            // Bu, chat.js'deki 'ReceiveMessage' dinleyicisi ile uyumlu olmalıdır (4 parametre).
+            await Clients.All.SendAsync("ReceiveMessage", senderFullName, message.Content, message.Timestamp, receiverFullName);
+        }
+        catch (Exception ex)
+        {
+            // Sunucu tarafında oluşan tüm beklenmedik hataları yakala.
+            // Hata detaylarını sunucu konsoluna yazdır. Bu, hata ayıklama için kritik öneme sahiptir.
+            Console.WriteLine($"\n--- SignalR Hub Hata Başlangıcı ---");
+            Console.WriteLine($"SendMessage metodunda bir hata oluştu: {ex.Message}");
+            // İç hata mesajını (InnerException) kontrol et, bu genellikle daha spesifik bilgi sağlar.
+            Console.WriteLine($"Detay: {ex.InnerException?.Message ?? "İç hata mesajı yok."}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            Console.WriteLine($"--- SignalR Hub Hata Sonu ---\n");
+
+            // İstemciye de genel bir hata mesajı göndererek kullanıcıyı bilgilendir.
+            await Clients.Caller.SendAsync("ReceiveError", "Mesaj gönderilirken sunucuda beklenmeyen bir hata oluştu. Lütfen konsolu kontrol edin.");
+        }
     }
 }
