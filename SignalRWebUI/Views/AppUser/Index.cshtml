@@ -99,14 +99,23 @@
             border-bottom: 1px solid var(--border-light);
         }
 
-            .user-avatar img {
+            /* Resim ve varsayılan avatar için ortak stil */
+            .user-avatar img.profile-image,
+            .user-avatar .default-avatar {
+                position: absolute;
+                top: 0;
+                left: 0;
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
-                transition: transform 0.5s ease;
+                object-fit: cover; /* Sadece img için geçerli */
+                transition: opacity 0.3s ease, transform 0.5s ease;
             }
 
-            .user-avatar:hover img {
+            .user-avatar img.profile-image {
+                z-index: 2; /* Resmin önde olmasını sağlar */
+            }
+
+            .user-avatar:hover img.profile-image {
                 transform: scale(1.1);
             }
 
@@ -114,6 +123,10 @@
             font-size: 5rem;
             color: #b0c4de; /* Softer blue-gray for default */
             opacity: 0.8;
+            display: flex; /* Her zaman flex, içeriği ortalamak için */
+            align-items: center;
+            justify-content: center;
+            z-index: 1; /* Varsayılan avatarın arkada olmasını sağlar */
         }
 
         .status-dot {
@@ -126,6 +139,7 @@
             border: 3px solid var(--card-bg);
             border-radius: 50%;
             box-shadow: 0 0 0 2px rgba(80, 227, 194, 0.5); /* Glow effect */
+            z-index: 3; /* Noktanın en önde olmasını sağlar */
         }
 
         .user-info {
@@ -278,52 +292,66 @@
     </style>
 </head>
 
-<div class="page-header">
-    <h2>Kullanıcı Listesi</h2>
-    <a href="/AppUser/CreateAppUser" class="add-user-btn">
-        <i class="la la-plus-circle me-1"></i> Yeni Kullanıcı Ekle
-    </a>
-</div>
+<body>
 
-<div class="users-grid">
-    @foreach (var user in Model)
-    {
-        <div class="user-card @(user.IsOnline ? "online" : "offline")">
-            <div class="user-avatar">
-                @if (!string.IsNullOrEmpty(user.ProfileImageUrl))
-                {
-                    <img src="@user.ProfileImageUrl" alt="@user.FullName" onerror="this.onerror=null;this.src='';this.parentNode.querySelector('.default-avatar').style.display='flex';" />
-                }
-                else
-                {
-                    <div class="default-avatar" style="display:flex;"><i class="la la-user"></i></div>
-                }
+    <div class="page-header">
+        <h2>Kullanıcı Listesi</h2>
+        <a href="/AppUser/CreateAppUser" class="add-user-btn">
+            <i class="la la-plus-circle me-1"></i> Yeni Kullanıcı Ekle
+        </a>
+    </div>
 
-                @if (user.IsOnline)
-                {
-                    <div class="status-dot"></div>
-                }
-            </div>
-            <div class="user-info">
-                <h4>@user.FullName</h4>
-                <p class="department">@user.UserDepartment.ToString()</p>
-                <div class="status-badge">
-                    <i class="la @(user.IsOnline ? "la-signal" : "la-power-off")"></i>
-                    <span>@(user.IsOnline ? "Çevrimiçi" : "Çevrimdışı")</span>
+    <div class="users-grid">
+        @foreach (var user in Model)
+        {
+            <div class="user-card @(user.IsOnline ? "online" : "offline")">
+                <div class="user-avatar">
+                    <!-- img ve default-avatar her zaman DOM'da olacak, görünürlükleri style ile kontrol edilecek -->
+                    <img src="@user.ProfileImageUrl"
+                         alt="@user.FullName"
+                         class="profile-image"
+                         onload="this.style.opacity='1'; this.style.pointerEvents='auto'; this.parentNode.querySelector('.default-avatar').style.opacity='0'; this.parentNode.querySelector('.default-avatar').style.pointerEvents='none';"
+                         onerror="this.style.opacity='0'; this.style.pointerEvents='none'; this.parentNode.querySelector('.default-avatar').style.opacity='1'; this.parentNode.querySelector('.default-avatar').style.pointerEvents='auto';"
+                         style="opacity: 0; pointer-events: none;" /> <!-- Başlangıçta gizli -->
+                    <div class="default-avatar"
+                         style="opacity: 1; pointer-events: auto; @(string.IsNullOrEmpty(user.ProfileImageUrl) ? "" : "opacity: 0; pointer-events: none;")">
+                        <!-- Varsayılan olarak görünür, eğer resim varsa gizli -->
+                        <i class="la la-user"></i>
+                    </div>
+
+                    @if (user.IsOnline)
+                    {
+                        <div class="status-dot"></div>
+                    }
                 </div>
-                <p class="created-date">Oluşturulma: @user.CreatedDate.ToString("dd.MM.yyyy HH:mm")</p>
+                <div class="user-info">
+                    <h4>@user.FullName</h4>
+                    <p class="department">@user.UserDepartment.ToString()</p>
+                    <div class="status-badge">
+                        <i class="la @(user.IsOnline ? "la-signal" : "la-power-off")"></i>
+                        <span>@(user.IsOnline ? "Çevrimiçi" : "Çevrimdışı")</span>
+                    </div>
+                    <p class="created-date">Oluşturulma: @user.CreatedDate.ToString("dd.MM.yyyy HH:mm")</p>
+                </div>
+                <div class="user-actions">
+                    <a href="/AppUser/UpdateAppUser/@user.AppUserId" class="btn-edit">
+                        <i class="la la-edit me-1"></i> Düzenle
+                    </a>
+                    <form asp-action="DeleteAppUser" asp-controller="AppUser" asp-route-id="@user.AppUserId" method="post"
+                          onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
+                        <button type="submit" class="btn-delete">
+                            <i class="la la-trash me-1"></i> Sil
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="user-actions">
-                <a href="/AppUser/UpdateAppUser/@user.AppUserId" class="btn-edit">
-                    <i class="la la-edit me-1"></i> Düzenle
-                </a>
-                <form asp-action="DeleteAppUser" asp-controller="AppUser" asp-route-id="@user.AppUserId" method="post"
-                      onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
-                    <button type="submit" class="btn-delete">
-                        <i class="la la-trash me-1"></i> Sil
-                    </button>
-                </form>
-            </div>
-        </div>
+        }
+    </div>
+
+    @section Scripts {
+        <!-- SignalR Kütüphanesi (CDN'den yüklendi) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
+
+     
     }
-</div>
+</body>

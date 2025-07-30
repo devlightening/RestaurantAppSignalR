@@ -80,24 +80,42 @@
                 return View();
             }
 
-            // Kullanıcı güncelleme - POST
-            [HttpPost]
-            public async Task<IActionResult> UpdateAppUser(UpdateAppUserDto updateDto)
-            {
-                if (!ModelState.IsValid)
-                    return View(updateDto);
+        // Kullanıcı güncelleme - POST
+        [HttpPost]
+        public async Task<IActionResult> UpdateAppUser(UpdateAppUserDto updateDto)
+        {
+            if (!ModelState.IsValid)
+                return View(updateDto); // Hatalıysa form geri gönderilir
 
+            try
+            {
                 var client = _httpClientFactory.CreateClient();
+
+                // JSON olarak DTO'yu serialize et
                 var json = JsonConvert.SerializeObject(updateDto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+                // PUT isteği gönder
                 var response = await client.PutAsync($"https://localhost:7000/api/AppUsers/{updateDto.AppUserId}", content);
 
                 if (response.IsSuccessStatusCode)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["SuccessMessage"] = "Kullanıcı başarıyla güncellendi.";
+                    return RedirectToAction("Index");
+                }
 
-                ModelState.AddModelError("", "Güncelleme sırasında hata oluştu. Lütfen bilgileri kontrol edin.");
-                return View(updateDto);
+                // Sunucu tarafı hata mesajını alabiliriz
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"Sunucu hatası: {errorMessage}");
             }
+            catch (Exception ex)
+            {
+                // Ağ veya başka bir hata oluşursa
+                ModelState.AddModelError("", $"Hata oluştu: {ex.Message}");
+            }
+
+            return View(updateDto);
         }
+
     }
+}

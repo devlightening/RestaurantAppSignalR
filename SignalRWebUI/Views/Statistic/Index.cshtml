@@ -3,219 +3,339 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<!-- Script Referansları -->
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-
 <!-- Font Awesome ve Ek Stiller -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
 <style>
+    /* CSS Değişkenleri - Daha Profesyonel ve Canlı Palet */
     :root {
-        --primary-color: #000;
-        --secondary-color: #333;
-        --success-color: #27ae60;
-        --info-color: #3498db;
-        --warning-color: #f39c12;
-        --danger-color: #e74c3c;
-        --light-bg: #f8f9fa;
-        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        --primary-color: #4A90E2; /* Canlı Mavi */
+        --secondary-color: #50E3C2; /* Turkuaz Yeşili */
+        --accent-purple: #8A2BE2; /* Mor vurgu */
+        --text-dark: #2c3e50; /* Koyu Gri Mavi */
+        --text-medium: #6c7a89; /* Orta Gri Mavi */
+        --text-light: #95a5a6; /* Açık Gri Mavi */
+        --bg-light: #f4f6f9; /* Çok Açık Gri Arka Plan */
+        --card-bg: #ffffff; /* Beyaz Kart Arka Planı */
+        --border-light: #e0e6ed; /* Hafif Gri Kenarlık */
+        --shadow-light: rgba(0, 0, 0, 0.08); /* Hafif Gölge */
+        --shadow-medium: rgba(0, 0, 0, 0.15); /* Orta Gölge */
+        --gradient-start: #6a11cb; /* Mor Gradient Başlangıcı */
+        --gradient-end: #2575fc; /* Mavi Gradient Sonu */
     }
 
+    /* Genel Body Stilleri */
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: var(--primary-color);
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Roboto', sans-serif; /* Daha modern ve okunabilir font */
+        color: var(--text-dark);
+        background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
         min-height: 100vh;
-        padding: 2rem 0;
+        padding: 3rem 0; /* Üst ve alttan boşluk */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        overflow-x: hidden; /* Yatay kaydırmayı engelle */
     }
 
+    .content {
+        width: 100%;
+        max-width: 1600px; /* Maksimum genişlik artırıldı */
+        padding: 0 2.5rem; /* Yanlardan daha fazla boşluk */
+    }
+
+    /* Ortak Stil Bileşenleri */
     .page-header,
     .card,
     .connection-status,
     .section-group {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        box-shadow: var(--card-shadow);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--primary-color);
+        background: var(--card-bg);
+        border-radius: 20px; /* Daha yuvarlak köşeler */
+        box-shadow: 0 10px 30px var(--shadow-light); /* Daha belirgin ama zarif gölge */
+        border: 1px solid var(--border-light); /* Hafif kenarlık */
+        color: var(--text-dark);
+        transition: all 0.3s ease-in-out; /* Daha akıcı geçişler */
     }
 
+    /* Sayfa Başlığı Alanı */
     .page-header {
-        padding: 2rem;
-        margin-bottom: 2rem;
+        padding: 3.5rem; /* Daha fazla padding */
+        margin-bottom: 3.5rem; /* Daha fazla boşluk */
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+        /* Sayfa Başlığı Animasyonları */
+        .page-header::before, .page-header::after {
+            content: '';
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .page-header::before {
+            top: -60px;
+            left: -60px;
+            width: 220px;
+            height: 220px;
+            animation: rotate 18s linear infinite;
+        }
+
+        .page-header::after {
+            bottom: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            animation: rotate 12s linear infinite reverse;
+        }
+    @@keyframes rotate {
+        from
+
+    {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
     }
 
     .page-title {
-        font-weight: 700;
-        font-size: 2.5rem;
-        text-align: center;
+        font-weight: 900; /* Daha kalın font */
+        font-size: 3.8rem; /* Daha büyük başlık */
         margin: 0;
-    }
-
-    .section-title {
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-        padding-left: 1rem;
-        border-left: 4px solid var(--info-color);
-    }
-
-    .card {
+        color: var(--primary-color);
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
         position: relative;
-        overflow: hidden;
-        border: none;
-        margin-bottom: 1.5rem;
-        border-radius: 15px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 2;
     }
 
+        .page-title i {
+            margin-right: 1rem; /* İkon ve yazı arasına belirgin boşluk */
+            color: var(--accent-purple); /* İkon rengi */
+        }
+
+    /* Bölüm Başlıkları */
+    .section-title {
+        font-weight: 700;
+        font-size: 2.2rem; /* Daha büyük başlık */
+        margin-bottom: 3rem; /* Daha fazla boşluk */
+        padding-left: 1.8rem;
+        border-left: 7px solid var(--primary-color); /* Daha kalın ve belirgin çizgi */
+        color: var(--text-dark);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.03);
+    }
+
+        .section-title i {
+            margin-right: 0.8rem; /* İkon ve yazı arasına boşluk */
+            color: var(--primary-color);
+        }
+
+    /* Kart Stilleri */
+    .card {
+        border: none; /* Varsayılan Bootstrap kenarlığını kaldır */
+        margin-bottom: 2.5rem;
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        cursor: pointer;
+    }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.01); /* Daha belirgin hareket */
+            box-shadow: 0 18px 50px var(--shadow-medium); /* Daha büyük gölge */
+        }
+
+        /* Kart Üst Çizgisi Renkleri */
         .card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 7px; /* Daha kalın çizgi */
             background: linear-gradient(90deg, var(--card-color), transparent);
+            z-index: 1;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--card-hover-shadow);
-        }
-
-    /* Card color variants */
-    .card-primary::before {
-        --card-color: var(--info-color);
-    }
-
-    .card-success::before {
-        --card-color: var(--success-color);
-    }
-
-    .card-warning::before {
-        --card-color: var(--warning-color);
-    }
-
-    .card-danger::before {
-        --card-color: var(--danger-color);
-    }
-
-    .card-secondary::before,
-    .card-dark::before {
+    .card-info::before {
         --card-color: var(--primary-color);
     }
 
-    .card-info::before {
-        --card-color: var(--info-color);
+    .card-primary::before {
+        --card-color: var(--primary-color);
     }
 
+    .card-success::before {
+        --card-color: var(--secondary-color);
+    }
+
+    .card-warning::before {
+        --card-color: #f39c12;
+    }
+    /* Turuncu */
+    .card-danger::before {
+        --card-color: #e74c3c;
+    }
+    /* Kırmızı */
+    .card-secondary::before {
+        --card-color: var(--text-medium);
+    }
+
+    .card-dark::before {
+        --card-color: var(--text-dark);
+    }
+
+    /* Kart İçeriği */
     .card-body {
-        padding: 2rem;
-        color: var(--primary-color);
+        padding: 3.5rem; /* Daha fazla padding */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
     }
 
+    /* Kart İkonları */
     .card-icon {
-        width: 60px;
-        height: 60px;
+        width: 90px;
+        height: 90px; /* Daha büyük ikon */
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
+        font-size: 2.8rem; /* Daha büyük ikon fontu */
+        margin-bottom: 2.5rem; /* Daha fazla boşluk */
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* İkonlara daha belirgin gölge */
+        background: linear-gradient(135deg, var(--icon-gradient-start), var(--icon-gradient-end));
     }
 
-    /* Card icon background variants */
-    .card-primary .card-icon,
-    .card-info .card-icon {
-        background: linear-gradient(135deg, var(--info-color), #5dade2);
+    .card-info .card-icon, .card-primary .card-icon {
+        --icon-gradient-start: #4A90E2;
+        --icon-gradient-end: #77B3F7;
     }
 
     .card-success .card-icon {
-        background: linear-gradient(135deg, var(--success-color), #58d68d);
+        --icon-gradient-start: #50E3C2;
+        --icon-gradient-end: #8AF0D0;
     }
 
     .card-warning .card-icon {
-        background: linear-gradient(135deg, var(--warning-color), #f7dc6f);
+        --icon-gradient-start: #f39c12;
+        --icon-gradient-end: #f7b762;
     }
 
     .card-danger .card-icon {
-        background: linear-gradient(135deg, var(--danger-color), #f1948a);
+        --icon-gradient-start: #e74c3c;
+        --icon-gradient-end: #f07e73;
     }
 
-    .card-secondary .card-icon,
-    .card-dark .card-icon {
-        background: linear-gradient(135deg, var(--secondary-color), #85929e);
+    .card-secondary .card-icon, .card-dark .card-icon {
+        --icon-gradient-start: #6c7a89;
+        --icon-gradient-end: #a5b1c2;
     }
 
-    /* Force black text on icons */
-    .card-icon {
-        color: var(--primary-color);
-    }
-
+    /* Kart Kategori Metni */
     .card-category {
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--primary-color) !important;
-    }
-
-    .card-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin: 0;
-        color: var(--primary-color);
-    }
-
-    .section-group {
-        padding: 2rem;
-        margin-bottom: 2rem;
-        border-radius: 20px;
-    }
-
-    .connection-status {
-        padding: 1.5rem;
-        text-align: center;
-        margin-top: 2rem;
-    }
-
-    .badge-info {
-        background: linear-gradient(135deg, var(--info-color), #5dade2);
-        color: var(--primary-color);
-        padding: 0.5rem 1.5rem;
-        border-radius: 25px;
+        font-size: 1.2rem; /* Daha büyük kategori fontu */
         font-weight: 600;
-        font-size: 1rem;
-        box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        margin-bottom: 1.2rem; /* Daha fazla boşluk */
+        text-transform: uppercase;
+        letter-spacing: 1.2px; /* Harf aralığı */
+        color: var(--text-medium) !important; /* Daha yumuşak renk */
     }
+
+    /* Kart Başlık (Sayı) Metni */
+    .card-title {
+        font-size: 3.5rem; /* Daha büyük sayı fontu */
+        font-weight: 900;
+        margin: 0;
+        color: var(--text-dark);
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Bölüm Grupları */
+    .section-group {
+        padding: 4.5rem; /* Daha fazla padding */
+        margin-bottom: 4.5rem; /* Daha fazla boşluk */
+        border-radius: 25px; /* Daha yuvarlak köşeler */
+    }
+
+    /* Bağlantı Durumu Kutusu */
+    .connection-status {
+        padding: 3rem; /* Daha fazla padding */
+        text-align: center;
+        margin-top: 5rem; /* Daha fazla boşluk */
+        border-radius: 25px;
+        background: var(--card-bg);
+        box-shadow: 0 10px 30px var(--shadow-light);
+        border: 1px solid var(--border-light);
+    }
+
+        .connection-status h5 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+            .connection-status h5 i {
+                margin-right: 0.8rem;
+                color: var(--primary-color);
+            }
+
+    /* Bağlantı Durumu Rozeti */
+    .badge-info {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-purple));
+        color: white;
+        padding: 1.2rem 3rem; /* Daha büyük padding */
+        border-radius: 40px; /* Daha yuvarlak */
+        font-weight: 700;
+        font-size: 1.3rem; /* Daha büyük font */
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        transition: all 0.4s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem; /* İkon ve yazı arasına boşluk */
+    }
+
+        .badge-info:hover {
+            transform: scale(1.07);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.6);
+        }
 
     .pulse {
-        animation: pulse 2s infinite;
+        animation: pulse 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1); /* Daha belirgin ve yumuşak pulse */
     }
 
-    .icon-big {
-        font-size: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 60px;
-        color: var(--primary-color);
+    @@keyframes pulse {
+        0%
+
+    {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.7);
     }
 
-    /* Force black color on all text inside card-body */
+    70% {
+        transform: scale(1.04);
+        box-shadow: 0 0 0 20px rgba(74, 144, 226, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+    }
+
+    }
+
+    /* Tüm kart body içindeki metinleri zorla primary-text-color yap */
     .card-body * {
-        color: var(--primary-color) !important;
+        color: var(--text-dark) !important;
     }
 
-    /* Large headings inside card */
+    /* Büyük başlıklar için */
     .card-body h1,
     .card-body h2,
     .card-body h3,
@@ -223,17 +343,162 @@
     .card-body .display-2,
     .card-body .display-3,
     .card-body .display-4 {
-        color: var(--primary-color) !important;
+        color: var(--text-dark) !important;
     }
 
-    /* Responsive */
+    /* Responsive Ayarlamalar */
+    @@media (max-width: 1400px) {
+        .content {
+            padding: 0 2rem;
+        }
+
+        .page-title {
+            font-size: 3.2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .card-body {
+            padding: 3rem;
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 3rem;
+        }
+
+        .section-group {
+            padding: 4rem;
+        }
+
+        .badge-info {
+            font-size: 1.2rem;
+            padding: 1rem 2.5rem;
+        }
+    }
+
+    @@media (max-width: 1200px) {
+        .content {
+            padding: 0 1.5rem;
+        }
+
+        .page-title {
+            font-size: 2.8rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 2.2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .card-title {
+            font-size: 2.8rem;
+        }
+
+        .section-group {
+            padding: 3.5rem;
+        }
+
+        .connection-status {
+            padding: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .badge-info {
+            font-size: 1.1rem;
+            padding: 0.9rem 2.2rem;
+            gap: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        body {
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-size: 2.4rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            border-left-width: 6px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 2.5rem;
+        }
+
+        .section-group {
+            padding: 3rem;
+        }
+
+        .connection-status h5 {
+            font-size: 1.6rem;
+        }
+
+        .badge-info {
+            font-size: 1rem;
+            padding: 0.8rem 2rem;
+            gap: 0.7rem;
+        }
+    }
+
     @@media (max-width: 768px) {
+        body {
+            padding: 1rem 0;
+        }
+
+        .content {
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
         .page-title {
             font-size: 2rem;
         }
 
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left-width: 5px;
         }
 
         .card-body {
@@ -243,16 +508,96 @@
         .card-icon {
             width: 50px;
             height: 50px;
-            font-size: 1.25rem;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 2rem;
         }
 
-        .icon-big {
+        .card-category {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+        /* Tüm sütunlar mobil görünümde tam genişlikte */
+        .col-md-3, .col-md-4, .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .section-group {
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .connection-status {
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+            .connection-status h5 {
+                font-size: 1.4rem;
+            }
+
+        .badge-info {
+            font-size: 0.9rem;
+            padding: 0.7rem 1.8rem;
+            gap: 0.6rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            padding: 1.8rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            line-height: 1.3;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            padding-left: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-body {
+            padding: 1.2rem;
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
             font-size: 1.5rem;
-            height: 50px;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+        }
+
+        .card-category {
+            font-size: 0.8rem;
+        }
+
+        .section-group {
+            padding: 1.5rem;
+        }
+
+        .connection-status {
+            padding: 1.5rem;
+        }
+
+            .connection-status h5 {
+                font-size: 1.2rem;
+            }
+
+        .badge-info {
+            font-size: 0.85rem;
+            padding: 0.6rem 1.5rem;
+            gap: 0.5rem;
         }
     }
 </style>
@@ -262,22 +607,22 @@
         <!-- Sayfa Başlığı -->
         <div class="page-header">
             <h1 class="page-title">
-                <i class="fas fa-chart-line me-3"></i>
+                <i class="fas fa-chart-line"></i>
                 Gerçek Zamanlı Analiz Paneli
             </h1>
         </div>
-        <script src="~/js/Statistic.js"></script>
+
         <!-- ========================= KATEGORİ GRUBU ========================= -->
         <div class="section-group">
             <h3 class="section-title">
-                <i class="fas fa-tags me-2"></i>
+                <i class="fas fa-tags"></i>
                 Kategori Yönetimi
             </h3>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card card-stats card-info">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
                                         <i class="fas fa-list"></i>
@@ -295,7 +640,7 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-primary">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
                                         <i class="fas fa-check-circle"></i>
@@ -313,7 +658,7 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-secondary">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
                                         <i class="fas fa-ban"></i>
@@ -333,7 +678,7 @@
         <!-- ========================= MASA GRUBU ========================= -->
         <div class="section-group">
             <h3 class="section-title">
-                <i class="fas fa-box me-2"></i>
+                <i class="fas fa-chair"></i>
                 Masa Analizi
             </h3>
             <div class="row">
@@ -341,15 +686,15 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-success">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-cube"></i>
+                                        <i class="fas fa-th-large"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
                                     <p class="card-category">Toplam Masa Sayısı</p>
-                                    <h4 class="card-title" id="totaltablecount">0 ₺</h4>
+                                    <h4 class="card-title" id="totaltablecount">0</h4>
                                 </div>
                             </div>
                         </div>
@@ -360,15 +705,15 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-info">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-chair"></i>
+                                        <i class="fas fa-check"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
                                     <p class="card-category">Aktif Masalar</p>
-                                    <h4 class="card-title" id="activetable">0 ₺</h4>
+                                    <h4 class="card-title" id="activetable">0</h4>
                                 </div>
                             </div>
                         </div>
@@ -379,15 +724,15 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-danger">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-chair"></i>
+                                        <i class="fas fa-times"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
                                     <p class="card-category">Pasif Masalar</p>
-                                    <h4 class="card-title" id="notactivetable">0 ₺</h4>
+                                    <h4 class="card-title" id="notactivetable">0</h4>
                                 </div>
                             </div>
                         </div>
@@ -399,17 +744,17 @@
         <!-- ========================= ÜRÜN GRUBU ========================= -->
         <div class="section-group">
             <h3 class="section-title">
-                <i class="fas fa-box me-2"></i>
+                <i class="fas fa-utensils"></i>
                 Ürün Analizi
             </h3>
             <div class="row">
                 <div class="col-md-3">
                     <div class="card card-stats card-success">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-cube"></i>
+                                        <i class="fas fa-box"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
@@ -424,10 +769,10 @@
                 <div class="col-md-3">
                     <div class="card card-stats card-danger">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-hamburger"></i>
+                                        <i class="fas fa-burger"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
@@ -442,10 +787,10 @@
                 <div class="col-md-3">
                     <div class="card card-stats card-warning">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-balance-scale"></i>
+                                        <i class="fas fa-dollar-sign"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
@@ -460,10 +805,10 @@
                 <div class="col-md-3">
                     <div class="card card-stats card-secondary">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-arrow-down"></i>
+                                        <i class="fas fa-arrow-down-long"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
@@ -481,10 +826,10 @@
                 <div class="col-md-3">
                     <div class="card card-stats card-primary">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-4">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-arrow-up"></i>
+                                        <i class="fas fa-arrow-up-long"></i>
                                     </div>
                                 </div>
                                 <div class="col-8">
@@ -501,14 +846,14 @@
         <!-- ========================= KASA & SATIŞ GRUBU ========================= -->
         <div class="section-group">
             <h3 class="section-title">
-                <i class="fas fa-chart-bar me-2"></i>
+                <i class="fas fa-money-bill-wave"></i>
                 Finansal Analiz
             </h3>
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-stats card-warning">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-3">
                                     <div class="card-icon mx-auto">
                                         <i class="fas fa-wallet"></i>
@@ -526,10 +871,10 @@
                 <div class="col-md-6">
                     <div class="card card-stats card-success">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-3">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-calendar-check"></i>
+                                        <i class="fas fa-calendar-day"></i>
                                     </div>
                                 </div>
                                 <div class="col-9">
@@ -546,17 +891,17 @@
         <!-- ========================= SİPARİŞ GRUBU ========================= -->
         <div class="section-group">
             <h3 class="section-title">
-                <i class="fas fa-shopping-cart me-2"></i>
+                <i class="fas fa-clipboard-list"></i>
                 Sipariş Yönetimi
             </h3>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card card-stats card-danger">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-3">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-shopping-cart"></i>
+                                        <i class="fas fa-shopping-basket"></i>
                                     </div>
                                 </div>
                                 <div class="col-9">
@@ -571,10 +916,10 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-info">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-3">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-hourglass-half"></i>
+                                        <i class="fas fa-hourglass-start"></i>
                                     </div>
                                 </div>
                                 <div class="col-9">
@@ -589,10 +934,10 @@
                 <div class="col-md-4">
                     <div class="card card-stats card-dark">
                         <div class="card-body">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center w-100">
                                 <div class="col-3">
                                     <div class="card-icon mx-auto">
-                                        <i class="fas fa-credit-card"></i>
+                                        <i class="fas fa-receipt"></i>
                                     </div>
                                 </div>
                                 <div class="col-9">
@@ -608,15 +953,27 @@
 
         <!-- ========================= BAĞLANTI DURUMU ========================= -->
         <div class="connection-status">
-            <h5 class="mb-3">
-                <i class="fas fa-wifi me-2"></i>
+            <h5>
+                <i class="fas fa-wifi"></i>
                 Sistem Durumu
             </h5>
             <span class="badge badge-info pulse">
-                <i class="fas fa-circle me-2"></i>
+                <i class="fas fa-circle"></i>
                 Bağlantı Durumu: <strong id="connstatus">Bekleniyor...</strong>
             </span>
         </div>
     </div>
 </div>
 
+@section Scripts {
+    <!-- jQuery ve Bootstrap JS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- SignalR Kütüphanesi (CDN'den yüklendi) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
+
+    <!-- Kendi Statistic.js dosyanız (SignalR'dan sonra) -->
+    <script src="~/js/Statistic.js"></script>
+}

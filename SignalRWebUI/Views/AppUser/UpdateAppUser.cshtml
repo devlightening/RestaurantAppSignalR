@@ -1,4 +1,5 @@
-﻿@model UpdateAppUserDto
+﻿@using SignalR.EntityLayer.Entities
+@model UpdateAppUserDto
 @{
     ViewData["Title"] = "UpdateAppUser";
     Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -7,28 +8,26 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* CSS Değişkenleri */
         :root {
-            --primary-color: #6A057F; /* Derin Mor */
-            --secondary-color: #8E2DE2; /* Canlı Mor */
-            --accent-green: #28a745; /* Çevrimiçi için yeşil */
-            --accent-red: #dc3545; /* Hata/Silme için kırmızı */
-            --text-dark: #2c3e50; /* Koyu gri metin */
-            --text-medium: #7f8c8d; /* Orta gri metin */
-            --bg-light: #ecf0f1; /* Açık gri arka plan */
-            --card-bg: #FFFFFF; /* Kart arka planı */
-            --border-light: #bdc3c7; /* Açık gri kenarlık */
-            --shadow-light: rgba(44, 62, 80, 0.1); /* Hafif gölge */
-            --shadow-medium: rgba(44, 62, 80, 0.2); /* Orta gölge */
+            --primary-color: #6A057F;
+            --secondary-color: #8E2DE2;
+            --accent-green: #28a745;
+            --accent-red: #dc3545;
+            --text-dark: #2c3e50;
+            --text-medium: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --card-bg: #FFFFFF;
+            --border-light: #bdc3c7;
+            --shadow-light: rgba(44, 62, 80, 0.1);
+            --shadow-medium: rgba(44, 62, 80, 0.2);
         }
 
-        /* Temel HTML ve Body Stilleri */
         html, body {
-            height: 100%; /* Tam yüksekliği kapla */
+            height: 100%;
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Yatay kaydırmayı engelle */
-            box-sizing: border-box; /* Padding ve border'ı genişliğe dahil et */
+            overflow-x: hidden;
+            box-sizing: border-box;
         }
 
         body {
@@ -36,25 +35,24 @@
             background-color: var(--bg-light);
             color: var(--text-dark);
             line-height: 1.6;
-            display: flex; /* Flexbox kullanarak içeriği ortala */
-            justify-content: center; /* Yatayda ortala */
-            align-items: center; /* Dikeyde ortala */
-            min-height: 100vh; /* En az viewport yüksekliği kadar yer kapla */
-            padding: 20px; /* Kenarlardan biraz boşluk bırak */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Form Kapsayıcısı */
         .form-container {
-            max-width: 900px; /* Genişletilmiş maksimum genişlik */
-            width: 100%; /* Responsive genişlik */
-            margin: auto; /* Otomatik marj ile ortala */
-            padding: 3.5rem; /* Biraz daha fazla iç boşluk */
+            max-width: 1200px;
+            width: 100%;
+            margin: auto;
+            padding: 3.5rem;
             background: var(--card-bg);
             border-radius: 25px;
             box-shadow: 0 15px 40px var(--shadow-light);
             border: 1px solid var(--border-light);
             transition: all 0.4s ease;
-            box-sizing: border-box; /* Padding'i genişliğe dahil et */
+            box-sizing: border-box;
         }
 
             .form-container:hover {
@@ -63,34 +61,34 @@
 
             .form-container h2 {
                 text-align: center;
-                margin-bottom: 2.8rem; /* Başlık altındaki boşluk artırıldı */
+                margin-bottom: 2.8rem;
                 color: var(--primary-color);
                 font-weight: 800;
-                font-size: 2.4rem; /* Başlık boyutu biraz büyütüldü */
+                font-size: 2.4rem;
                 letter-spacing: -0.05em;
             }
 
-        /* Form Grupları */
         .form-group {
-            margin-bottom: 2rem; /* Daha fazla boşluk */
+            margin-bottom: 2rem;
         }
 
             .form-group label {
                 display: block;
-                margin-bottom: 0.8rem; /* Etiket altındaki boşluk artırıldı */
+                margin-bottom: 0.8rem;
                 font-weight: 700;
                 color: var(--text-dark);
-                font-size: 1.1rem; /* Etiket boyutu biraz büyütüldü */
+                font-size: 1.1rem;
             }
 
             .form-group input[type="text"],
             .form-group input[type="email"],
+            .form-group input[type="password"],
             .form-group select {
                 width: 100%;
-                padding: 1.1rem 1.4rem; /* Daha büyük padding */
+                padding: 1.1rem 1.4rem;
                 border: 2px solid var(--border-light);
                 border-radius: 12px;
-                font-size: 1.1rem; /* Input font boyutu büyütüldü */
+                font-size: 1.1rem;
                 box-sizing: border-box;
                 transition: all 0.3s ease;
                 background-color: var(--bg-light);
@@ -105,7 +103,6 @@
                     background-color: var(--card-bg);
                 }
 
-        /* Toggle Switch Styling */
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -159,19 +156,18 @@
         .form-group .checkbox-container {
             display: flex;
             align-items: center;
-            gap: 1.2rem; /* Boşluk artırıldı */
+            gap: 1.2rem;
             margin-top: 1.2rem;
             font-weight: 600;
             color: var(--text-dark);
-            font-size: 1.05rem; /* Çevrimiçi durumu etiketi boyutu */
+            font-size: 1.05rem;
         }
 
-        /* Butonlar */
         .btn-submit {
             display: block;
             width: 100%;
-            padding: 1.3rem; /* Daha büyük buton */
-            font-size: 1.3rem; /* Buton font boyutu büyütüldü */
+            padding: 1.3rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: white;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
@@ -180,7 +176,7 @@
             cursor: pointer;
             transition: all 0.3s ease-in-out;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-            margin-top: 3rem; /* Buton üst boşluğu artırıldı */
+            margin-top: 3rem;
             letter-spacing: 0.02em;
         }
 
@@ -193,8 +189,8 @@
         .btn-back {
             display: block;
             width: 100%;
-            padding: 1.1rem; /* Daha büyük buton */
-            font-size: 1.1rem; /* Buton font boyutu büyütüldü */
+            padding: 1.1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--primary-color);
             background: none;
@@ -202,7 +198,7 @@
             border-radius: 35px;
             text-align: center;
             text-decoration: none;
-            margin-top: 1.5rem; /* Buton üst boşluğu artırıldı */
+            margin-top: 1.5rem;
             transition: all 0.3s ease-in-out;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
@@ -213,98 +209,99 @@
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             }
 
-        /* Responsive adjustments */
-        @@media (max-width: 992px) { /* Tabletler için */
-            .form-container
-
-        {
-            max-width: 700px;
-            padding: 2.5rem;
-        }
-
+        @@media (max-width: 992px) {
+            .form-container {
+                max-width: 900px;
+                padding: 2.5rem;
+            }
         }
 
         @@media (max-width: 768px) {
-            body
-
-        {
-            padding: 15px;
-        }
-
-        .form-container {
-            margin: 1.5rem auto;
-            padding: 1.8rem;
-        }
-
-            .form-container h2 {
-                font-size: 1.8rem;
-                margin-bottom: 2rem;
+            body {
+                padding: 15px;
             }
 
-        .form-group label {
-            font-size: 1rem;
-        }
+            .form-container {
+                margin: 1.5rem auto;
+                padding: 1.8rem;
+            }
 
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group select {
-            padding: 0.8rem 1rem;
-            font-size: 0.95rem;
-        }
+                .form-container h2 {
+                    font-size: 1.8rem;
+                    margin-bottom: 2rem;
+                }
 
-        .btn-submit {
-            padding: 1rem;
-            font-size: 1.05rem;
-        }
+            .form-group label {
+                font-size: 1rem;
+            }
 
-        .btn-back {
-            padding: 0.8rem;
-            font-size: 0.95rem;
-        }
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group input[type="password"],
+            .form-group select {
+                padding: 0.8rem 1rem;
+                font-size: 0.95rem;
+            }
 
+            .btn-submit {
+                padding: 1rem;
+                font-size: 1.05rem;
+            }
+
+            .btn-back {
+                padding: 0.8rem;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
 
+
 <div class="form-container">
     <h2>Kullanıcı Güncelle</h2>
+
     <form asp-action="UpdateAppUser" asp-controller="AppUser" method="post">
-        <input type="hidden" asp-for="AppUserId" /> @* Kullanıcı Id'si için gizli alan *@
+        <input type="hidden" asp-for="AppUserId" />
 
         <div class="form-group">
-            <label for="Name">Adı</label>
-            <input type="text" id="Name" name="Name" asp-for="Name" required />
+            <label asp-for="Name"></label>
+            <input type="text" asp-for="Name" class="form-control" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
+
         <div class="form-group">
-            <label for="Surname">Soyadı</label>
-            <input type="text" id="Surname" name="Surname" asp-for="Surname" required />
+            <label asp-for="Surname"></label>
+            <input type="text" asp-for="Surname" class="form-control" required />
+            <span asp-validation-for="Surname" class="text-danger"></span>
         </div>
+
         <div class="form-group">
-            <label for="UserDepartment">Departman (Seçim)</label>
-            <select id="UserDepartment" name="UserDepartment" asp-for="UserDepartment">
+            <label asp-for="UserDepartment"></label>
+            <select asp-for="UserDepartment" asp-items="Html.GetEnumSelectList<UserDepartment>()" class="form-control">
                 <option value="">Lütfen Seçiniz</option>
-                <option value="Garson">Garson</option>
-                <option value="Mutfak">Mutfak</option>
-                <option value="Bar">Bar</option>
-                <option value="Yonetici">Yönetici</option>
-                <option value="Temizlik">Temizlik</option>
-                <option value="Kasa">Kasa</option>
             </select>
+            <span asp-validation-for="UserDepartment" class="text-danger"></span>
         </div>
+
         <div class="form-group">
-            <label for="ProfileImageUrl">Profil Resim URL'si</label>
-            <input type="text" id="ProfileImageUrl" name="ProfileImageUrl" asp-for="ProfileImageUrl" />
+            <label asp-for="ProfileImageUrl"></label>
+            <input type="text" asp-for="ProfileImageUrl" class="form-control" />
+            <span asp-validation-for="ProfileImageUrl" class="text-danger"></span>
         </div>
+
         <div class="form-group">
             <label>Çevrimiçi Durumu</label>
             <div class="checkbox-container">
+                <input type="hidden" name="IsOnline" value="false" />
                 <label class="toggle-switch">
-                    <input type="checkbox" id="IsOnline" name="IsOnline" asp-for="IsOnline" />
+                    <input type="checkbox" asp-for="IsOnline" />
                     <span class="slider"></span>
                 </label>
-                <label for="IsOnline">Kullanıcı Çevrimiçi</label>
+                <label asp-for="IsOnline">Kullanıcı Çevrimiçi</label>
             </div>
+            <span asp-validation-for="IsOnline" class="text-danger"></span>
         </div>
+
         <button type="submit" class="btn-submit">Güncelle</button>
         <a href="/AppUser/Index" class="btn-back">Listeye Geri Dön</a>
     </form>

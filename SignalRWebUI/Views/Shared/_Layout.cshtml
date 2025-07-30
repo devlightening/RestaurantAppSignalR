@@ -4,81 +4,65 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SignalRWebUI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SignalRWebUI.styles.css" asp-append-version="true" />
 
+    <!-- Temanızın ana CSS dosyaları -->
+    <link rel="stylesheet" href="~/Ready-Bootstrap-Dashboard/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" />
+    <link rel="stylesheet" href="~/Ready-Bootstrap-Dashboard/assets/css/ready.css" />
+    <link rel="stylesheet" href="~/Ready-Bootstrap-Dashboard/assets/css/demo.css" />
+
+    <!-- Font Awesome ve Line Awesome CDN'den yüklendi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css" rel="stylesheet" />
 
     <!-- Bootstrap Icons (tema ikonları için) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- site.css ve SignalRWebUI.styles.css gibi kendi özel CSS'leriniz -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SignalRWebUI.styles.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false) <!-- Sayfaya özgü stil bölümleri -->
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SignalRWebUI</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <div class="wrapper">
+        @await Component.InvokeAsync("_LayoutNavbarComponentPartial")
+        @await Component.InvokeAsync("_LayoutSidebarComponentPartial")
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between align-items-center">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-
-                    <!-- Tema Değiştirici Butonu -->
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <button id="themeToggle" class="btn btn-light btn-sm rounded-circle shadow-sm d-flex align-items-center justify-content-center" title="Tema Değiştir" style="width: 38px; height: 38px;">
-                                <i id="themeIcon" class="bi bi-moon-fill fs-5"></i>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        <div class="main-panel">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+            @await Component.InvokeAsync("_LayoutFooterComponentPartial")
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - SignalRWebUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <!-- jQuery ve Bootstrap JS CDN'den yüklendi (Diğer tüm scriptlerden önce) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    
+    <!-- Tema scriptleri ve diğer özel scriptler buradan yüklenecek -->
+    @await Component.InvokeAsync("_LayoutScriptComponentPartial")
 
-    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Isotope ve ona bağlı scriptler, jQuery yüklendikten sonra yüklenecek -->
+    <script src="~/lib/isotope/isotope.pkgd.min.js"></script>
+    <script>
+        $(window).on('load', function () {
+            var $grid = $('.grid').isotope({
+                itemSelector: '.all',
+                layoutMode: 'fitRows'
+            });
+
+            $('.filters_menu li').on('click', function () {
+                var filterValue = $(this).attr('data-filter');
+                $grid.isotope({ filter: filterValue });
+                $('.filters_menu li').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    </script>
+
+    @RenderSectionAsync("Scripts", required: false) <!-- Sayfaya özgü script bölümleri -->
 
 </body>
 </html>
-<script src="~/lib/isotope/isotope.pkgd.min.js"></script>
-<script>
-    $(window).on('load', function () {
-        var $grid = $('.grid').isotope({
-            itemSelector: '.all',
-            layoutMode: 'fitRows'
-        });
-
-        $('.filters_menu li').on('click', function () {
-            var filterValue = $(this).attr('data-filter');
-            $grid.isotope({ filter: filterValue });
-            $('.filters_menu li').removeClass('active');
-            $(this).addClass('active');
-        });
-    });
-</script>

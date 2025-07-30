@@ -15,8 +15,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
+app.UseStaticFiles(); // Sadece bu þekilde olmalý!
 app.UseRouting();
 
 app.UseCors("AllowAll"); // Bunu da ekle
@@ -28,4 +27,3 @@ app.MapControllerRoute(
     pattern: "{controller=Default}/{action=Index}/{id?}");
 
 app.Run();
-

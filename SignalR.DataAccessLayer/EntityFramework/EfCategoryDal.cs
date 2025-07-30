@@ -16,7 +16,7 @@ namespace SignalR.DataAccessLayer.EntityFramework
             _context = context; // Enjekte edilen context'i kullanıyoruz
         }
 
-        // CategoryCountAsync metodu dolduruldu
+
         public async Task<int> CategoryCountAsync()
         {
             // Tüm kategorilerin sayısını asenkron olarak döner

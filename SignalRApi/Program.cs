@@ -12,23 +12,28 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddCors(opt =>
+        // CORS politikasý ekle
+        builder.Services.AddCors(options =>
         {
-            opt.AddPolicy("CorsPolicy", builder =>
+            options.AddPolicy("CorsPolicy", builder =>
             {
                 builder.AllowAnyHeader()
-                           .AllowAnyMethod()
-                           .SetIsOriginAllowed((host) => true)
-                           .AllowCredentials();
+                       .AllowAnyMethod()
+                       .SetIsOriginAllowed((host) => true) // Geliþtirme için tüm kaynaklara izin ver
+                       .AllowCredentials(); // Kimlik bilgileriyle istek göndermeye izin ver
             });
-
         });
-        builder.Services.AddSignalR();
-        builder.Services.AddDbContext<SignalRContext>(); // EF Core baðlamý
 
+        // SignalR servisini ekle
+        builder.Services.AddSignalR();
+
+        // DbContext'i bir kez ekle
         builder.Services.AddDbContext<SignalRContext>();
+
+        // AutoMapper'ý ekle
         builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+        // Servis ve DAL baðýmlýlýklarýný ekle (Mevcut haliyle býrakýldý, doðru görünüyor)
         builder.Services.AddScoped<IAboutService, AboutManager>();
         builder.Services.AddScoped<IAboutDal, EFAboutDal>();
 
@@ -83,43 +88,48 @@ internal class Program
         builder.Services.AddScoped<IMessageService, MessageManager>();
         builder.Services.AddScoped<IMessageDal, EfMessageDal>();
 
-
-
-
-
+        // MVC ve API Controller'larý için tek bir AddControllersWithViews çaðrýsý
         builder.Services.AddControllersWithViews()
-        .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
-
-        builder.Services.AddControllers()
-        .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        });
-
-
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        // Swagger/OpenAPI
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+        // HTTP istek hattýný yapýlandýr.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        // CORS'u etkinleþtir (UseRouting'den önce gelmeli)
         app.UseCors("CorsPolicy");
 
+        // HTTPS yönlendirmesi
         app.UseHttpsRedirection();
 
+        // Statik dosyalarý kullan (CSS, JS, resimler vb.)
+        app.UseStaticFiles(); // Bu satýr genellikle otomatik olarak eklenir, ancak emin olmak için eklenebilir.
+
+        // Kimlik doðrulama ve yetkilendirme
+        app.UseAuthentication(); // Eðer kimlik doðrulama kullanýyorsanýz
         app.UseAuthorization();
 
+        // Routing middleware'i (MapControllers ve MapHub'dan önce gelir)
+        app.UseRouting(); // Genellikle MapControllers/MapHub tarafýndan örtük olarak çaðrýlýr, ancak açýkça belirtmek sorun çözebilir.
+
+        // Controller eþlemesi
         app.MapControllers();
 
-        app.MapHub<SignalRHub>("/signalrhub");
+        // SignalR Hub eþlemesi
+        app.MapHub<SignalRHub>("/signalrhub"); // Hub URL'si
 
         app.Run();
     }
