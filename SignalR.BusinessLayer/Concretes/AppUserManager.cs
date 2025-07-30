@@ -42,8 +42,8 @@ namespace SignalR.BusinessLayer.Concretes
 
         public async Task<IEnumerable<AppUser>> TGetOnlineUsersAsync()
         {
-            return await _appUserDal.GetOnlineUsersAsync();
-           
+            return (await _appUserDal.GetOnlineUsersAsync()).ToList();
+
         }
 
         public async Task<AppUser> TGetUserByFullNameAsync(string name, string surname)
@@ -53,8 +53,8 @@ namespace SignalR.BusinessLayer.Concretes
 
         public async Task<IEnumerable<AppUser>> TGetUsersByDepartmentAsync(UserDepartment department)
         {
-            return await _appUserDal.GetUsersByDepartmentAsync(department);
-            
+            return (await _appUserDal.GetUsersByDepartmentAsync(department)).ToList();
+
         }
 
         public async Task TSaveChangesAsync()
@@ -66,6 +66,11 @@ namespace SignalR.BusinessLayer.Concretes
         {
             await _appUserDal.UpdateAsync(entity);
             await _appUserDal.SaveChangesAsync();
+        }
+
+        public async Task TUpdateUserOnlineStatusAsync(int userId, bool isOnline)
+        {
+             await _appUserDal.UpdateUserOnlineStatusAsync(userId, isOnline);
         }
     }
 }

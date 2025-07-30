@@ -12,5 +12,7 @@ namespace SignalR.BusinessLayer.Abstracts
         Task<IEnumerable<AppUser>> TGetUsersByDepartmentAsync(UserDepartment department);
         Task<IEnumerable<AppUser>> TGetOnlineUsersAsync();
         Task<AppUser> TGetUserByFullNameAsync(string name, string surname);
+        Task TUpdateUserOnlineStatusAsync(int userId, bool isOnline);
+
     }
 }

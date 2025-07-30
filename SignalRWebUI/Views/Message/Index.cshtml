@@ -21,26 +21,43 @@
             padding: 80px 0; /* Daha fazla dikey boşluk */
             min-height: calc(100vh - 200px); /* Footer ve Navbar'a göre ayarlandı */
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* İçerikleri üste hizala */
             justify-content: center;
         }
 
-        .chat-container {
-            max-width: 800px; /* Daha geniş sohbet alanı */
-            width: 100%;
+        .chat-container, .online-users-container {
             background-color: #ffffff;
             border-radius: 20px; /* Daha yuvarlak köşeler */
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Daha belirgin gölge */
             padding: 40px; /* Daha fazla iç boşluk */
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* Bölümler arası boşluk */
+            height: 100%; /* İçeriği doldurmak için */
         }
 
-        .chat-header {
+        .chat-container {
+            max-width: 800px; /* Daha geniş sohbet alanı */
+            width: 100%;
+        }
+
+        .online-users-container {
+            max-width: 400px; /* Online kullanıcılar için daha dar alan */
+            width: 100%;
+            margin-left: 25px; /* Sohbet alanı ile arasında boşluk */
+        }
+
+        .chat-header, .online-users-header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 15px; /* Daha az boşluk, container'ın gap'i var */
             color: #2c3e50; /* Koyu başlık rengi */
             font-weight: 700;
             font-size: 2.2rem; /* Daha büyük başlık */
+        }
+
+        .online-users-header {
+            font-size: 1.8rem; /* Biraz daha küçük başlık */
         }
 
         .messages-display {
@@ -49,26 +66,29 @@
             padding: 20px;
             max-height: 450px; /* Daha uzun mesaj geçmişi */
             overflow-y: auto;
-            margin-bottom: 25px;
             background-color: #eef1f5; /* Hafif gri mesaj alanı */
-            display: flex; /* Mesajları alta sabitlemek için */
-            flex-direction: column; /* Mesajları dikey sırala */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Mesajlar arası boşluk */
+            flex-grow: 1; /* Kalan alanı doldur */
         }
 
         .message-item {
-            margin-bottom: 12px;
-            padding: 10px 15px;
-            border-radius: 12px; /* Daha yuvarlak mesaj baloncukları */
+            padding: 12px 18px;
+            border-radius: 18px; /* Daha yuvarlak mesaj baloncukları */
             background-color: #d1ecf1; /* Bilgi rengi */
             word-wrap: break-word;
             font-size: 1.05rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             animation: fadeIn 0.4s ease-out;
+            max-width: 85%; /* Mesaj baloncuğu genişliği */
+            align-self: flex-start; /* Varsayılan olarak sola hizala */
         }
 
             .message-item.my-message { /* Kendi mesajlarınız için farklı stil */
                 background-color: #cce5ff; /* Daha açık mavi */
                 align-self: flex-end; /* Sağa hizala */
+                text-align: right; /* Kendi mesajlarınızın metnini sağa hizala */
             }
 
             .message-item strong {
@@ -84,18 +104,24 @@
             .message-item .timestamp {
                 font-size: 0.85em;
                 color: #6c757d;
-                float: right;
-                margin-left: 15px;
+                display: block; /* Zaman damgasını yeni satıra al */
+                margin-top: 5px; /* İçerikle arasında boşluk */
             }
 
-        .form-control {
-            border-radius: 10px;
+            .message-item.my-message .timestamp {
+                float: none; /* Kendi mesajlarınızda float'ı kaldır */
+                text-align: right;
+            }
+
+        .form-control, .form-select {
+            border-radius: 12px; /* Daha yuvarlak inputlar */
             padding: 12px 18px;
             border: 1px solid #ced4da;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1rem;
         }
 
-            .form-control:focus {
+            .form-control:focus, .form-select:focus {
                 border-color: #007bff;
                 box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
             }
@@ -109,10 +135,10 @@
             background: linear-gradient(45deg, #28a745, #218838); /* Yeşil gradient */
             border: none;
             color: white;
-            padding: 12px 30px;
-            border-radius: 10px;
+            padding: 14px 35px; /* Daha büyük buton */
+            border-radius: 12px; /* Daha yuvarlak buton */
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.15rem; /* Daha büyük font */
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
@@ -132,7 +158,7 @@
             }
 
         .connection-status {
-            margin-top: 30px;
+            margin-top: 15px; /* Daha az boşluk, container'ın gap'i var */
             padding: 15px 20px;
             border-radius: 10px;
             text-align: center;
@@ -164,20 +190,112 @@
                 color: #856404;
             }
 
+        /* Yeni eklenen input alanları için stiller */
+        .chat-input-area {
+            background-color: #f8f9fa; /* Hafif gri arka plan */
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Gruplar arası boşluk */
+        }
+
+        .user-selection-group .form-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        /* Online Users Listesi İçin Yeni Stiller */
+        .online-departments-list .department-group {
+            margin-bottom: 20px;
+            background-color: #fdfdfd;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .online-departments-list .department-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .online-departments-list .department-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .online-departments-list .online-count {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #28a745; /* Yeşil renk */
+            background-color: #e6ffe6;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .online-departments-list .user-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .online-departments-list .user-list-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            color: #555;
+        }
+
+            .online-departments-list .user-list-item:last-child {
+                border-bottom: none;
+            }
+
+            .online-departments-list .user-list-item .online-dot {
+                width: 10px;
+                height: 10px;
+                background-color: #28a745; /* Yeşil */
+                border-radius: 50%;
+                margin-right: 10px;
+                flex-shrink: 0;
+            }
+
+            .online-departments-list .user-list-item .user-name {
+                font-weight: 500;
+                font-size: 1rem;
+            }
+
+        /* Responsive Ayarlamalar */
+        @@media (max-width: 768px) {
+            .food_section .container .row {
+                flex-direction: column; /* Küçük ekranlarda sütun düzenine geç */
+            }
+
+            .chat-container, .online-users-container {
+                max-width: 100%; /* Tam genişlik */
+                margin-left: 0;
+                margin-bottom: 25px; /* Aralarında boşluk bırak */
+            }
+        }
+
         /* Animasyon */
         @@keyframes fadeIn {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -188,67 +306,73 @@
 
     <section class="food_section layout_padding">
         <div class="container">
-            <div class="chat-container">
-                <h3 class="chat-header">SignalR Restoran Anlık Mesajlaşma</h3>
+            <div class="row">
+                <!-- Sohbet Alanı -->
+                <div class="col-lg-8 col-md-12 mb-4 mb-lg-0">
+                    <div class="chat-container">
+                        <h3 class="chat-header">SignalR Restoran Anlık Mesajlaşma</h3>
 
-                <!-- Gizli alan: Mevcut kullanıcının ID'si (test amaçlı) -->
-                <input type="hidden" id="currentUserId" value="1" />
+                        <!-- Gizli alan: Mevcut kullanıcının ID'si (test amaçlı) -->
+                        <input type="hidden" id="currentUserId" value="17" />
 
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label for="senderUserSelect" class="form-label">Gönderen:</label>
-                    </div>
-                    <div class="col-md-9">
-                        <select id="senderUserSelect" class="form-select">
-                            <!-- Kullanıcılar JS ile buraya yüklenecek -->
-                        </select>
-                    </div>
-                </div>
+                        <div class="chat-input-area">
+                            <div class="user-selection-group">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="senderUserSelect" class="form-label">Gönderen:</label>
+                                        <select id="senderUserSelect" class="form-select">
+                                            <!-- Kullanıcılar JS ile buraya yüklenecek -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="receiverUserSelect" class="form-label">Alıcı:</label>
+                                        <select id="receiverUserSelect" class="form-select">
+                                            <option value="0">Genel Sohbet (Tüm Kullanıcılar)</option>
+                                            <!-- Kullanıcılar JS ile buraya yüklenecek -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label for="receiverUserSelect" class="form-label">Alıcı:</label>
-                    </div>
-                    <div class="col-md-9">
-                        <select id="receiverUserSelect" class="form-select">
-                            <option value="0">Genel Sohbet (Tüm Kullanıcılar)</option>
-                            <!-- Kullanıcılar JS ile buraya yüklenecek -->
-                        </select>
-                    </div>
-                </div>
+                            <div class="message-input-group">
+                                <label for="messageinput" class="form-label visually-hidden">Mesajınız:</label>
+                                <textarea id="messageinput" class="form-control" placeholder="Mesajınızı yazın..." rows="3"></textarea>
+                                <div class="d-grid mt-3">
+                                    <button type="button" id="sendbutton" class="btn btn-send">Mesaj Gönder</button>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label for="messageinput" class="form-label">Mesajınız:</label>
-                    </div>
-                    <div class="col-md-9">
-                        <textarea id="messageinput" class="form-control" placeholder="Mesajınızı yazın..." rows="3"></textarea>
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <hr />
+                            </div>
+                        </div>
 
-                <div class="row mb-4">
-                    <div class="col-12 text-center">
-                        <button type="button" id="sendbutton" class="btn btn-send">Mesaj Gönder</button>
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="messagesList" class="messages-display list-group">
+                                    <!-- Mesajlar buraya eklenecek -->
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <hr />
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div id="messagesList" class="messages-display list-group">
-                            <!-- Mesajlar buraya eklenecek -->
+                        <!-- Bağlantı Durumu -->
+                        <div id="connectionStatus" class="connection-status alert alert-info">
+                            Durum: Bekleniyor...
                         </div>
                     </div>
                 </div>
 
-                <!-- Bağlantı Durumu -->
-                <div id="connectionStatus" class="connection-status alert alert-info">
-                    Durum: Bekleniyor...
+                <!-- Online Kullanıcılar Alanı -->
+                <div class="col-lg-4 col-md-12">
+                    <div class="online-users-container">
+                        <h4 class="online-users-header">Çevrimiçi Kullanıcılar</h4>
+                        <div id="onlineDepartmentsList" class="online-departments-list">
+                            <!-- Çevrimiçi kullanıcılar JS ile buraya yüklenecek -->
+                            <p class="text-center text-muted" id="loadingOnlineUsers">Yükleniyor...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -264,7 +388,6 @@
     <script src="~/js/Chat.js"></script>
     <!-- Bootstrap JS, eğer _UILayoutScriptComponentPartial içinde yoksa buraya eklenmeli -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 
 </body>
 </html>

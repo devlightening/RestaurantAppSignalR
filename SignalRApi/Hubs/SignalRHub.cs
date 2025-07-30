@@ -14,14 +14,14 @@ public class SignalRHub : Hub
     private readonly IBasketService _basketService;
     private readonly INotificationService _notificationService;
     private readonly IMessageService _messageService;
-    private readonly IAppUserService _appUserService; 
+    private readonly IAppUserService _appUserService;
 
-    public SignalRHub(ICategoryService categoryService, 
+    public SignalRHub(ICategoryService categoryService,
         IProductService productService,
-        IMoneyCaseService moneyCaseService, 
+        IMoneyCaseService moneyCaseService,
         IOrderService orderService,
-        IOrderDetailService orderDetailService, 
-        IRestaurantTableService restaurantTableService, 
+        IOrderDetailService orderDetailService,
+        IRestaurantTableService restaurantTableService,
         IBookingService bookingService,
         IBasketService basketService,
         INotificationService notificationService,
@@ -108,7 +108,7 @@ public class SignalRHub : Hub
         await Clients.All.SendAsync("ReceiveNotActiveTableCount", value2);
 
 
-        var value3= _orderService.TActiveOrderNumber();
+        var value3 = _orderService.TActiveOrderNumber();
         await Clients.All.SendAsync("ReceiveActiveOrderCount", value3);
 
     }
@@ -121,7 +121,7 @@ public class SignalRHub : Hub
     public async Task SendNotifyBasketUpdated()
     {
         var value = _basketService.TotalBasketAmountAsync();
-        await Clients.All.SendAsync("ReceiveBasketUpdate",value);
+        await Clients.All.SendAsync("ReceiveBasketUpdate", value);
     }
 
     public async Task GetBookingList()
@@ -207,5 +207,22 @@ public class SignalRHub : Hub
             // İstemciye de genel bir hata mesajı göndererek kullanıcıyı bilgilendir.
             await Clients.Caller.SendAsync("ReceiveError", "Mesaj gönderilirken sunucuda beklenmeyen bir hata oluştu. Lütfen konsolu kontrol edin.");
         }
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        int userId = 17;
+        await _appUserService.TUpdateUserOnlineStatusAsync(userId, true);
+        await Clients.All.SendAsync("ReceiveOnlineUsersUpdate");
+        await base.OnConnectedAsync();
+
+    }
+
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        int userId = 17;
+        await _appUserService.TUpdateUserOnlineStatusAsync(userId, false);
+        await Clients.All.SendAsync("ReceiveOnlineUsersUpdate");
+        await base.OnDisconnectedAsync(exception);
     }
 }

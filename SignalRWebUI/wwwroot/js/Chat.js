@@ -22,6 +22,8 @@
     const messagesList = $("#messagesList");
     const connectionStatusDiv = $("#connectionStatus");
     const currentUserIdInput = $("#currentUserId"); // Gizli currentUserId alanı (HTML'de value="1" olarak ayarlı)
+    const onlineDepartmentsList = $("#onlineDepartmentsList"); // Yeni eklenen online kullanıcılar alanı
+    const loadingOnlineUsers = $("#loadingOnlineUsers"); // Yükleniyor mesajı
 
     // Başlangıçta gönderme butonunu devre dışı bırak
     sendbutton.prop("disabled", true);
@@ -58,7 +60,6 @@
 
     // Mesajı listeye ekleyen fonksiyon
     // Yeni format: GönderenFullName: Mesaj (AlıcıFullName) | Saat:Dakika
-    // Bu fonksiyon artık doğrudan DTO'daki alan isimlerini bekliyor
     const addMessageToDisplay = (senderFullName, messageContent, timestamp, receiverFullName) => {
         const time = new Date(timestamp);
         const hours = String(time.getHours()).padStart(2, '0');
@@ -71,7 +72,7 @@
         }
         messageHtml += ` <span class="timestamp">${hours}:${minutes}</span>`;
 
-        const listItem = $(`<li class="list-group-item">${messageHtml}</li>`);
+        const listItem = $(`<li class="message-item">${messageHtml}</li>`); // message-item sınıfını ekledik
 
         // Kendi gönderdiğimiz mesajları farklı stilize et
         const currentSelectedSenderId = parseInt(senderUserSelect.val());
@@ -79,7 +80,6 @@
 
         // Basit bir kontrol: Eğer seçili gönderen ID'si, gizli currentUserId ile eşleşiyorsa
         // ve gelen mesajın gönderen adı, seçili gönderen adıyla eşleşiyorsa
-        // Not: currentUserIdInput.val() değeri, oturum açmış kullanıcının gerçek ID'si olmalıdır.
         if (currentSelectedSenderId === parseInt(currentUserIdInput.val()) && senderFullName === currentSelectedSenderName) {
             listItem.addClass("my-message");
         }
@@ -91,7 +91,6 @@
     // Kullanıcıları API'den çekme ve dropdown'ları doldurma
     const loadUsersForDropdowns = async () => {
         try {
-            // AppUsersController'ınızdaki GetAll metodunun URL'si
             const response = await fetch("https://localhost:7000/api/AppUsers");
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -102,7 +101,6 @@
             receiverUserSelect.find('option:not([value="0"])').remove();
 
             users.forEach(user => {
-                // ResultAppUserDto'daki 'fullName' ve 'userDepartment' alanlarını kullan
                 const fullNameWithDepartment = `${user.fullName} (${user.userDepartment})`;
                 senderUserSelect.append($(`<option value="${user.appUserId}">${fullNameWithDepartment}</option>`));
                 receiverUserSelect.append($(`<option value="${user.appUserId}">${fullNameWithDepartment}</option>`));
@@ -124,25 +122,84 @@
     // Geçmiş mesajları API'den çekme fonksiyonu
     const loadHistoricalMessages = async () => {
         try {
-            // Mesaj API'nizin GetAllMessages endpoint'inin URL'si
-            // Bu API'nin ResultMessageDto (MessageId, Content, Timestamp, SenderFullName, ReceiverFullName) döndürdüğünü varsayıyoruz.
             const response = await fetch("https://localhost:7000/api/Messages/GetAllMessages");
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const messages = await response.json();
             messagesList.empty(); // Mevcut mesajları temizle
-            // Mesajları en eskiden en yeniye doğru sırala (API'den ters sırada geliyorsa)
-            messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // DTO'daki Timestamp'a göre sırala
+            messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
             messages.forEach(msg => {
-                // API'den gelen mesaj objesinin yapısına göre alanları ayarlayın
-                // DTO'daki yeni isimler: msg.senderFullName, msg.content, msg.timestamp, msg.receiverFullName
                 addMessageToDisplay(msg.senderFullName, msg.content, msg.timestamp, msg.receiverFullName);
             });
             console.log("Geçmiş mesajlar yüklendi.");
         } catch (err) {
             console.error("Geçmiş mesajlar yüklenirken hata oluştu:", err);
+        }
+    };
+
+    // Online kullanıcıları departmanlara göre yükleme ve gösterme fonksiyonu
+    const loadAndDisplayOnlineUsers = async () => {
+        loadingOnlineUsers.show(); // Yükleniyor mesajını göster
+        onlineDepartmentsList.empty(); // Mevcut listeyi temizle
+
+        try {
+            const response = await fetch("https://localhost:7000/api/AppUsers/online"); // Online kullanıcıları çeken API
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const onlineUsers = await response.json();
+
+            // Departmanları gruplamak için bir obje
+            const groupedUsers = {};
+            const departmentOrder = ["Yönetici", "Garson", "Mutfak", "Bar", "Kasa", "Temizlik"]; // Departman sıralaması
+
+            onlineUsers.forEach(user => {
+                // API'den gelen userDepartment değeri enum string'i olmalı (Program.cs ayarından sonra)
+                const departmentName = user.userDepartment;
+                if (!groupedUsers[departmentName]) {
+                    groupedUsers[departmentName] = [];
+                }
+                groupedUsers[departmentName].push(user);
+            });
+
+            // Departmanları belirlenen sıraya göre döngüye al
+            departmentOrder.forEach(departmentName => {
+                const usersInDepartment = groupedUsers[departmentName] || [];
+                if (usersInDepartment.length > 0) {
+                    const departmentGroupDiv = $(`<div class="department-group"></div>`);
+                    const departmentHeaderDiv = $(`<div class="department-header"></div>`);
+                    departmentHeaderDiv.append(`<h5 class="department-title">${departmentName}</h5>`);
+                    departmentHeaderDiv.append(`<span class="online-count">${usersInDepartment.length}</span>`);
+                    departmentGroupDiv.append(departmentHeaderDiv);
+
+                    const userListUl = $(`<ul class="user-list"></ul>`);
+                    usersInDepartment.forEach(user => {
+                        userListUl.append(`
+                                <li class="user-list-item">
+                                    <span class="online-dot"></span>
+                                    <span class="user-name">${user.fullName}</span>
+                                </li>
+                            `);
+                    });
+                    departmentGroupDiv.append(userListUl);
+                    onlineDepartmentsList.append(departmentGroupDiv);
+                }
+            });
+
+            if (onlineUsers.length === 0) {
+                onlineDepartmentsList.append('<p class="text-center text-muted">Şu anda çevrimiçi kullanıcı bulunmamaktadır.</p>');
+            }
+
+            console.log("Çevrimiçi kullanıcılar listesi güncellendi.");
+
+        } catch (err) {
+            console.error("Çevrimiçi kullanıcılar yüklenirken hata oluştu:", err);
+            onlineDepartmentsList.empty();
+            onlineDepartmentsList.append('<p class="text-center text-danger">Çevrimiçi kullanıcılar yüklenirken bir hata oluştu.</p>');
+        } finally {
+            loadingOnlineUsers.hide(); // Yükleniyor mesajını gizle
         }
     };
 
@@ -156,6 +213,7 @@
             console.log("SignalR bağlantısı başarıyla kuruldu. Bağlantı ID:", connection.connectionId);
             await loadUsersForDropdowns(); // Bağlantı kurulduktan sonra kullanıcıları yükle
             await loadHistoricalMessages(); // Bağlantı kurulduktan sonra geçmiş mesajları yükle
+            await loadAndDisplayOnlineUsers(); // Bağlantı kurulduktan sonra online kullanıcıları yükle
         } catch (err) {
             updateConnectionStatus(signalR.HubConnectionState.Disconnected, "Bağlantı Hatası");
             sendbutton.prop("disabled", true); // Hata durumunda butonu devre dışı bırak
@@ -165,9 +223,14 @@
     };
 
     // Mesaj almayı dinle (Hub'dan gelen mesajlar)
-    // Hub'ınızdan "ReceiveMessage" metodunun 4 parametre (senderFullName, messageContent, timestamp, receiverFullName) gönderdiğini varsayıyorum.
     connection.on("ReceiveMessage", (senderFullName, messageContent, timestamp, receiverFullName) => {
         addMessageToDisplay(senderFullName, messageContent, timestamp, receiverFullName);
+    });
+
+    // Çevrimiçi kullanıcı listesi güncellemesini dinle (Hub'dan gelecek)
+    connection.on("ReceiveOnlineUsersUpdate", async () => {
+        console.log("Çevrimiçi kullanıcı listesi güncelleme sinyali alındı.");
+        await loadAndDisplayOnlineUsers(); // Listeyi yeniden yükle
     });
 
     // SUNUCUDAN GELEN HATA MESAJLARINI DİNLE
@@ -189,12 +252,14 @@
         console.log("SignalR yeniden bağlandı. Connection ID:", connectionId);
         loadUsersForDropdowns(); // Yeniden bağlandığında da kullanıcıları yükle
         loadHistoricalMessages(); // Yeniden bağlandığında da geçmiş mesajları yükle
+        loadAndDisplayOnlineUsers(); // Yeniden bağlandığında da online kullanıcıları yükle
     });
 
     connection.onclose(error => {
         updateConnectionStatus(signalR.HubConnectionState.Disconnected, "Bağlantı Kesildi");
         sendbutton.prop("disabled", true); // Bağlantı kesildiğinde butonu devre dışı bırak
         console.error("SignalR bağlantısı kesildi.", error);
+        loadAndDisplayOnlineUsers(); // Bağlantı kesildiğinde online listeyi de güncelle (muhtemelen boş olur)
     });
 
     // Mesaj gönderme butonu tıklama olayı
@@ -223,8 +288,6 @@
 
         try {
             if (connection.state === signalR.HubConnectionState.Connected) {
-                // Hub'a mesajı gönder
-                // Hub'daki SendMessage metodu int senderUserId, int receiverUserId, string messageContent almalı
                 await connection.invoke("SendMessage", senderUserId, receiverUserId, messageContent);
                 messageinput.val(""); // Mesaj gönderildikten sonra mesaj inputunu temizle
                 messageinput.focus(); // Mesaj inputuna odaklan
