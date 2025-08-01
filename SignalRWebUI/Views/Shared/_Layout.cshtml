@@ -41,7 +41,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Tema scriptleri ve diğer özel scriptler buradan yüklenecek -->
+    <!-- SignalR scripti doğru yolda eklendi -->
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <!-- jQuery eklentisi olan scrollbar scripti eklendi -->
+    <script src="~/Ready-Bootstrap-Dashboard/assets/js/plugin/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+
+    <!-- Tema scriptleri ve diğer özel scriptler (SignalR ve eklentilerden sonra) -->
     @await Component.InvokeAsync("_LayoutScriptComponentPartial")
 
     <!-- Isotope ve ona bağlı scriptler, jQuery yüklendikten sonra yüklenecek -->

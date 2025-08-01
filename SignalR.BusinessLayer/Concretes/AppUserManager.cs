@@ -21,7 +21,7 @@ namespace SignalR.BusinessLayer.Concretes
         public async Task TAddAsync(AppUser entity)
         {
             await _appUserDal.AddAsync(entity);
-            await _appUserDal.SaveChangesAsync(); // DÜZELTİLDİ: await eklendi
+            await _appUserDal.SaveChangesAsync();
         }
 
         public async Task TDeleteAsync(AppUser entity)
@@ -43,7 +43,6 @@ namespace SignalR.BusinessLayer.Concretes
         public async Task<IEnumerable<AppUser>> TGetOnlineUsersAsync()
         {
             return (await _appUserDal.GetOnlineUsersAsync()).ToList();
-
         }
 
         public async Task<AppUser> TGetUserByFullNameAsync(string name, string surname)
@@ -54,7 +53,6 @@ namespace SignalR.BusinessLayer.Concretes
         public async Task<IEnumerable<AppUser>> TGetUsersByDepartmentAsync(UserDepartment department)
         {
             return (await _appUserDal.GetUsersByDepartmentAsync(department)).ToList();
-
         }
 
         public async Task TSaveChangesAsync()
@@ -70,7 +68,7 @@ namespace SignalR.BusinessLayer.Concretes
 
         public async Task TUpdateUserOnlineStatusAsync(int userId, bool isOnline)
         {
-             await _appUserDal.UpdateUserOnlineStatusAsync(userId, isOnline);
+            await _appUserDal.UpdateUserOnlineStatusAsync(userId, isOnline);
         }
     }
 }
